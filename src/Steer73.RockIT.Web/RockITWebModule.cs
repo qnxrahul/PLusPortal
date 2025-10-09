@@ -121,8 +121,8 @@ public class RockITWebModule : AbpModule
         // Force CDN usage and disable local bundling to avoid wwwroot/libs requirement
         Configure<AbpBundlingOptions>(options =>
         {
-            //options.Use = true;
-            options.Mode = BundlingMode.None;
+            options.UseCdn = true;
+            options.Mode = BundlingMode.Bundle;
         });
         // Theme-specific bundling removed
         ConfigureUrls(configuration);
