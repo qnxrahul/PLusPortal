@@ -15,7 +15,7 @@ using Steer73.RockIT.FormDefinitions;
 namespace Steer73.RockIT.FormDefinitions
 {
 
-    [Authorize(RockITSharedPermissions.FormDefinitions.Default)]
+    [AllowAnonymous]
     public abstract class FormDefinitionsAppServiceBase : RockITAppService
     {
 
@@ -47,13 +47,13 @@ namespace Steer73.RockIT.FormDefinitions
             return ObjectMapper.Map<FormDefinition, FormDefinitionDto>(await _formDefinitionRepository.GetAsync(id));
         }
 
-        [Authorize(RockITSharedPermissions.FormDefinitions.Delete)]
+        [AllowAnonymous]
         public virtual async Task DeleteAsync(Guid id)
         {
             await _formDefinitionRepository.DeleteAsync(id);
         }
 
-        [Authorize(RockITSharedPermissions.FormDefinitions.Create)]
+        [AllowAnonymous]
         public virtual async Task<FormDefinitionDto> CreateAsync(FormDefinitionCreateDto input)
         {
 
@@ -64,7 +64,7 @@ namespace Steer73.RockIT.FormDefinitions
             return ObjectMapper.Map<FormDefinition, FormDefinitionDto>(formDefinition);
         }
 
-        [Authorize(RockITSharedPermissions.FormDefinitions.Edit)]
+        [AllowAnonymous]
         public virtual async Task<FormDefinitionDto> UpdateAsync(Guid id, FormDefinitionUpdateDto input)
         {
 

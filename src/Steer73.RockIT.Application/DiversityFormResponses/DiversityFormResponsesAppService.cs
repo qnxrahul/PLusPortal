@@ -15,7 +15,7 @@ using Steer73.RockIT.DiversityFormResponses;
 namespace Steer73.RockIT.DiversityFormResponses
 {
 
-    [Authorize(RockITSharedPermissions.DiversityFormResponses.Default)]
+    [AllowAnonymous]
     public abstract class DiversityFormResponsesAppServiceBase : RockITAppService
     {
 
@@ -62,13 +62,13 @@ namespace Steer73.RockIT.DiversityFormResponses
             return ObjectMapper.Map<DiversityFormResponse, DiversityFormResponseDto>(await _diversityFormResponseRepository.GetAsync(id));
         }
 
-        [Authorize(RockITSharedPermissions.DiversityFormResponses.Delete)]
+        [AllowAnonymous]
         public virtual async Task DeleteAsync(Guid id)
         {
             await _diversityFormResponseRepository.DeleteAsync(id);
         }
 
-        [Authorize(RockITSharedPermissions.DiversityFormResponses.Create)]
+        [AllowAnonymous]
         public virtual async Task<DiversityFormResponseDto> CreateAsync(DiversityFormResponseCreateDto input)
         {
 
@@ -79,7 +79,7 @@ namespace Steer73.RockIT.DiversityFormResponses
             return ObjectMapper.Map<DiversityFormResponse, DiversityFormResponseDto>(diversityFormResponse);
         }
 
-        [Authorize(RockITSharedPermissions.DiversityFormResponses.Edit)]
+        [AllowAnonymous]
         public virtual async Task<DiversityFormResponseDto> UpdateAsync(Guid id, DiversityFormResponseUpdateDto input)
         {
 

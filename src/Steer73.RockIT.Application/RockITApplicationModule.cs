@@ -1,4 +1,4 @@
-﻿using DinkToPdf.Contracts;
+using DinkToPdf.Contracts;
 using DinkToPdf;
 using Microsoft.CodeAnalysis;
 using Microsoft.Extensions.Configuration;
@@ -19,7 +19,7 @@ using Volo.Abp.SettingManagement;
 using Volo.Abp.TextTemplateManagement;
 using Volo.Abp.TextTemplating.Razor;
 using Volo.Abp.VirtualFileSystem;
-using Volo.Saas.Host;
+// using Volo.Saas.Host; // removed for OSS
 using System.Collections.Generic;
 using System.Reflection;
 using System.Linq;
@@ -32,11 +32,9 @@ typeof(RockITDomainModule),
     typeof(AbpPermissionManagementApplicationModule),
     typeof(AbpFeatureManagementApplicationModule),
     typeof(AbpSettingManagementApplicationModule),
-    typeof(SaasHostApplicationModule),
+    // Remove SaaS Host Application for OSS
     typeof(AbpAuditLoggingApplicationModule),
-    typeof(AbpOpenIddictProApplicationModule),
-    typeof(AbpAccountPublicApplicationModule),
-    typeof(AbpAccountAdminApplicationModule),
+    // Remove Pro OpenIddict & Account modules for OSS/no-auth
     typeof(LanguageManagementApplicationModule),
     typeof(AbpGdprApplicationModule),
     typeof(TextTemplateManagementApplicationModule),

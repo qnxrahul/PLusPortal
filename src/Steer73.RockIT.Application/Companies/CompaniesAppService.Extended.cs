@@ -40,7 +40,7 @@ namespace Steer73.RockIT.Companies
 
         //Write your custom code...
 
-        [Authorize(RockITSharedPermissions.Companies.Default)]
+        [AllowAnonymous]
         public virtual async Task TriggerSyncAsync()
         {
             await _backgroundJobManager.EnqueueAsync(new CompanyTriggerSyncArgs());

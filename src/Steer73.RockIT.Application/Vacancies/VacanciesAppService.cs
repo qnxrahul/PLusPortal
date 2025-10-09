@@ -23,7 +23,7 @@ using Volo.Abp.Uow;
 namespace Steer73.RockIT.Vacancies
 {
 
-    [Authorize(RockITSharedPermissions.Vacancies.Default)]
+    [AllowAnonymous]
     public abstract class VacanciesAppServiceBase : RockITAppService
     {
         protected IDistributedCache<VacancyDownloadTokenCacheItem, string> _downloadTokenCache;
@@ -185,13 +185,13 @@ namespace Steer73.RockIT.Vacancies
             };
         }
 
-        [Authorize(RockITSharedPermissions.Vacancies.Delete)]
+        [AllowAnonymous]
         public virtual async Task DeleteAsync(Guid id)
         {
             await _vacancyRepository.DeleteAsync(id);
         }
 
-        [Authorize(RockITSharedPermissions.Vacancies.Create)]
+        [AllowAnonymous]
         public virtual async Task<VacancyDto> CreateAsync(VacancyCreateDto input)
         {
             Vacancy? vacancy = null;
@@ -233,7 +233,7 @@ namespace Steer73.RockIT.Vacancies
             return ObjectMapper.Map<Vacancy, VacancyDto>(vacancy);
         }
 
-        [Authorize(RockITSharedPermissions.Vacancies.Edit)]
+        [AllowAnonymous]
         public virtual async Task<VacancyDto> UpdateAsync(Guid id, VacancyUpdateDto input)
         {
             Vacancy? vacancy = null;

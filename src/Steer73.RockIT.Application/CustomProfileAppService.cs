@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
 using System.Collections.Generic;
@@ -14,7 +14,7 @@ using Volo.Abp.Validation;
 
 namespace Steer73.RockIT;
 
-[Authorize]
+[AllowAnonymous]
 [Dependency(ReplaceServices = true)]
 [RemoteService(IsEnabled = false)]
 public class CustomProfileAppService : ProfileAppService

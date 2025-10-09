@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <Import Project="..\..\common.props" />
 
@@ -17,14 +17,12 @@
     <PackageReference Include="Volo.Abp.FeatureManagement.HttpApi" Version="8.3.0" />
     <PackageReference Include="Volo.Abp.SettingManagement.HttpApi" Version="8.3.0" />
     <PackageReference Include="Volo.Abp.AuditLogging.HttpApi" Version="8.3.0" />
-    <PackageReference Include="Volo.Abp.Identity.Pro.HttpApi" Version="8.3.0" />
-    <PackageReference Include="Volo.Abp.Account.Pro.Admin.HttpApi" Version="8.3.0" />
-    <PackageReference Include="Volo.Abp.OpenIddict.Pro.HttpApi" Version="8.3.0" />
+    <PackageReference Include="Volo.Abp.Identity.HttpApi" Version="8.3.0" />
     <PackageReference Include="Volo.Abp.LanguageManagement.HttpApi" Version="8.3.0" />
-    <PackageReference Include="Volo.Saas.Host.HttpApi" Version="8.3.0" />
+    <!-- Remove SaaS Host HttpApi for OSS migration -->
     <PackageReference Include="Volo.Abp.TextTemplateManagement.HttpApi" Version="8.3.0" />
     <PackageReference Include="Volo.Abp.Gdpr.HttpApi" Version="8.3.0" />
-    <PackageReference Include="Volo.Abp.Account.Pro.Public.HttpApi" Version="8.3.0" />
+    <!-- Remove ABP Account Pro Public HttpApi for OSS migration -->
   </ItemGroup>
 
 </Project>

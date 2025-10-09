@@ -30,8 +30,8 @@ namespace Steer73.RockIT.EntityFrameworkCore;
 
 [DependsOn(
     typeof(RockITDomainModule),
-    typeof(AbpIdentityProEntityFrameworkCoreModule),
-    typeof(AbpOpenIddictProEntityFrameworkCoreModule),
+    typeof(AbpIdentityEntityFrameworkCoreModule),
+    // Remove Pro OpenIddict EFCore module for OSS migration
     typeof(AbpPermissionManagementEntityFrameworkCoreModule),
     typeof(AbpSettingManagementEntityFrameworkCoreModule),
     typeof(AbpEntityFrameworkCoreSqlServerModule),
@@ -39,7 +39,7 @@ namespace Steer73.RockIT.EntityFrameworkCore;
     typeof(AbpAuditLoggingEntityFrameworkCoreModule),
     typeof(AbpFeatureManagementEntityFrameworkCoreModule),
     typeof(LanguageManagementEntityFrameworkCoreModule),
-    typeof(SaasEntityFrameworkCoreModule),
+    // Remove SaaS EFCore module for OSS migration
     typeof(TextTemplateManagementEntityFrameworkCoreModule),
     typeof(AbpGdprEntityFrameworkCoreModule),
     typeof(BlobStoringDatabaseEntityFrameworkCoreModule)

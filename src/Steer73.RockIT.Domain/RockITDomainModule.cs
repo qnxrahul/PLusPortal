@@ -14,10 +14,10 @@ using Volo.Abp.MultiTenancy;
 using Volo.Abp.PermissionManagement.Identity;
 using Volo.Abp.SettingManagement;
 using Volo.Abp.TextTemplateManagement;
-using Volo.Saas;
+// using Volo.Saas; // removed for OSS
 using Volo.Abp.BlobStoring.Database;
 using Volo.Abp.Caching;
-using Volo.Abp.Commercial.SuiteTemplates;
+// using Volo.Abp.Commercial.SuiteTemplates; // removed for OSS
 using Volo.Abp.Gdpr;
 using Volo.Abp.OpenIddict;
 using Volo.Abp.PermissionManagement.OpenIddict;
@@ -30,15 +30,15 @@ namespace Steer73.RockIT;
     typeof(AbpCachingModule),
     typeof(AbpBackgroundJobsDomainModule),
     typeof(AbpFeatureManagementDomainModule),
-    typeof(AbpIdentityProDomainModule),
+    typeof(AbpIdentityDomainModule),
     typeof(AbpPermissionManagementDomainIdentityModule),
-    typeof(AbpOpenIddictProDomainModule),
+    // Remove Pro OpenIddict domain module for OSS
     typeof(AbpPermissionManagementDomainOpenIddictModule),
     typeof(AbpSettingManagementDomainModule),
-    typeof(SaasDomainModule),
+    // Remove SaaS domain module for OSS
     typeof(TextTemplateManagementDomainModule),
     typeof(LanguageManagementDomainModule),
-    typeof(VoloAbpCommercialSuiteTemplatesModule),
+    // Remove Commercial Suite Templates module for OSS
     typeof(AbpEmailingModule),
     typeof(AbpGdprDomainModule),
     typeof(BlobStoringDatabaseDomainModule)

@@ -1,4 +1,4 @@
-﻿using Volo.Abp.Account;
+using Volo.Abp.Account;
 using Volo.Abp.AuditLogging;
 using Volo.Abp.FeatureManagement;
 using Volo.Abp.Identity;
@@ -7,7 +7,7 @@ using Volo.Abp.Modularity;
 using Volo.Abp.PermissionManagement;
 using Volo.Abp.SettingManagement;
 using Volo.Abp.TextTemplateManagement;
-using Volo.Saas.Host;
+// using Volo.Saas.Host; // removed for OSS
 using Volo.Abp.Gdpr;
 using Volo.Abp.OpenIddict;
 
@@ -19,11 +19,9 @@ namespace Steer73.RockIT;
     typeof(AbpIdentityApplicationContractsModule),
     typeof(AbpPermissionManagementApplicationContractsModule),
     typeof(AbpSettingManagementApplicationContractsModule),
-    typeof(SaasHostApplicationContractsModule),
+    // Remove SaaS contracts for OSS
     typeof(AbpAuditLoggingApplicationContractsModule),
-    typeof(AbpOpenIddictProApplicationContractsModule),
-    typeof(AbpAccountPublicApplicationContractsModule),
-    typeof(AbpAccountAdminApplicationContractsModule),
+    // Remove Pro OpenIddict & Account contracts for OSS/no-auth
     typeof(LanguageManagementApplicationContractsModule),
     typeof(AbpGdprApplicationContractsModule),
     typeof(TextTemplateManagementApplicationContractsModule)

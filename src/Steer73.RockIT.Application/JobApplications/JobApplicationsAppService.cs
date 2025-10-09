@@ -19,7 +19,7 @@ using Volo.Abp.BlobStoring;
 namespace Steer73.RockIT.JobApplications
 {
 
-    [Authorize(RockITSharedPermissions.JobApplications.Default)]
+    [AllowAnonymous]
     public abstract class JobApplicationsAppServiceBase : RockITAppService
     {
         protected IDistributedCache<JobApplicationDownloadTokenCacheItem, string> _downloadTokenCache;
@@ -82,13 +82,13 @@ namespace Steer73.RockIT.JobApplications
             };
         }
 
-        [Authorize(RockITSharedPermissions.JobApplications.Delete)]
+        [AllowAnonymous]
         public virtual async Task DeleteAsync(Guid id)
         {
             await _jobApplicationRepository.DeleteAsync(id);
         }
 
-        [Authorize(RockITSharedPermissions.JobApplications.Create)]
+        [AllowAnonymous]
         public virtual async Task<JobApplicationDto> CreateAsync(JobApplicationCreateDto input)
         {
             if (input.VacancyId == default)
@@ -103,7 +103,7 @@ namespace Steer73.RockIT.JobApplications
             return ObjectMapper.Map<JobApplication, JobApplicationDto>(jobApplication);
         }
 
-        [Authorize(RockITSharedPermissions.JobApplications.Edit)]
+        [AllowAnonymous]
         public virtual async Task<JobApplicationDto> UpdateAsync(Guid id, JobApplicationUpdateDto input)
         {
             if (input.VacancyId == default)

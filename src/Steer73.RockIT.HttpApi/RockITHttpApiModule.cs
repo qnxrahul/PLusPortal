@@ -1,4 +1,4 @@
-﻿using Localization.Resources.AbpUi;
+using Localization.Resources.AbpUi;
 using Steer73.RockIT.Localization;
 using Volo.Abp.Account;
 using Volo.Abp.AuditLogging;
@@ -23,12 +23,11 @@ namespace Steer73.RockIT;
     typeof(AbpFeatureManagementHttpApiModule),
     typeof(AbpSettingManagementHttpApiModule),
     typeof(AbpAuditLoggingHttpApiModule),
-    typeof(AbpOpenIddictProHttpApiModule),
-    typeof(AbpAccountAdminHttpApiModule),
+    // Remove Pro OpenIddict & Account Admin for OSS/no-auth runtime
     typeof(LanguageManagementHttpApiModule),
-    typeof(SaasHostHttpApiModule),
+    // Remove SaaS host for OSS migration
     typeof(AbpGdprHttpApiModule),
-    typeof(AbpAccountPublicHttpApiModule),
+    // Remove Account Public for no-auth runtime
     typeof(TextTemplateManagementHttpApiModule)
     )]
 public class RockITHttpApiModule : AbpModule

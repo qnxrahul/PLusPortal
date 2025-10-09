@@ -12,7 +12,7 @@ using Volo.Abp.PermissionManagement;
 using Volo.Abp.SettingManagement;
 using Volo.Abp.TextTemplateManagement;
 using Volo.Abp.VirtualFileSystem;
-using Volo.Saas;
+// using Volo.Saas; // removed for OSS
 using Volo.Abp.OpenIddict;
 using Volo.Abp.BlobStoring.Database;
 using Volo.Abp.Gdpr;
@@ -25,12 +25,12 @@ namespace Steer73.RockIT;
     typeof(AbpAuditLoggingDomainSharedModule),
     typeof(AbpBackgroundJobsDomainSharedModule),
     typeof(AbpFeatureManagementDomainSharedModule),
-    typeof(AbpIdentityProDomainSharedModule),
-    typeof(AbpOpenIddictProDomainSharedModule),
+    typeof(AbpIdentityDomainSharedModule),
+    // Remove Pro OpenIddict shared module for OSS
     typeof(AbpPermissionManagementDomainSharedModule),
     typeof(AbpSettingManagementDomainSharedModule),
     typeof(LanguageManagementDomainSharedModule),
-    typeof(SaasDomainSharedModule),
+    // Remove SaaS shared module for OSS
     typeof(TextTemplateManagementDomainSharedModule),
     typeof(AbpGdprDomainSharedModule),
     typeof(AbpGlobalFeaturesModule),

@@ -1,9 +1,6 @@
 using Azure.Identity;
 using Azure.Security.KeyVault.Certificates;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.Google;
-using Microsoft.AspNetCore.Authentication.MicrosoftAccount;
-using Microsoft.AspNetCore.Authentication.Twitter;
+// Remove external authentication providers for anonymous portal
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Hosting;
@@ -13,10 +10,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
-using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using Microsoft.OpenApi.Models;
-using OpenIddict.Server.AspNetCore;
-using OpenIddict.Validation.AspNetCore;
 using Steer73.RockIT.Companies;
 using Steer73.RockIT.Companies.External;
 using Steer73.RockIT.EntityFrameworkCore;
@@ -32,11 +26,7 @@ using System.Security.Claims;
 using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 using Volo.Abp;
-using Volo.Abp.Account.Admin.Web;
-using Volo.Abp.Account.Public.Web;
-using Volo.Abp.Account.Public.Web.ExternalProviders;
-using Volo.Abp.Account.Public.Web.ProfileManagement;
-using Volo.Abp.Account.Web;
+// Remove ABP Account packages for no-auth runtime
 using Volo.Abp.AspNetCore.Mvc;
 using Volo.Abp.AspNetCore.Mvc.Localization;
 using Volo.Abp.AspNetCore.Mvc.UI.Bundling;
@@ -54,14 +44,13 @@ using Volo.Abp.BackgroundWorkers;
 using Volo.Abp.Emailing;
 using Volo.Abp.Gdpr.Web;
 using Volo.Abp.Gdpr.Web.Extensions;
-using Volo.Abp.Identity;
-using Volo.Abp.Identity.Web;
+// using Volo.Abp.Identity;
+// using Volo.Abp.Identity.Web;
 using Volo.Abp.LanguageManagement;
 using Volo.Abp.LeptonX.Shared;
 using Volo.Abp.Localization;
 using Volo.Abp.Modularity;
-using Volo.Abp.OpenIddict;
-using Volo.Abp.OpenIddict.Pro.Web;
+// Remove OpenIddict Pro Web for OSS/no-auth
 using Volo.Abp.PermissionManagement;
 using Volo.Abp.Security.Claims;
 using Volo.Abp.SettingManagement;
@@ -71,7 +60,7 @@ using Volo.Abp.Timing;
 using Volo.Abp.UI.Navigation;
 using Volo.Abp.UI.Navigation.Urls;
 using Volo.Abp.VirtualFileSystem;
-using Volo.Saas.Host;
+// using Volo.Saas.Host; // removed for OSS
 
 namespace Steer73.RockIT.Web;
 
@@ -80,14 +69,9 @@ namespace Steer73.RockIT.Web;
     typeof(RockITApplicationModule),
     typeof(RockITEntityFrameworkCoreModule),
     typeof(AbpAutofacModule),
-    typeof(AbpIdentityWebModule),
-    typeof(AbpAccountPublicWebOpenIddictModule),
     typeof(AbpAuditLoggingWebModule),
-    typeof(SaasHostWebModule),
-    typeof(AbpAccountAdminWebModule),
-    typeof(AbpOpenIddictProWebModule),
     typeof(LanguageManagementWebModule),
-    typeof(AbpAspNetCoreMvcUiLeptonXThemeModule),
+    typeof(AbpAspNetCoreMvcUiLeptonXLiteThemeModule),
     typeof(TextTemplateManagementWebModule),
     typeof(AbpGdprWebModule),
     typeof(AbpSwashbuckleModule),
@@ -115,41 +99,9 @@ public class RockITWebModule : AbpModule
             );
         });
 
-        PreConfigure<OpenIddictBuilder>(builder =>
-        {
-            builder.AddValidation(options =>
-            {
-                options.AddAudiences("RockIT");
-                options.UseLocalServer();
-                options.UseAspNetCore();
-            });
-        });
+        // Authentication removed for local debugging; all pages accessible anonymously
 
-        if (!hostingEnvironment.IsDevelopment())
-        {
-            PreConfigure<AbpOpenIddictAspNetCoreOptions>(options =>
-            {
-                options.AddDevelopmentEncryptionAndSigningCertificate = false;
-            });
-
-            PreConfigure<OpenIddictServerBuilder>(builder =>
-            {
-                var configuration = context.Services.GetConfiguration();
-
-                var vaultUri = new Uri(configuration["RockITATS:Settings:KeyVaultUrl"] ?? "TEMP_URI");
-                var encryptionCertName = configuration["RockITATS:Settings:EncryptionCertificateName"];
-                var signingCertName = configuration["RockITATS:Settings:SigningCertificateName"];
-
-                var credential = new DefaultAzureCredential();
-                var client = new CertificateClient(vaultUri, credential);
-
-                var encryptionx509Certificate = client.DownloadCertificate(encryptionCertName).Value;
-                var signingx509Certificate = client.DownloadCertificate(signingCertName).Value;
-
-                builder.AddEncryptionCertificate(encryptionx509Certificate);
-                builder.AddSigningCertificate(signingx509Certificate);
-            });
-        }
+        // Removed OpenIddict server configuration for no-auth
     }
 
     public override void ConfigureServices(ServiceConfigurationContext context)
@@ -164,25 +116,19 @@ public class RockITWebModule : AbpModule
             Microsoft.IdentityModel.Logging.IdentityModelEventSource.ShowPII = true;
         }
 
-        if (!configuration.GetValue<bool>("AuthServer:RequireHttpsMetadata"))
-        {
-            Configure<OpenIddictServerAspNetCoreOptions>(options =>
-            {
-                options.DisableTransportSecurityRequirement = true;
-            });
-        }
+        // No OpenIddict server when authentication is removed
 
-        ConfigureAuthentication(context, configuration);
+        // Authentication removed
         ConfigureBundles();
         ConfigureUrls(configuration);
         ConfigurePages(configuration);
-        ConfigureImpersonation(context, configuration);
+        // Impersonation removed (no auth)
         ConfigureAutoMapper();
         ConfigureVirtualFileSystem(hostingEnvironment);
         ConfigureNavigationServices();
         ConfigureAutoApiControllers();
         ConfigureSwaggerServices(context.Services);
-        ConfigureExternalProviders(context);
+        // External providers removed
         ConfigureHealthChecks(context);
         ConfigureCookieConsent(context);
         ConfigureTheme();
@@ -290,45 +236,12 @@ public class RockITWebModule : AbpModule
     {
         Configure<RazorPagesOptions>(options =>
         {
-            options.Conventions.AuthorizePage("/Companies/Index", RockITSharedPermissions.Companies.Default);
-            options.Conventions.AuthorizePage("/PracticeGroups/Index", RockITSharedPermissions.PracticeGroups.Default);
-            options.Conventions.AuthorizePage("/Vacancies/Index", RockITSharedPermissions.Vacancies.Default);
-            options.Conventions.AuthorizePage("/FormDefinitions/Index", RockITSharedPermissions.FormDefinitions.Default);
-            options.Conventions.AuthorizePage("/FormDefinitions/FormBuilder", RockITSharedPermissions.FormDefinitions.Default);
-            options.Conventions.AuthorizePage("/VacancyFormDefinitions/Index", RockITSharedPermissions.VacancyFormDefinitions.Default);
-            options.Conventions.AuthorizePage("/JobApplications/Index", RockITSharedPermissions.JobApplications.Default);
-			options.Conventions.AuthorizePage("/Vacancies/Applications/Index", RockITSharedPermissions.JobApplications.Default);
+
+            // Remove authorization: make all pages accessible
 		});
     }
 
-    private void ConfigureAuthentication(ServiceConfigurationContext context, IConfiguration configuration)
-    {
-        context.Services.ForwardIdentityAuthenticationForBearer(OpenIddictValidationAspNetCoreDefaults.AuthenticationScheme);
-        context.Services.Configure<AbpClaimsPrincipalFactoryOptions>(options =>
-        {
-            options.IsDynamicClaimsEnabled = true;
-        });
-
-        context.Services.AddAuthentication()
-              .AddOpenIdConnect("AzureOpenId", "Microsoft Entra ID Login",
-              options =>
-              {
-                  options.Authority = $"{configuration["RockITATS:SSO:AuthorityRootUrl"]}/{configuration["RockITATS:SSO:TenantId"]}/v2.0/";
-                  options.ClientId = configuration["RockITATS:SSO:ClientId"];
-                  options.ResponseType = OpenIdConnectResponseType.CodeIdToken;
-                  options.CallbackPath = configuration["RockITATS:SSO:CallbackPath"];
-                  options.ClientSecret = configuration["RockITATS:SSO:ClientSecret"];
-                  options.RequireHttpsMetadata = false;
-                  options.SaveTokens = true;
-                  options.GetClaimsFromUserInfoEndpoint = true;
-                  options.Scope.Add("email");
-                  options.Scope.Add("offline_access"); //needed to integrate external clients
-
-                  options.SignInScheme = IdentityConstants.ExternalScheme;
-
-                  options.ClaimActions.MapJsonKey(ClaimTypes.NameIdentifier, "sub");
-              });
-    }
+    // Authentication removed
 
     private void ConfigureUrls(IConfiguration configuration)
     {
@@ -338,32 +251,9 @@ public class RockITWebModule : AbpModule
         });
     }
 
-    private void ConfigureAuthentication(ServiceConfigurationContext context)
-    {
-        context.Services.ForwardIdentityAuthenticationForBearer(OpenIddictValidationAspNetCoreDefaults.AuthenticationScheme);
-        context.Services.Configure<AbpClaimsPrincipalFactoryOptions>(options =>
-        {
-            options.IsDynamicClaimsEnabled = true;
-        });
-    }
+    // Authentication removed
 
-    private void ConfigureImpersonation(ServiceConfigurationContext context, IConfiguration configuration)
-    {
-        context.Services.Configure<AbpSaasHostWebOptions>(options =>
-        {
-            options.EnableTenantImpersonation = true;
-        });
-        context.Services.Configure<AbpIdentityWebOptions>(options =>
-        {
-            options.EnableUserImpersonation = true;
-        });
-        context.Services.Configure<AbpAccountOptions>(options =>
-        {
-            options.TenantAdminUserName = "admin";
-            options.ImpersonationTenantPermission = SaasHostPermissions.Tenants.Impersonation;
-            options.ImpersonationUserPermission = IdentityPermissions.Users.Impersonation;
-        });
-    }
+    // Impersonation removed
 
     private void ConfigureAutoMapper()
     {
@@ -429,52 +319,7 @@ public class RockITWebModule : AbpModule
         );
     }
 
-    private void ConfigureExternalProviders(ServiceConfigurationContext context)
-    {
-        context.Services.AddAuthentication()
-            .AddGoogle(GoogleDefaults.AuthenticationScheme, options =>
-            {
-                options.ClaimActions.MapJsonKey(AbpClaimTypes.Picture, "picture");
-            })
-            .WithDynamicOptions<GoogleOptions, GoogleHandler>(
-                GoogleDefaults.AuthenticationScheme,
-                options =>
-                {
-                    options.WithProperty(x => x.ClientId);
-                    options.WithProperty(x => x.ClientSecret, isSecret: true);
-                }
-            )
-            .AddMicrosoftAccount(MicrosoftAccountDefaults.AuthenticationScheme, options =>
-            {
-                //Personal Microsoft accounts as an example.
-                options.AuthorizationEndpoint = "https://login.microsoftonline.com/consumers/oauth2/v2.0/authorize";
-                options.TokenEndpoint = "https://login.microsoftonline.com/consumers/oauth2/v2.0/token";
-
-                options.ClaimActions.MapCustomJson("picture", _ => "https://graph.microsoft.com/v1.0/me/photo/$value");
-                options.SaveTokens = true;
-            })
-            .WithDynamicOptions<MicrosoftAccountOptions, MicrosoftAccountHandler>(
-                MicrosoftAccountDefaults.AuthenticationScheme,
-                options =>
-                {
-                    options.WithProperty(x => x.ClientId);
-                    options.WithProperty(x => x.ClientSecret, isSecret: true);
-                }
-            )
-            .AddTwitter(TwitterDefaults.AuthenticationScheme, options =>
-            {
-                options.ClaimActions.MapJsonKey(AbpClaimTypes.Picture,"profile_image_url_https");
-                options.RetrieveUserDetails = true;
-            })
-            .WithDynamicOptions<TwitterOptions, TwitterHandler>(
-                TwitterDefaults.AuthenticationScheme,
-                options =>
-                {
-                    options.WithProperty(x => x.ConsumerKey);
-                    options.WithProperty(x => x.ConsumerSecret, isSecret: true);
-                }
-            );
-    }
+    // External providers removed
 
     public override async Task OnApplicationInitializationAsync(ApplicationInitializationContext context)
     {
@@ -507,8 +352,7 @@ public class RockITWebModule : AbpModule
         app.UseAbpSecurityHeaders();
         app.UseStaticFiles();
         app.UseRouting();
-        app.UseAuthentication();
-        app.UseAbpOpenIddictValidation();
+        // Authentication removed
 
         if (MultiTenancyConsts.IsEnabled)
         {
@@ -517,7 +361,7 @@ public class RockITWebModule : AbpModule
 
         app.UseUnitOfWork();
         app.UseDynamicClaims();
-        app.UseAuthorization();
+        // Authorization removed (no auth)
         app.UseSwagger();
         app.UseAbpSwaggerUI(options =>
         {

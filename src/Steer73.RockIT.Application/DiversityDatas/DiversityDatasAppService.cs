@@ -15,7 +15,7 @@ using Steer73.RockIT.DiversityDatas;
 namespace Steer73.RockIT.DiversityDatas
 {
 
-    [Authorize(RockITSharedPermissions.DiversityDatas.Default)]
+    [AllowAnonymous]
     public abstract class DiversityDatasAppServiceBase : RockITAppService
     {
 
@@ -62,13 +62,13 @@ namespace Steer73.RockIT.DiversityDatas
             return ObjectMapper.Map<DiversityData, DiversityDataDto>(await _diversityDataRepository.GetAsync(id));
         }
 
-        [Authorize(RockITSharedPermissions.DiversityDatas.Delete)]
+        [AllowAnonymous]
         public virtual async Task DeleteAsync(Guid id)
         {
             await _diversityDataRepository.DeleteAsync(id);
         }
 
-        [Authorize(RockITSharedPermissions.DiversityDatas.Create)]
+        [AllowAnonymous]
         public virtual async Task<DiversityDataDto> CreateAsync(DiversityDataCreateDto input)
         {
 
@@ -79,7 +79,7 @@ namespace Steer73.RockIT.DiversityDatas
             return ObjectMapper.Map<DiversityData, DiversityDataDto>(diversityData);
         }
 
-        [Authorize(RockITSharedPermissions.DiversityDatas.Edit)]
+        [AllowAnonymous]
         public virtual async Task<DiversityDataDto> UpdateAsync(Guid id, DiversityDataUpdateDto input)
         {
 
