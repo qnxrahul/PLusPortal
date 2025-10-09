@@ -2,7 +2,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Steer73.RockIT.Localization;
 using Steer73.RockIT.MultiTenancy;
-using Volo.Abp.AuditLogging;
 using Volo.Abp.BackgroundJobs;
 using Volo.Abp.Emailing;
 using Volo.Abp.FeatureManagement;
@@ -25,7 +24,7 @@ namespace Steer73.RockIT;
 
 [DependsOn(
     typeof(RockITDomainSharedModule),
-    typeof(AbpAuditLoggingDomainModule),
+   // typeof(AbpAuditLoggingDomainModule),
     typeof(AbpCachingModule),
     typeof(AbpBackgroundJobsDomainModule),
     typeof(AbpFeatureManagementDomainModule),
@@ -35,7 +34,7 @@ namespace Steer73.RockIT;
     typeof(AbpPermissionManagementDomainOpenIddictModule),
     typeof(AbpSettingManagementDomainModule),
     // Remove SaaS domain module for OSS
-    typeof(TextTemplateManagementDomainModule),
+   // typeof(TextTemplateManagementDomainModule),
    // typeof(LanguageManagementDomainModule),
     // Remove Commercial Suite Templates module for OSS
     typeof(AbpEmailingModule),

@@ -1,5 +1,4 @@
 using Steer73.RockIT.Localization;
-using Volo.Abp.AuditLogging;
 using Volo.Abp.BackgroundJobs;
 using Volo.Abp.FeatureManagement;
 using Volo.Abp.Identity;
@@ -22,7 +21,7 @@ using Volo.Abp.Identity.Localization;
 namespace Steer73.RockIT;
 
 [DependsOn(
-    typeof(AbpAuditLoggingDomainSharedModule),
+    //typeof(AbpAuditLoggingDomainSharedModule),
     typeof(AbpBackgroundJobsDomainSharedModule),
     typeof(AbpFeatureManagementDomainSharedModule),
     typeof(AbpIdentityDomainSharedModule),

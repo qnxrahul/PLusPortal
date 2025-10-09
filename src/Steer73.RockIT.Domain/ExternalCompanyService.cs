@@ -1,8 +1,6 @@
 ﻿using EzekiaCRM;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using Org.BouncyCastle.Asn1.Ocsp;
 using Steer73.RockIT.AppFileDescriptors;
 using Steer73.RockIT.Companies;
 using Steer73.RockIT.JobApplications;

@@ -10,7 +10,6 @@ using Steer73.RockIT.PracticeGroups;
 using Steer73.RockIT.Vacancies;
 using Steer73.RockIT.BrochureSubscriptions;
 using Steer73.RockIT.MediaSources;
-using Volo.Abp.AuditLogging.EntityFrameworkCore;
 using Volo.Abp.BackgroundJobs.EntityFrameworkCore;
 using Volo.Abp.BlobStoring.Database.EntityFrameworkCore;
 using Volo.Abp.Data;
@@ -18,14 +17,11 @@ using Volo.Abp.DependencyInjection;
 using Volo.Abp.EntityFrameworkCore;
 using Volo.Abp.EntityFrameworkCore.Modeling;
 using Volo.Abp.FeatureManagement.EntityFrameworkCore;
-using Volo.Abp.Gdpr;
 using Volo.Abp.Identity;
 using Volo.Abp.Identity.EntityFrameworkCore;
-using Volo.Abp.LanguageManagement.EntityFrameworkCore;
 // using Volo.Abp.OpenIddict.EntityFrameworkCore; // removed for OSS/no-auth
 using Volo.Abp.PermissionManagement.EntityFrameworkCore;
 using Volo.Abp.SettingManagement.EntityFrameworkCore;
-using Volo.Abp.TextTemplateManagement.EntityFrameworkCore;
 // using Volo.Saas.*; // removed for OSS
 using Steer73.RockIT.Enums;
 using System;
@@ -96,15 +92,15 @@ public class RockITDbContext :
         builder.ConfigurePermissionManagement();
         builder.ConfigureSettingManagement();
         builder.ConfigureBackgroundJobs();
-        builder.ConfigureAuditLogging();
+       // builder.ConfigureAuditLogging();
         builder.ConfigureIdentity();
         // OpenIddict removed
         builder.ConfigureFeatureManagement();
-        builder.ConfigureLanguageManagement();
+        //builder.ConfigureLanguageManagement();
         // SaaS removed
-        builder.ConfigureTextTemplateManagement();
+       // builder.ConfigureTextTemplateManagement();
         builder.ConfigureBlobStoring();
-        builder.ConfigureGdpr();
+        //builder.ConfigureGdpr();
 
         /* Configure your own tables/entities inside here */
 

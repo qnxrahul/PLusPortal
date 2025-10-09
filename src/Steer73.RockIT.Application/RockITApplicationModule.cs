@@ -4,14 +4,11 @@ using Microsoft.CodeAnalysis;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 // using Volo.Abp.Account; // removed for OSS/no-auth
-using Volo.Abp.AuditLogging;
 using Volo.Abp.AutoMapper;
 using Volo.Abp.BlobStoring;
 using Volo.Abp.BlobStoring.Azure;
 using Volo.Abp.FeatureManagement;
-using Volo.Abp.Gdpr;
 using Volo.Abp.Identity;
-using Volo.Abp.LanguageManagement;
 using Volo.Abp.Modularity;
 // using Volo.Abp.OpenIddict; // removed for OSS/no-auth
 using Volo.Abp.PermissionManagement;
@@ -33,11 +30,11 @@ typeof(RockITDomainModule),
     typeof(AbpFeatureManagementApplicationModule),
     typeof(AbpSettingManagementApplicationModule),
     // Remove SaaS Host Application for OSS
-    typeof(AbpAuditLoggingApplicationModule),
+    //typeof(AbpAuditLoggingApplicationModule),
     // Remove Pro OpenIddict & Account modules for OSS/no-auth
-    typeof(LanguageManagementApplicationModule),
-    typeof(AbpGdprApplicationModule),
-    typeof(TextTemplateManagementApplicationModule),
+   // typeof(LanguageManagementApplicationModule),
+    //typeof(AbpGdprApplicationModule),
+    //typeof(TextTemplateManagementApplicationModule),
 	typeof(AbpTextTemplatingRazorModule)
 	)]
 [DependsOn(typeof(AbpBlobStoringAzureModule))]

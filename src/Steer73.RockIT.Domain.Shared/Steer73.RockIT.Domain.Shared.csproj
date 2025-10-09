@@ -12,7 +12,7 @@
   <ItemGroup>
     <!-- Remove Pro OpenIddict shared for OSS migration -->
     <PackageReference Include="Volo.Abp.BackgroundJobs.Domain.Shared" Version="8.3.0" />
-    <!-- Removed licensed: Volo.Abp.AuditLogging.Domain.Shared -->
+    <!--<PackageReference Include="Volo.Abp.AuditLogging.Domain.Shared" Version="8.3.0" />-->
     <PackageReference Include="Volo.Abp.FeatureManagement.Domain.Shared" Version="8.3.0" />
     <PackageReference Include="Volo.Abp.PermissionManagement.Domain.Shared" Version="8.3.0" />
     <PackageReference Include="Volo.Abp.SettingManagement.Domain.Shared" Version="8.3.0" />
@@ -21,7 +21,7 @@
     <PackageReference Include="Volo.Abp.Identity.Domain.Shared" Version="8.3.0" />
     <!--<PackageReference Include="Volo.Abp.LanguageManagement.Domain.Shared" Version="8.3.0" />-->
     <!-- Remove SaaS shared for OSS migration -->
-    <!-- Removed licensed: Volo.Abp.TextTemplateManagement.Domain.Shared -->
+    <PackageReference Include="Volo.Abp.TextTemplateManagement.Domain.Shared" Version="8.3.0" />
     <!--<PackageReference Include="Volo.Abp.Gdpr.Domain.Shared" Version="8.3.0" />-->
     <PackageReference Include="Volo.Abp.GlobalFeatures" Version="8.3.0" />
   </ItemGroup>

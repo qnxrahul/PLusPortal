@@ -1,57 +1,60 @@
-Startup Error at 2025-10-09 17:57:55 UTC
+Startup Error at 2025-10-09 18:22:11 UTC
 Environment: Development
 Machine: WL-MS-768
 OS: Microsoft Windows NT 10.0.26100.0
-Exception Type: Azure.Identity.CredentialUnavailableException
-Message: DefaultAzureCredential failed to retrieve a token from the included credentials. See the troubleshooting guide for more information. https://aka.ms/azsdk/net/identity/defaultazurecredential/troubleshoot
-- EnvironmentCredential authentication unavailable. Environment variables are not fully configured. See the troubleshooting guide for more information. https://aka.ms/azsdk/net/identity/environmentcredential/troubleshoot
-- WorkloadIdentityCredential authentication unavailable. The workload options are not fully configured. See the troubleshooting guide for more information. https://aka.ms/azsdk/net/identity/workloadidentitycredential/troubleshoot
-- ManagedIdentityCredential authentication unavailable. Multiple attempts failed to obtain a token from the managed identity endpoint.
-- Process "C:\Program Files\Microsoft Visual Studio\2022\Professional\Common7\IDE\CommonExtensions\Microsoft\Asal\TokenService\Microsoft.Asal.TokenService.exe" has failed with unexpected error: TS003: Error, TS001: This account 'rsharma@rock.co.uk' needs re-authentication. Please go to Tools->Options->Azure Services Authentication, and re-authenticate the account you want to use..
-- Azure CLI not installed
-- Az.Account module >= 2.2.0 is not installed.
-- Azure Developer CLI could not be found.
+Exception Type: Volo.Abp.AbpInitializationException
+Message: An error occurred during the initialize Volo.Abp.Modularity.OnApplicationInitializationModuleLifecycleContributor phase of the module Steer73.RockIT.Web.RockITWebModule, Steer73.RockIT.Web, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null: Cannot open database "RockIT2" requested by the login. The login failed.
+Login failed for user 'AzureAD\RahulSharma'.. See the inner exception for details.
 Stack Trace:
-   at Azure.Identity.DefaultAzureCredential.GetTokenFromSourcesAsync(TokenCredential[] sources, TokenRequestContext requestContext, Boolean async, CancellationToken cancellationToken)
-   at Azure.Identity.DefaultAzureCredential.GetTokenImplAsync(Boolean async, TokenRequestContext requestContext, CancellationToken cancellationToken)
-   at Azure.Identity.CredentialDiagnosticScope.FailWrapAndThrow(Exception ex, String additionalMessage, Boolean isCredentialUnavailable)
-   at Azure.Identity.DefaultAzureCredential.GetTokenImplAsync(Boolean async, TokenRequestContext requestContext, CancellationToken cancellationToken)
-   at Azure.Identity.DefaultAzureCredential.GetTokenAsync(TokenRequestContext requestContext, CancellationToken cancellationToken)
-   at Azure.Core.Pipeline.BearerTokenAuthenticationPolicy.AccessTokenCache.GetHeaderValueFromCredentialAsync(TokenRequestContext context, Boolean async, CancellationToken cancellationToken)
-   at Azure.Core.Pipeline.BearerTokenAuthenticationPolicy.AccessTokenCache.GetHeaderValueAsync(HttpMessage message, TokenRequestContext context, Boolean async)
-   at Azure.Core.Pipeline.BearerTokenAuthenticationPolicy.AccessTokenCache.GetHeaderValueAsync(HttpMessage message, TokenRequestContext context, Boolean async)
-   at Azure.Core.Pipeline.BearerTokenAuthenticationPolicy.AuthenticateAndAuthorizeRequestAsync(HttpMessage message, TokenRequestContext context)
-   at Azure.Core.Pipeline.BearerTokenAuthenticationPolicy.ProcessAsync(HttpMessage message, ReadOnlyMemory`1 pipeline, Boolean async)
-   at Azure.Core.Pipeline.RedirectPolicy.ProcessAsync(HttpMessage message, ReadOnlyMemory`1 pipeline, Boolean async)
-   at Azure.Core.Pipeline.RetryPolicy.ProcessAsync(HttpMessage message, ReadOnlyMemory`1 pipeline, Boolean async)
-   at Azure.Core.Pipeline.RetryPolicy.ProcessAsync(HttpMessage message, ReadOnlyMemory`1 pipeline, Boolean async)
-   at Microsoft.Extensions.Configuration.AzureAppConfiguration.UserAgentHeaderPolicy.ProcessAsync(HttpMessage message, ReadOnlyMemory`1 pipeline, Boolean async)
-   at Azure.Data.AppConfiguration.ConditionalPageableImplementation.GetNextResponseAsync(MatchConditions conditions, Nullable`1 pageSizeHint, String nextLink, CancellationToken cancellationToken)
-   at Azure.Data.AppConfiguration.ConditionalPageableImplementation.GetAsyncEnumerator(CancellationToken cancellationToken)+MoveNext()
-   at Azure.Data.AppConfiguration.ConditionalPageableImplementation.GetAsyncEnumerator(CancellationToken cancellationToken)+System.Threading.Tasks.Sources.IValueTaskSource<System.Boolean>.GetResult()
-   at Microsoft.Extensions.Configuration.AzureAppConfiguration.AzureAppConfigurationProvider.<>c__DisplayClass33_2.<<LoadSelectedKeyValues>b__2>d.MoveNext()
---- End of stack trace from previous location ---
-   at Microsoft.Extensions.Configuration.AzureAppConfiguration.AzureAppConfigurationProvider.<>c__DisplayClass33_2.<<LoadSelectedKeyValues>b__2>d.MoveNext()
---- End of stack trace from previous location ---
-   at Microsoft.Extensions.Configuration.AzureAppConfiguration.TracingUtils.CallWithRequestTracing(Boolean tracingEnabled, RequestType requestType, RequestTracingOptions requestTracingOptions, Func`1 clientCall)
-   at Microsoft.Extensions.Configuration.AzureAppConfiguration.AzureAppConfigurationProvider.LoadSelectedKeyValues(ConfigurationClient client, CancellationToken cancellationToken)
-   at Microsoft.Extensions.Configuration.AzureAppConfiguration.AzureAppConfigurationProvider.<>c__DisplayClass32_0.<<InitializeAsync>b__0>d.MoveNext()
---- End of stack trace from previous location ---
-   at Microsoft.Extensions.Configuration.AzureAppConfiguration.AzureAppConfigurationProvider.<>c__DisplayClass45_0.<<ExecuteWithFailOverPolicyAsync>b__0>d.MoveNext()
---- End of stack trace from previous location ---
-   at Microsoft.Extensions.Configuration.AzureAppConfiguration.AzureAppConfigurationProvider.ExecuteWithFailOverPolicyAsync[T](IEnumerable`1 clients, Func`2 funcToExecute, CancellationToken cancellationToken)
-   at Microsoft.Extensions.Configuration.AzureAppConfiguration.AzureAppConfigurationProvider.ExecuteWithFailOverPolicyAsync(IEnumerable`1 clients, Func`2 funcToExecute, CancellationToken cancellationToken)
-   at Microsoft.Extensions.Configuration.AzureAppConfiguration.AzureAppConfigurationProvider.InitializeAsync(IEnumerable`1 clients, CancellationToken cancellationToken)
-   at Microsoft.Extensions.Configuration.AzureAppConfiguration.AzureAppConfigurationProvider.TryInitializeAsync(IEnumerable`1 clients, List`1 startupExceptions, CancellationToken cancellationToken)
-   at Microsoft.Extensions.Configuration.AzureAppConfiguration.AzureAppConfigurationProvider.LoadAsync(Boolean ignoreFailures, CancellationToken cancellationToken)
-   at Microsoft.Extensions.Configuration.AzureAppConfiguration.AzureAppConfigurationProvider.Load()
-   at Microsoft.Extensions.Configuration.ConfigurationManager.AddSource(IConfigurationSource source)
-   at Microsoft.Extensions.Configuration.ConfigurationManager.Microsoft.Extensions.Configuration.IConfigurationBuilder.Add(IConfigurationSource source)
-   at Microsoft.Extensions.Configuration.AzureAppConfigurationExtensions.AddAzureAppConfiguration(IConfigurationBuilder configurationBuilder, Action`1 action, Boolean optional)
-   at Steer73.RockIT.Web.Program.Main(String[] args) in C:\Users\RahulSharma\PLusPortal\src\Steer73.RockIT.Web\Program.cs:line 89
+   at Volo.Abp.Modularity.ModuleManager.InitializeModulesAsync(ApplicationInitializationContext context)
+   at Volo.Abp.AbpApplicationBase.InitializeModulesAsync()
+   at Volo.Abp.AbpApplicationWithExternalServiceProvider.InitializeAsync(IServiceProvider serviceProvider)
+   at Microsoft.AspNetCore.Builder.AbpApplicationBuilderExtensions.InitializeApplicationAsync(IApplicationBuilder app)
+   at Steer73.RockIT.Web.Program.Main(String[] args) in C:\Users\RahulSharma\PLusPortal\src\Steer73.RockIT.Web\Program.cs:line 110
 
 Inner Exception:
-Type: System.AggregateException
-Message: Multiple exceptions were encountered while attempting to authenticate. (EnvironmentCredential authentication unavailable. Environment variables are not fully configured. See the troubleshooting guide for more information. https://aka.ms/azsdk/net/identity/environmentcredential/troubleshoot) (WorkloadIdentityCredential authentication unavailable. The workload options are not fully configured. See the troubleshooting guide for more information. https://aka.ms/azsdk/net/identity/workloadidentitycredential/troubleshoot) (ManagedIdentityCredential authentication unavailable. Multiple attempts failed to obtain a token from the managed identity endpoint.) (Process "C:\Program Files\Microsoft Visual Studio\2022\Professional\Common7\IDE\CommonExtensions\Microsoft\Asal\TokenService\Microsoft.Asal.TokenService.exe" has failed with unexpected error: TS003: Error, TS001: This account 'rsharma@rock.co.uk' needs re-authentication. Please go to Tools->Options->Azure Services Authentication, and re-authenticate the account you want to use..) (Azure CLI not installed) (Az.Account module >= 2.2.0 is not installed.) (Azure Developer CLI could not be found.)
+Type: Microsoft.Data.SqlClient.SqlException
+Message: Cannot open database "RockIT2" requested by the login. The login failed.
+Login failed for user 'AzureAD\RahulSharma'.
 Stack Trace:
-
+   at Microsoft.Data.SqlClient.SqlInternalConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   at Microsoft.Data.SqlClient.TdsParser.ThrowExceptionAndWarning(TdsParserStateObject stateObj, Boolean callerHasConnectionLock, Boolean asyncClose)
+   at Microsoft.Data.SqlClient.TdsParser.TryRun(RunBehavior runBehavior, SqlCommand cmdHandler, SqlDataReader dataStream, BulkCopySimpleResultSet bulkCopyHandler, TdsParserStateObject stateObj, Boolean& dataReady)
+   at Microsoft.Data.SqlClient.TdsParser.Run(RunBehavior runBehavior, SqlCommand cmdHandler, SqlDataReader dataStream, BulkCopySimpleResultSet bulkCopyHandler, TdsParserStateObject stateObj)
+   at Microsoft.Data.SqlClient.SqlInternalConnectionTds.CompleteLogin(Boolean enlistOK)
+   at Microsoft.Data.SqlClient.SqlInternalConnectionTds.AttemptOneLogin(ServerInfo serverInfo, String newPassword, SecureString newSecurePassword, Boolean ignoreSniOpenTimeout, TimeoutTimer timeout, Boolean withFailover)
+   at Microsoft.Data.SqlClient.SqlInternalConnectionTds.LoginNoFailover(ServerInfo serverInfo, String newPassword, SecureString newSecurePassword, Boolean redirectedUserInstance, SqlConnectionString connectionOptions, SqlCredential credential, TimeoutTimer timeout)
+   at Microsoft.Data.SqlClient.SqlInternalConnectionTds.OpenLoginEnlist(TimeoutTimer timeout, SqlConnectionString connectionOptions, SqlCredential credential, String newPassword, SecureString newSecurePassword, Boolean redirectedUserInstance)
+   at Microsoft.Data.SqlClient.SqlInternalConnectionTds..ctor(DbConnectionPoolIdentity identity, SqlConnectionString connectionOptions, SqlCredential credential, Object providerInfo, String newPassword, SecureString newSecurePassword, Boolean redirectedUserInstance, SqlConnectionString userConnectionOptions, SessionData reconnectSessionData, Boolean applyTransientFaultHandling, String accessToken, DbConnectionPool pool)
+   at Microsoft.Data.SqlClient.SqlConnectionFactory.CreateConnection(DbConnectionOptions options, DbConnectionPoolKey poolKey, Object poolGroupProviderInfo, DbConnectionPool pool, DbConnection owningConnection, DbConnectionOptions userOptions)
+   at Microsoft.Data.ProviderBase.DbConnectionFactory.CreatePooledConnection(DbConnectionPool pool, DbConnection owningObject, DbConnectionOptions options, DbConnectionPoolKey poolKey, DbConnectionOptions userOptions)
+   at Microsoft.Data.ProviderBase.DbConnectionPool.CreateObject(DbConnection owningObject, DbConnectionOptions userOptions, DbConnectionInternal oldConnection)
+   at Microsoft.Data.ProviderBase.DbConnectionPool.UserCreateRequest(DbConnection owningObject, DbConnectionOptions userOptions, DbConnectionInternal oldConnection)
+   at Microsoft.Data.ProviderBase.DbConnectionPool.TryGetConnection(DbConnection owningObject, UInt32 waitForMultipleObjectsTimeout, Boolean allowCreate, Boolean onlyOneCheckConnection, DbConnectionOptions userOptions, DbConnectionInternal& connection)
+   at Microsoft.Data.ProviderBase.DbConnectionPool.WaitForPendingOpen()
+--- End of stack trace from previous location ---
+   at Microsoft.EntityFrameworkCore.Storage.RelationalConnection.OpenInternalAsync(Boolean errorsExpected, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalConnection.OpenInternalAsync(Boolean errorsExpected, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalConnection.OpenAsync(CancellationToken cancellationToken, Boolean errorsExpected)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalConnection.BeginTransactionAsync(IsolationLevel isolationLevel, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalConnection.BeginTransactionAsync(CancellationToken cancellationToken)
+   at Volo.Abp.Uow.EntityFrameworkCore.UnitOfWorkDbContextProvider`1.CreateDbContextWithTransactionAsync(IUnitOfWork unitOfWork)
+   at Volo.Abp.Uow.EntityFrameworkCore.UnitOfWorkDbContextProvider`1.CreateDbContextAsync(IUnitOfWork unitOfWork)
+   at Volo.Abp.Uow.EntityFrameworkCore.UnitOfWorkDbContextProvider`1.CreateDbContextAsync(IUnitOfWork unitOfWork, String connectionStringName, String connectionString)
+   at Volo.Abp.Uow.EntityFrameworkCore.UnitOfWorkDbContextProvider`1.GetDbContextAsync()
+   at Volo.Abp.Domain.Repositories.EntityFrameworkCore.EfCoreRepository`2.GetDbSetAsync()
+   at Volo.Abp.SettingManagement.EntityFrameworkCore.EfCoreSettingRepository.FindAsync(String name, String providerName, String providerKey, CancellationToken cancellationToken)
+   at Castle.DynamicProxy.AsyncInterceptorBase.ProceedAsynchronous[TResult](IInvocation invocation, IInvocationProceedInfo proceedInfo)
+   at Volo.Abp.Castle.DynamicProxy.CastleAbpMethodInvocationAdapterWithReturnValue`1.ProceedAsync()
+   at Volo.Abp.Uow.UnitOfWorkInterceptor.InterceptAsync(IAbpMethodInvocation invocation)
+   at Volo.Abp.Castle.DynamicProxy.CastleAsyncAbpInterceptorAdapter`1.InterceptAsync[TResult](IInvocation invocation, IInvocationProceedInfo proceedInfo, Func`3 proceed)
+   at Volo.Abp.SettingManagement.SettingManagementStore.DeleteAsync(String name, String providerName, String providerKey)
+   at Castle.DynamicProxy.AsyncInterceptorBase.ProceedAsynchronous(IInvocation invocation, IInvocationProceedInfo proceedInfo)
+   at Volo.Abp.Castle.DynamicProxy.CastleAbpMethodInvocationAdapter.ProceedAsync()
+   at Volo.Abp.Uow.UnitOfWorkInterceptor.InterceptAsync(IAbpMethodInvocation invocation)
+   at Volo.Abp.Castle.DynamicProxy.CastleAsyncAbpInterceptorAdapter`1.InterceptAsync(IInvocation invocation, IInvocationProceedInfo proceedInfo, Func`3 proceed)
+   at Volo.Abp.SettingManagement.SettingManagementProvider.ClearAsync(SettingDefinition setting, String providerKey)
+   at Volo.Abp.SettingManagement.SettingManager.SetAsync(String name, String value, String providerName, String providerKey, Boolean forceToSet)
+   at Steer73.RockIT.Web.RockITWebModule.OnApplicationInitializationAsync(ApplicationInitializationContext context) in C:\Users\RahulSharma\PLusPortal\src\Steer73.RockIT.Web\RockITWebModule.cs:line 288
+   at Volo.Abp.Modularity.OnApplicationInitializationModuleLifecycleContributor.InitializeAsync(ApplicationInitializationContext context, IAbpModule module)
+   at Volo.Abp.Modularity.ModuleManager.InitializeModulesAsync(ApplicationInitializationContext context)

@@ -9,20 +9,16 @@ using Steer73.RockIT.JobApplications;
 using Steer73.RockIT.PracticeAreas;
 using Steer73.RockIT.PracticeGroups;
 using Steer73.RockIT.Vacancies;
-using Volo.Abp.AuditLogging.EntityFrameworkCore;
 using Volo.Abp.BackgroundJobs.EntityFrameworkCore;
 using Volo.Abp.BlobStoring.Database.EntityFrameworkCore;
 using Volo.Abp.EntityFrameworkCore;
 using Volo.Abp.EntityFrameworkCore.SqlServer;
 using Volo.Abp.FeatureManagement.EntityFrameworkCore;
-using Volo.Abp.Gdpr;
 using Volo.Abp.Identity.EntityFrameworkCore;
-using Volo.Abp.LanguageManagement.EntityFrameworkCore;
 using Volo.Abp.Modularity;
 // using Volo.Abp.OpenIddict.EntityFrameworkCore; // removed for OSS/no-auth
 using Volo.Abp.PermissionManagement.EntityFrameworkCore;
 using Volo.Abp.SettingManagement.EntityFrameworkCore;
-using Volo.Abp.TextTemplateManagement.EntityFrameworkCore;
 // using Volo.Saas.EntityFrameworkCore; // removed for OSS
 using Steer73.RockIT.BrochureSubscriptions;
 
@@ -36,12 +32,12 @@ namespace Steer73.RockIT.EntityFrameworkCore;
     typeof(AbpSettingManagementEntityFrameworkCoreModule),
     typeof(AbpEntityFrameworkCoreSqlServerModule),
     typeof(AbpBackgroundJobsEntityFrameworkCoreModule),
-    typeof(AbpAuditLoggingEntityFrameworkCoreModule),
+    //typeof(AbpAuditLoggingEntityFrameworkCoreModule),
     typeof(AbpFeatureManagementEntityFrameworkCoreModule),
-    typeof(LanguageManagementEntityFrameworkCoreModule),
+    //typeof(LanguageManagementEntityFrameworkCoreModule),
     // Remove SaaS EFCore module for OSS migration
-    typeof(TextTemplateManagementEntityFrameworkCoreModule),
-    typeof(AbpGdprEntityFrameworkCoreModule),
+    //typeof(TextTemplateManagementEntityFrameworkCoreModule),
+    //typeof(AbpGdprEntityFrameworkCoreModule),
     typeof(BlobStoringDatabaseEntityFrameworkCoreModule)
     )]
 public class RockITEntityFrameworkCoreModule : AbpModule

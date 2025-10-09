@@ -225,3 +225,8 @@ Azure.Identity.CredentialUnavailableException: DefaultAzureCredential failed to 
 2025-10-09 23:28:48.927 +05:30 [INF] Starting web host.
 2025-10-09 23:31:37.195 +05:30 [INF] Starting web host.
 2025-10-09 23:33:55.442 +05:30 [INF] Starting web host.
+2025-10-09 23:42:11.397 +05:30 [INF] Starting web host.
+2025-10-09 23:48:53.407 +05:30 [INF] Starting web host.
+2025-10-09 23:51:01.141 +05:30 [INF] Starting web host.
+2025-10-09 23:51:53.764 +05:30 [INF] Starting web host.
+2025-10-09 23:53:44.525 +05:30 [INF] Starting web host.
