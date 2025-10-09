@@ -2,7 +2,7 @@ using Azure.Identity;
 using Azure.Security.KeyVault.Certificates;
 // Remove external authentication providers for anonymous portal
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Extensions.DependencyInjection;
+// using Microsoft.AspNetCore.Extensions.DependencyInjection; // removed
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -30,8 +30,7 @@ using Volo.Abp;
 using Volo.Abp.AspNetCore.Mvc;
 using Volo.Abp.AspNetCore.Mvc.Localization;
 using Volo.Abp.AspNetCore.Mvc.UI.Bundling;
-using Volo.Abp.AspNetCore.Mvc.UI.Theme.LeptonX;
-using Volo.Abp.AspNetCore.Mvc.UI.Theme.LeptonX.Bundling;
+using Volo.Abp.AspNetCore.Mvc.UI.Theme.Basic;
 using Volo.Abp.AspNetCore.Mvc.UI.Theme.Shared;
 using Volo.Abp.AspNetCore.Mvc.UI.Theme.Shared.Toolbars;
 using Volo.Abp.AspNetCore.Serilog;
@@ -47,7 +46,7 @@ using Volo.Abp.Gdpr.Web.Extensions;
 // using Volo.Abp.Identity;
 // using Volo.Abp.Identity.Web;
 using Volo.Abp.LanguageManagement;
-using Volo.Abp.LeptonX.Shared;
+// using Volo.Abp.LeptonX.Shared; // removed
 using Volo.Abp.Localization;
 using Volo.Abp.Modularity;
 // Remove OpenIddict Pro Web for OSS/no-auth
@@ -71,7 +70,7 @@ namespace Steer73.RockIT.Web;
     typeof(AbpAutofacModule),
     typeof(AbpAuditLoggingWebModule),
     typeof(LanguageManagementWebModule),
-    typeof(AbpAspNetCoreMvcUiLeptonXLiteThemeModule),
+    typeof(AbpAspNetCoreMvcUiBasicThemeModule),
     typeof(TextTemplateManagementWebModule),
     typeof(AbpGdprWebModule),
     typeof(AbpSwashbuckleModule),
@@ -119,7 +118,7 @@ public class RockITWebModule : AbpModule
         // No OpenIddict server when authentication is removed
 
         // Authentication removed
-        ConfigureBundles();
+        // Theme-specific bundling removed
         ConfigureUrls(configuration);
         ConfigurePages(configuration);
         // Impersonation removed (no auth)
@@ -131,7 +130,7 @@ public class RockITWebModule : AbpModule
         // External providers removed
         ConfigureHealthChecks(context);
         ConfigureCookieConsent(context);
-        ConfigureTheme();
+        // Theme-specific configuration removed
 
         Configure<PermissionManagementOptions>(options =>
         {
@@ -190,47 +189,14 @@ public class RockITWebModule : AbpModule
         });
     }
 
-    private void ConfigureTheme()
-    {
-        Configure<LeptonXThemeOptions>(options =>
-        {
-            options.Styles.Remove(LeptonXStyleNames.System);
-			options.Styles.Remove(LeptonXStyleNames.Dark);
-			options.Styles.Remove(LeptonXStyleNames.Light);
-
-			// Adding a new theme
-			options.Styles.Add("rock",
-				new LeptonXThemeStyle(
-				LocalizableString.Create("Theme:Rock"),
-				"bi bi-circle-fill"));
-
-			options.DefaultStyle = "rock";
-        });
-
-        Configure<LeptonXThemeMvcOptions>(options =>
-        {
-            options.ApplicationLayout = LeptonXMvcLayouts.SideMenu;
-        });
-    }
+    // Removed ConfigureTheme (LeptonX-specific)
 
     private void ConfigureHealthChecks(ServiceConfigurationContext context)
     {
         context.Services.AddRockITHealthChecks();
     }
 
-    private void ConfigureBundles()
-    {
-        Configure<AbpBundlingOptions>(options =>
-        {
-            options.StyleBundles.Configure(
-                LeptonXThemeBundles.Styles.Global,
-                bundle =>
-                {
-                    bundle.AddFiles("/global-styles.css");
-                }
-            );
-        });
-    }
+    // Removed ConfigureBundles (LeptonX-specific)
 
     private void ConfigurePages(IConfiguration configuration)
     {
