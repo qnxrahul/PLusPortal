@@ -1,0 +1,123 @@
+.practice-groups {
+    &>a {
+        max-width: calc(25% - 0.5rem);
+        display: flex;
+        flex-direction: column;
+        justify-content: end;
+        padding-top: 15rem;
+
+        @media screen and (max-width: $breakpoint-md) {
+            flex: 1 1 auto;
+            max-width: 100%;
+            padding-top: 0;
+            padding-right: 3rem;
+        }
+    }
+}
+
+.practice-group {
+    background-size: cover;
+    background-position: center;
+
+    & .title {
+        font-size: 1.9rem;
+        font-weight: 600;
+        line-height: 25.87px;
+        text-align: left;
+        color: var(--bs-white);
+
+        @media screen and (max-width: $breakpoint-sm) {
+            font-size: 1.6rem;
+        }
+    }
+
+    & .card-link-icon {
+        position: absolute;
+        right: 1.5rem;
+        top: 2rem;
+
+        @media screen and (max-width: $breakpoint-sm) {
+            right: 1rem;
+        }
+    }
+
+    &.artcultureandsport {
+        background-image: url('/images/practice-group/arts-culture.jpg');
+    }
+
+    &.board {
+        background-image: url('/images/practice-group/board.jpg');
+    }
+
+    &.environment {
+        background-image: url('/images/practice-group/environment.jpg');
+    }
+
+    &.government {
+        background-image: url('/images/practice-group/government.jpg');
+    }
+
+    &.highereducation {
+        background-image: url('/images/practice-group/higher-education.jpg');
+    }
+
+    &.professionalservices {
+        background-image: url('/images/practice-group/professional-services.jpg');
+    }
+
+    &.registerwithus {
+        background-image: url('/images/practice-group/register-with-us.jpg');
+    }
+
+    &.researchtechnologyinnovation {
+        background-image: url('/images/practice-group/research-technology.jpg');
+    }
+
+    &.schoolandeducationorganisations {
+        background-image: url('/images/practice-group/school.jpg');
+    }
+
+    &.socialimpact {
+        background-image: url('/images/practice-group/social-impact.jpg');
+    }
+
+    &.artsculturesport {
+        background-image: url('/images/practice-group/arts-culture.jpg');
+    }
+
+    &.healthlifesciences {
+        background-image: url('/images/practice-group/health-life-sciences.jpg');
+    }
+
+    &.environmentsustainability {
+        background-image: url('/images/practice-group/environment.jpg');
+    }
+
+    &.workforperrettlaver {
+        background-image: url('/images/practice-group/work-for-perrett-laver.jpg');
+    }
+
+    &.schoolseducationalorganisations {
+        background-image: url('/images/practice-group/school.jpg');
+    }
+
+    &.artcultureandsport,
+    &.board,
+    &.environment,
+    &.government,
+    &.highereducation,
+    &.professionalservices,
+    &.registerwithus,
+    &.researchtechnologyinnovation,
+    &.schoolandeducationorganisations,
+    &.socialimpact,
+    &.artsculturesport,
+    &.healthlifesciences,
+    &.environmentsustainability,
+    &.workforperrettlaver,
+    &.schoolseducationalorganisations {
+        & .title {
+            color: var(--bs-white);
+        }
+    }
+}

@@ -1,0 +1,124 @@
+@page
+@using Microsoft.AspNetCore.Mvc.Localization
+@using Steer73.RockIT.Localization
+@using Steer73.RockIT.Web.Pages.JobApplications
+@using Volo.Abp.AspNetCore.Mvc.UI.Bootstrap.TagHelpers.Modal
+@using Steer73.RockIT.JobApplications;
+@using System.Globalization
+@inject IHtmlLocalizer<RockITResource> L
+@model EditModalModel
+@{
+    Layout = null;
+}
+
+<form data-ajaxForm="true" asp-page="/JobApplications/EditModal" autocomplete="off">
+    <abp-modal id="JobApplicationEditModal">
+        <abp-modal-header title="@L["Update"].Value"></abp-modal-header>
+
+        <abp-modal-body>
+            @*//<suite-custom-code-block-1>*@
+            @*//</suite-custom-code-block-1>*@
+
+            <abp-input asp-for="Id" />
+
+
+
+            <abp-input asp-for="JobApplication.ConcurrencyStamp" hidden="true" suppress-label="true" />
+
+
+            <abp-input asp-for="JobApplication.FirstName" />
+
+
+            <abp-input asp-for="JobApplication.LastName" />
+
+
+            <abp-input asp-for="JobApplication.EmailAddress" />
+
+
+            <abp-input asp-for="JobApplication.Title" />
+
+
+            <abp-input asp-for="JobApplication.PhoneNumber" />
+
+
+            <abp-input asp-for="JobApplication.Landline" />
+
+
+            <abp-input asp-for="JobApplication.CurrentRole" />
+
+
+            <abp-input asp-for="JobApplication.CurrentCompany" />
+
+
+            <abp-input asp-for="JobApplication.CurrentPositionType" />
+
+            <div class="mb-3">
+                <label class="form-label" for="Status_Display">Status</label>
+                <input class="form-control" id="Status_Display" value="@Model.Status.ToString()" readonly />
+            </div>
+
+            <abp-input asp-for="JobApplication.CVUrl" type="hidden" />
+
+            <div class="mb-3">
+                <label for="jobApplicationcVFile" class="form-label">@L["CV"]</label>
+                <div class="mb-2 @(Model.JobApplication.CVUrl != null && !String.IsNullOrWhiteSpace(Model.JobApplication.CVUrl) ? "" : "d-none")" id="jobApplicationcVManager">
+                    <div class="btn-group" role="group">
+                        <button type="button" class="btn btn-primary download-selected-file-btn" data-file-id="@Model.JobApplication.CVUrl" data-bs-toggle="tooltip" data-bs-placement="top" title="@L["DownloadSelectedFile"].Value"><i class="fa fa-file-alt"></i></button>
+                        <button type="button" class="btn btn-primary btn-danger" id="RemoveSelectedjobApplicationCV" data-bs-toggle="tooltip" data-bs-placement="top" title="@L["RemoveSelectedFile"].Value"><i class="fa fa-trash"></i></button>
+                    </div>
+                </div>
+                <div id="jobApplicationcVInputGroup" class="@(Model.JobApplication.CVUrl != null && !String.IsNullOrWhiteSpace(Model.JobApplication.CVUrl) ? "d-none" : "")">
+                    <input class="form-control" type="file" id="jobApplicationcVFile" name="jobApplicationcVFile" />
+                    <span class="text-danger field-validation-valid" data-valmsg-for="jobApplicationcVFile" data-valmsg-replace="true"></span>
+                </div>
+            </div>
+
+
+            <abp-input asp-for="JobApplication.CoverLetterUrl" type="hidden" />
+
+            <div class="mb-3">
+                <label for="jobApplicationcoverLetterFile" class="form-label">@L["CoverLetter"]</label>
+                <div class="mb-2 @(Model.JobApplication.CoverLetterUrl != null && !String.IsNullOrWhiteSpace(Model.JobApplication.CoverLetterUrl) ? "" : "d-none")" id="jobApplicationcoverLetterManager">
+                    <div class="btn-group" role="group">
+                        <button type="button" class="btn btn-primary download-selected-file-btn" data-file-id="@Model.JobApplication.CoverLetterUrl" data-bs-toggle="tooltip" data-bs-placement="top" title="@L["DownloadSelectedFile"].Value"><i class="fa fa-file-alt"></i></button>
+                        <button type="button" class="btn btn-primary btn-danger" id="RemoveSelectedjobApplicationCoverLetter" data-bs-toggle="tooltip" data-bs-placement="top" title="@L["RemoveSelectedFile"].Value"><i class="fa fa-trash"></i></button>
+                    </div>
+                </div>
+                <div id="jobApplicationcoverLetterInputGroup" class="@(Model.JobApplication.CoverLetterUrl != null && !String.IsNullOrWhiteSpace(Model.JobApplication.CoverLetterUrl) ? "d-none" : "")">
+                    <input class="form-control" type="file" id="jobApplicationcoverLetterFile" name="jobApplicationcoverLetterFile" />
+                    <span class="text-danger field-validation-valid" data-valmsg-for="jobApplicationcoverLetterFile" data-valmsg-replace="true"></span>
+                </div>
+            </div>
+
+
+            <abp-input asp-for="JobApplication.AdditionalDocumentUrl" type="hidden" />
+
+            <div class="mb-3">
+                <label for="jobApplicationadditionalDocumentFile" class="form-label">@L["AdditionalDocument"]</label>
+                <div class="mb-2 @(Model.JobApplication.AdditionalDocumentUrl != null && !String.IsNullOrWhiteSpace(Model.JobApplication.AdditionalDocumentUrl) ? "" : "d-none")" id="jobApplicationadditionalDocumentManager">
+                    <div class="btn-group" role="group">
+                        <button type="button" class="btn btn-primary download-selected-file-btn" data-file-id="@Model.JobApplication.AdditionalDocumentUrl" data-bs-toggle="tooltip" data-bs-placement="top" title="@L["DownloadSelectedFile"].Value"><i class="fa fa-file-alt"></i></button>
+                        <button type="button" class="btn btn-primary btn-danger" id="RemoveSelectedjobApplicationAdditionalDocument" data-bs-toggle="tooltip" data-bs-placement="top" title="@L["RemoveSelectedFile"].Value"><i class="fa fa-trash"></i></button>
+                    </div>
+                </div>
+                <div id="jobApplicationadditionalDocumentInputGroup" class="@(Model.JobApplication.AdditionalDocumentUrl != null && !String.IsNullOrWhiteSpace(Model.JobApplication.AdditionalDocumentUrl) ? "d-none" : "")">
+                    <input class="form-control" type="file" id="jobApplicationadditionalDocumentFile" name="jobApplicationadditionalDocumentFile" />
+                    <span class="text-danger field-validation-valid" data-valmsg-for="jobApplicationadditionalDocumentFile" data-valmsg-replace="true"></span>
+                </div>
+            </div>
+
+
+            <abp-select asp-for="JobApplication.VacancyId" asp-items="Model.VacancyLookupListRequired" label="@L["Vacancy"].Value" />
+
+            @*//<suite-custom-code-block-2>*@
+            @*//</suite-custom-code-block-2>*@
+            @*//<suite-custom-code-block-3>*@
+            @*//</suite-custom-code-block-3>*@
+        </abp-modal-body>
+
+        <abp-modal-footer buttons="@(AbpModalButtons.Cancel|AbpModalButtons.Save)">
+            @*//<suite-custom-code-block-4>*@
+            @*//</suite-custom-code-block-4>*@
+        </abp-modal-footer>
+    </abp-modal>
+</form>

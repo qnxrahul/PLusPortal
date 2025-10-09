@@ -1,0 +1,83 @@
+﻿@page "{vacancyId}"
+@model Steer73.RockIT.Web.Pages.VacancyMoreInfoModel
+@{
+    Layout = "_CandidatePortalLayout.cshtml";
+}
+
+
+@* TODO: Remove when we place this globally. Adding now to make text consistent across screens - https://steer73.visualstudio.com/Rock%20IT/_workitems/edit/56413 *@
+@section styles {
+<link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+}
+
+@section scripts {
+<script src="/scripts/moreInfo.js"></script>
+}
+
+<div class="container main">
+    <div class="more-info-form row">
+        @if (!Model.FormSubmitted)
+        {
+        <div class="col-sm-12 col-lg-4 col-xl-3">
+            <span class="side-heading">Request<span>more information</span></span>
+        </div>
+            <div class="col-sm-12 col-lg-8 col-xl-9 d-flex card">
+            <form asp-page="/VacancyMoreInfo" class="js-moreInfo-form">
+                <fieldset class="row p-4">
+                    <input asp-for="VacancyMoreInfo.VacancyId" type="hidden">
+                    <div class="col-sm-12 col-md-6">
+                        <abp-input asp-for="VacancyMoreInfo.FirstName"></abp-input>
+                    </div>
+                    <div class="col-sm-12 col-md-6">
+                        <abp-input asp-for="VacancyMoreInfo.LastName"></abp-input>
+                    </div>
+                    <div class="col-sm-12 col-md-6">
+                        <abp-input asp-for="VacancyMoreInfo.EmailAddress"></abp-input>
+                    </div>
+                    <div class="col-sm-12 col-md-6">
+                        <abp-input asp-for="VacancyMoreInfo.PhoneNumber"></abp-input>
+                    </div>
+                    <div class="col-sm-12 col-md-6">
+                        <abp-input asp-for="VacancyMoreInfo.CurrentRole"></abp-input>
+                    </div>
+                    <div class="col-sm-12 col-md-6">
+                        <abp-input asp-for="VacancyMoreInfo.CurrentCompany"></abp-input>
+                    </div>
+                    <div class="col-sm-12 col-md-6">
+                        <abp-select asp-for="VacancyMoreInfo.Reference" asp-items="Model.ReferenceList" />
+                    </div>
+                    <div class="col-sm-12">
+                        <input type="checkbox" class="form-checkbox js-terms-conditions" id="TermsConditionsCheck" />
+                        <label for="TermsConditionsCheck">
+                            I have read and understood the <a href="https://perrettlaver.com/terms-of-use/">Terms & conditions</a> and <a href="https://perrettlaver.com/privacy-policy/">Privacy Policy</a>.
+                            I confirm that I have read and understood how Perrett Laver will process my data.
+                        </label>
+                    </div>
+                </fieldset>
+                <div class="card-footer d-flex flex-column flex-md-row justify-content-end align-items-center gap-2">
+                    <a class="btn btn-secondary btn-md-stretch m-1" href="/VacancyDetail/@Model.VacancyMoreInfo.VacancyId">Cancel</a>
+                    <button type="submit" class="btn btn-primary btn-md-stretch js-submit">Submit</button>
+                </div>
+            </form>
+        </div>
+        <div class="col-sm-12 col-lg-10 offset-lg-2 footer-info mt-5">
+            <p>
+                Protecting your personal data is of the upmost importance to Perrett Laver and we take this responsibility very seriously. Any information obtained by our trading divisions is held and processed in accordance with the relevant data protection legislation. The data you provide us with is securely stored on our computerised database and transferred to our clients for the purposes of presenting you as a candidate and/or considering your suitability for a role you have registered interest in.
+            </p>
+
+            <p>
+                In line with GDPR, we ask that you do NOT send us any information that can identify children or any of your Sensitive Personal Data (racial or ethnic origin, political opinions, religious or philosophical beliefs, trade union membership, data concerning health or sex life and sexual orientation, genetic and / or biometric data) in your CV and application documentation. Following this notice, any inclusion of your Sensitive Personal Data in your CV/application documentation will be understood by us as your express consent to process this information going forward.
+            </p>
+
+            <p>
+                Perrett Laver is a Data Controller and a Data Processor, as defined under the General Data Protection Regulation (GDPR). Our legal basis for much of our data processing activity is 'Legitimate Interests'. For more information about this, your rights, and our approach to Data Protection and Privacy, please <a href="http://www.perrettlaver.com/information/privacy-policy/">visit our website</a>.
+            </p>
+        </div>
+        } else {
+            <div class="col-sm-12 col-lg-9 card card__status mx-auto request-success">
+                <h1 class="text-center">Your request for more information has been successfully submitted</h1>
+                <a href="/" class="mt-4 btn btn-primary">Explore vacancies</a>
+            </div>
+        }
+    </div>
+</div>

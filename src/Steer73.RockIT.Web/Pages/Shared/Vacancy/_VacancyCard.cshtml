@@ -1,0 +1,43 @@
+﻿@using Steer73.RockIT.Enums
+@model Steer73.RockIT.Vacancies.VacancyWithNavigationPropertiesDto
+
+@{
+    var regions = string.Join(", ", Model.Vacancy.RegionDescriptions);
+}
+
+<div class="vacancy-card flex-grow-1 w-100 border-1">
+    <div class="d-flex justify-content-between gap-2">
+        @{
+            var logoUrl = string.IsNullOrWhiteSpace(Model.Company?.LogoUrl)
+            ? "/images/company/default-company-logo.jpg"
+            : Model.Company.LogoUrl;
+        }
+        <img class="flex-grow-0 flex-shrink-0 vacancy-card__image" src="@logoUrl" />
+        <div class="d-none d-lg-flex flex-fill gap-2">
+            <div class="d-flex flex-grow-1 flex-column">
+                <span class="title text-bold">@Model.Vacancy.Title</span>
+                <span class="subtitle">@Model.Company?.Name</span>
+                <span class="subtitle text-black-50">@Model.Vacancy.Location</span>
+            </div>
+            <div>
+                <span class="vacancy__pill">@Model.Vacancy.ProjectId</span>
+            </div>
+        </div>
+        <a class="d-flex d-lg-none flex-fill gap-2" style="color: inherit;" href="/VacancyDetail/@Model.Vacancy.Id">
+            <div class="d-flex flex-grow-1 flex-column">
+                <span class="title text-bold">@Model.Vacancy.Title</span>
+                <span class="subtitle">@Model.Company?.Name</span>
+                <span class="subtitle text-black-50">@Model.Vacancy.Location</span>
+            </div>
+            <div>
+                <span class="vacancy__pill">@Model.Vacancy.ProjectId</span>
+            </div>
+        </a>
+        <div class="d-none d-lg-block">
+            <a class="btn btn-primary btn-description gap-2 fw-normal" href="/VacancyDetail/@Model.Vacancy.Id">
+                Full Description
+                <img src="~/images/link-outline.png" class="card-link-icon" />
+            </a>
+        </div>
+    </div>
+</div>

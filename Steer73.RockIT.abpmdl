@@ -1,0 +1,89 @@
+{
+  "template": "app",
+  "imports": {
+    "Volo.Abp.OpenIddict.Pro": {
+      "version": "8.2.1",
+      "isInstalled": true
+    },
+    "Volo.Abp.Gdpr": {
+      "version": "8.2.1",
+      "isInstalled": true
+    },
+    "Volo.Abp.Identity.Pro": {
+      "version": "8.2.1",
+      "isInstalled": true
+    },
+    "Volo.Abp.Account.Pro": {
+      "version": "8.2.1",
+      "isInstalled": true
+    }
+  },
+  "folders": {
+    "items": {
+      "src": {},
+      "test": {}
+    }
+  },
+  "packages": {
+    "Steer73.RockIT.Application": {
+      "path": "src/Steer73.RockIT.Application/Steer73.RockIT.Application.abppkg",
+      "folder": "src"
+    },
+    "Steer73.RockIT.Application.Tests": {
+      "path": "test/Steer73.RockIT.Application.Tests/Steer73.RockIT.Application.Tests.abppkg",
+      "folder": "test"
+    },
+    "Steer73.RockIT.Domain.Shared": {
+      "path": "src/Steer73.RockIT.Domain.Shared/Steer73.RockIT.Domain.Shared.abppkg",
+      "folder": "src"
+    },
+    "Steer73.RockIT.Application.Contracts": {
+      "path": "src/Steer73.RockIT.Application.Contracts/Steer73.RockIT.Application.Contracts.abppkg",
+      "folder": "src"
+    },
+    "Steer73.RockIT.HttpApi": {
+      "path": "src/Steer73.RockIT.HttpApi/Steer73.RockIT.HttpApi.abppkg",
+      "folder": "src"
+    },
+    "Steer73.RockIT.HttpApi.Client": {
+      "path": "src/Steer73.RockIT.HttpApi.Client/Steer73.RockIT.HttpApi.Client.abppkg",
+      "folder": "src"
+    },
+    "Steer73.RockIT.Web": {
+      "path": "src/Steer73.RockIT.Web/Steer73.RockIT.Web.abppkg",
+      "folder": "src"
+    },
+    "Steer73.RockIT.Web.Tests": {
+      "path": "test/Steer73.RockIT.Web.Tests/Steer73.RockIT.Web.Tests.abppkg",
+      "folder": "test"
+    },
+    "Steer73.RockIT.EntityFrameworkCore.Tests": {
+      "path": "test/Steer73.RockIT.EntityFrameworkCore.Tests/Steer73.RockIT.EntityFrameworkCore.Tests.abppkg",
+      "folder": "test"
+    },
+    "Steer73.RockIT.EntityFrameworkCore": {
+      "path": "src/Steer73.RockIT.EntityFrameworkCore/Steer73.RockIT.EntityFrameworkCore.abppkg",
+      "folder": "src"
+    },
+    "Steer73.RockIT.TestBase": {
+      "path": "test/Steer73.RockIT.TestBase/Steer73.RockIT.TestBase.abppkg",
+      "folder": "test"
+    },
+    "Steer73.RockIT.Domain.Tests": {
+      "path": "test/Steer73.RockIT.Domain.Tests/Steer73.RockIT.Domain.Tests.abppkg",
+      "folder": "test"
+    },
+    "Steer73.RockIT.HttpApi.Client.ConsoleTestApp": {
+      "path": "test/Steer73.RockIT.HttpApi.Client.ConsoleTestApp/Steer73.RockIT.HttpApi.Client.ConsoleTestApp.abppkg",
+      "folder": "test"
+    },
+    "Steer73.RockIT.DbMigrator": {
+      "path": "src/Steer73.RockIT.DbMigrator/Steer73.RockIT.DbMigrator.abppkg",
+      "folder": "src"
+    },
+    "Steer73.RockIT.Domain": {
+      "path": "src/Steer73.RockIT.Domain/Steer73.RockIT.Domain.abppkg",
+      "folder": "src"
+    }
+  }
+}

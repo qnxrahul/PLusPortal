@@ -1,0 +1,22 @@
+.more-info-form {
+    padding: 0rem 5rem;
+
+    @media screen and (max-width: $breakpoint-sm) {
+        padding: 0rem 1rem;
+    }
+
+    & .footer-info {
+        & p {
+            font-size: 1.3rem;
+            font-weight: 400;
+            padding: 1rem 0;
+        }
+    }
+
+    & .request-success {
+        @media screen and (max-width: $breakpoint-sm) {
+            padding: 6rem 1rem;
+            height: auto;
+        }
+    }
+}

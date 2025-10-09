@@ -1,0 +1,47 @@
+@page
+@using Microsoft.AspNetCore.Mvc.Localization
+@using Steer73.RockIT.Localization
+@using Steer73.RockIT.Web.Pages.JobFormResponses
+@using Volo.Abp.AspNetCore.Mvc.UI.Bootstrap.TagHelpers.Modal
+@using Steer73.RockIT.JobFormResponses;
+@using System.Globalization
+@inject IHtmlLocalizer<RockITResource> L
+@model EditModalModel
+@{
+    Layout = null;
+}
+
+<form data-ajaxForm="true" asp-page="/JobFormResponses/EditModal" autocomplete="off">
+    <abp-modal id="JobFormResponseEditModal">
+        <abp-modal-header title="@L["Update"].Value"></abp-modal-header>
+
+        <abp-modal-body>
+@*//<suite-custom-code-block-1>*@
+@*//</suite-custom-code-block-1>*@
+
+            <abp-input asp-for="Id" />
+
+                
+                    <abp-input asp-for="JobFormResponse.JobApplicationId" type="hidden" />
+                    
+                    
+
+            <abp-input asp-for="JobFormResponse.FormStructureJson" text-area   />
+
+
+            <abp-input asp-for="JobFormResponse.FormResponseJson" text-area   />
+
+                    
+                
+@*//<suite-custom-code-block-2>*@
+@*//</suite-custom-code-block-2>*@
+@*//<suite-custom-code-block-3>*@
+@*//</suite-custom-code-block-3>*@
+        </abp-modal-body>
+
+        <abp-modal-footer buttons="@(AbpModalButtons.Cancel|AbpModalButtons.Save)">
+@*//<suite-custom-code-block-4>*@
+@*//</suite-custom-code-block-4>*@
+        </abp-modal-footer>
+    </abp-modal>
+</form>

@@ -1,0 +1,95 @@
+@page
+@using Microsoft.AspNetCore.Mvc.Localization
+@using Steer73.RockIT.Localization
+@using Steer73.RockIT.Web.Pages.DiversityDatas
+@using Volo.Abp.AspNetCore.Mvc.UI.Bootstrap.TagHelpers.Modal
+@using Steer73.RockIT.DiversityDatas;
+@using System.Globalization
+@inject IHtmlLocalizer<RockITResource> L
+@model EditModalModel
+@{
+    Layout = null;
+}
+
+<form data-ajaxForm="true" asp-page="/DiversityDatas/EditModal" autocomplete="off">
+    <abp-modal id="DiversityDataEditModal">
+        <abp-modal-header title="@L["Update"].Value"></abp-modal-header>
+
+        <abp-modal-body>
+@*//<suite-custom-code-block-1>*@
+@*//</suite-custom-code-block-1>*@
+
+            <abp-input asp-for="Id" />
+
+                
+                    <abp-input asp-for="DiversityData.JobApplicationId" type="hidden" />
+                    
+                    
+
+            <abp-select asp-for="DiversityData.HappyToCompleteForm"    />
+
+
+            <abp-select asp-for="DiversityData.AgeRange"    />
+
+
+            <abp-select asp-for="DiversityData.Gender"    />
+
+
+            <abp-input asp-for="DiversityData.OtherGender"    />
+
+
+            <abp-select asp-for="DiversityData.GenderIdentitySameAsBirth"    />
+
+
+            <abp-select asp-for="DiversityData.Sex"    />
+
+
+            <abp-input asp-for="DiversityData.OtherSex"    />
+
+
+            <abp-select asp-for="DiversityData.SexualOrientation"    />
+
+
+            <abp-input asp-for="DiversityData.OtherSexualOrientation"    />
+
+
+            <abp-select asp-for="DiversityData.Ethnicity"    />
+
+
+            <abp-input asp-for="DiversityData.OtherEthnicity"    />
+
+
+            <abp-select asp-for="DiversityData.ReligionOrBelief"    />
+
+
+            <abp-input asp-for="DiversityData.OtherReligionOrBelief"    />
+
+
+            <abp-select asp-for="DiversityData.Disability"    />
+
+
+            <abp-select asp-for="DiversityData.EducationLevel"    />
+
+
+            <abp-select asp-for="DiversityData.TypeOfSecondarySchool"    />
+
+
+            <abp-input asp-for="DiversityData.OtherTypeOfSecondarySchool"    />
+
+
+            <abp-select asp-for="DiversityData.HigherEducationQualifications"    />
+
+                    
+                
+@*//<suite-custom-code-block-2>*@
+@*//</suite-custom-code-block-2>*@
+@*//<suite-custom-code-block-3>*@
+@*//</suite-custom-code-block-3>*@
+        </abp-modal-body>
+
+        <abp-modal-footer buttons="@(AbpModalButtons.Cancel|AbpModalButtons.Save)">
+@*//<suite-custom-code-block-4>*@
+@*//</suite-custom-code-block-4>*@
+        </abp-modal-footer>
+    </abp-modal>
+</form>

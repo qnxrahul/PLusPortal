@@ -1,0 +1,45 @@
+//       SUMMARY TABLE     
+// =========================
+// 1. Colors
+// 2. Fonts
+// 3. Animations
+// 4. Breakpoints
+// =========================
+
+
+// 1. Colors
+// =========================
+$pink: #DA1884;
+$grey: #4E5664;
+$lightgrey: #EFF2F4;
+$ctapink: #FF6DBE;
+$alertred: #EB003B;
+$offblack: #1F1F20;
+$midgrey1: #6D737E;
+$midgrey2: #A7ABB2;
+$midgrey3: rgba(167, 171, 178, 0.5);
+$lightpink: #FFD4EB;
+$lightpink2: #F3E2EC80;
+$orange: #CE5322;
+$yellow: #E99A31;
+$green: #72B541;
+$navy: #212B49;
+$blue: #2C81B9;
+$lightblue: #53B3AD;
+$purple: #683B7D;
+$border-color: #EEF2F5;
+
+// 2. Fonts
+// =========================
+// 3. Animations
+// =========================
+$smooth: cubic-bezier(0.15, 0.9, 0.34, 0.95);
+$custom: cubic-bezier(.76, 0, .24, 1);
+
+// 4. Breakpoints
+// =========================
+$breakpoint-xs: 0;
+$breakpoint-sm: 576px;
+$breakpoint-md: 768px;
+$breakpoint-lg: 992px;
+$breakpoint-xl: 1200px;

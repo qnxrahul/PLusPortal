@@ -1,0 +1,238 @@
+# ASP.NET Core (.NET Framework)
+# Build and test ASP.NET Core projects targeting the full .NET Framework.
+# Add steps that publish symbols, save build artifacts, and more:
+# https://docs.microsoft.com/azure/devops/pipelines/languages/dotnet-core
+
+trigger:
+ branches:
+  include:
+    - staging
+ paths:
+   exclude:
+     - azure-pipelines-production.yml
+     - azure-pipelines-development.yml
+     - azure-pipelines-staging.yml
+
+pool:
+ vmImage: 'windows-latest'
+
+variables:
+  solution: '**/*.sln'
+  buildPlatform: 'Any CPU'
+  buildConfiguration: 'Release'
+  localPublishWebAppFolder: WebApp
+  localPublishDbMigratorFolder: DbMigrator
+  localPublishFunctionFolder: AzureFunction
+  environmentName: 'Staging'
+
+steps:
+- task: CmdLine@2
+  inputs:
+    script: |
+      echo Build.Reason: $(Build.Reason)
+      echo TargetBranch: $(System.PullRequest.TargetBranch)
+      echo sourceBranch: $(build.sourceBranch)
+
+- task: CmdLine@2
+  displayName: NOT PR
+  condition: succeeded()
+  inputs:
+    script: |
+      echo NOT PR
+
+- task: CmdLine@2
+  displayName: IS PR
+  condition: not(succeeded())
+  inputs:
+    script: |
+      echo IS PR
+
+- task: DotNetCoreCLI@2
+  displayName: 'RestoreProjects'
+  inputs:
+    command: 'restore'
+    projects: | 
+      $(Build.SourcesDirectory)\src\Steer73.RockIT.Web\Steer73.RockIT.Web.csproj
+      $(Build.SourcesDirectory)\src\Steer73.RockIT.DbMigrator\Steer73.RockIT.DbMigrator.csproj
+      #$(Build.SourcesDirectory)\src\Steer73.RockIT.Function\Steer73.RockIT.Function.csproj
+      $(Build.SourcesDirectory)\test\Steer73.RockIT.Application.Tests\Steer73.RockIT.Application.Tests.csproj
+      $(Build.SourcesDirectory)\test\Steer73.RockIT.Domain.Shared.Tests\Steer73.RockIT.Domain.Shared.Tests.csproj
+      $(Build.SourcesDirectory)\test\Steer73.RockIT.Domain.Tests\Steer73.RockIT.Domain.Tests.csproj
+      $(Build.SourcesDirectory)\test\Steer73.RockIT.EntityFrameworkCore.Tests\Steer73.RockIT.EntityFrameworkCore.Tests.csproj
+    feedsToUse: 'config'
+    nugetConfigPath: $(Build.SourcesDirectory)\NuGet.Config
+    
+- task: NodeTool@0
+  inputs:
+    versionSource: 'spec'
+    versionSpec: '20.x'
+
+- task: UseDotNet@2
+  inputs:
+    packageType: 'sdk'
+    version: '8.0.x'
+
+
+- task: Npm@1
+  displayName: npm install
+  enabled: true
+  inputs:
+    command: 'install'
+    workingDir: '$(Build.SourcesDirectory)\src\Steer73.RockIT.Web'
+    verbose: true
+
+- task: CmdLine@2
+  displayName: 'Install ABP CLI'
+  inputs:
+    script: 'dotnet tool install -g Volo.Abp.Cli --version 8.3.0'
+    workingDirectory: '$(Build.SourcesDirectory)\src\Steer73.RockIT.Web'
+
+- task: CmdLine@2
+  displayName: 'Install ABP Packages'
+  inputs:
+    script: 'abp install-libs'
+    workingDirectory: '$(Build.SourcesDirectory)\src\Steer73.RockIT.Web'
+#    failOnStderr: true
+
+- task: Npm@1
+  displayName: 'gulp build-dev'
+  enabled: true
+  inputs:
+    command: 'custom'
+    customCommand: 'run gulp:build-dev'
+    workingDir: '$(Build.SourcesDirectory)\src\Steer73.RockIT.Web'
+
+  
+- task: DotNetCoreCLI@2
+  displayName: 'dotnet build'
+  inputs:
+    command: 'build'
+    projects: | 
+      $(Build.SourcesDirectory)\src\Steer73.RockIT.Web\Steer73.RockIT.Web.csproj
+      $(Build.SourcesDirectory)\src\Steer73.RockIT.DbMigrator\Steer73.RockIT.DbMigrator.csproj
+      #$(Build.SourcesDirectory)\src\Steer73.RockIT.Function\Steer73.RockIT.Function.csproj
+      $(Build.SourcesDirectory)\test\Steer73.RockIT.Application.Tests\Steer73.RockIT.Application.Tests.csproj
+      $(Build.SourcesDirectory)\test\Steer73.RockIT.Domain.Shared.Tests\Steer73.RockIT.Domain.Shared.Tests.csproj
+      $(Build.SourcesDirectory)\test\Steer73.RockIT.Domain.Tests\Steer73.RockIT.Domain.Tests.csproj
+      $(Build.SourcesDirectory)\test\Steer73.RockIT.EntityFrameworkCore.Tests\Steer73.RockIT.EntityFrameworkCore.Tests.csproj
+    arguments: '--configuration $(BuildConfiguration)'
+
+- task: DotNetCoreCLI@2
+  displayName: 'dotnet test'
+  inputs:
+    command: 'test'
+    projects: '**/*.Tests.csproj'
+    arguments: '--configuration $(BuildConfiguration) --collect "Code coverage"'
+    publishTestResults: true
+    nobuild: true
+
+
+#- task: CopyFiles@2
+#  displayName: 'Copy ARM template'
+#  condition: succeeded()
+#  inputs:
+#    SourceFolder: '$(Build.SourcesDirectory)\infrastructure\bicep'
+#    Contents: '*.*'
+#    TargetFolder: '$(build.artifactstagingdirectory)\arm'
+
+#- task: CopyFiles@2
+#  displayName: 'Copy Azure App Config defaults'
+#  condition: succeeded()
+#  inputs:
+#    SourceFolder: '$(Build.SourcesDirectory)\infrastructure\appsettings'
+#    Contents: '*.json'
+#    TargetFolder: '$(build.artifactstagingdirectory)\appsettings'
+
+- task: DotNetCoreCLI@2
+  displayName: 'Publish DB Migrator'
+  condition: succeeded()
+  inputs:
+    command: 'publish'
+    publishWebProjects: false
+    projects: '$(Build.SourcesDirectory)/src/Steer73.RockIT.DbMigrator/Steer73.RockIT.DbMigrator.csproj'
+    arguments: '--configuration $(BuildConfiguration) --no-restore --no-build --output $(Build.ArtifactStagingDirectory)/$(LocalPublishDbMigratorFolder)'    
+    zipAfterPublish: true
+    nobuild: true
+
+- task: PowerShell@2
+  displayName: 'Rename DbMigrator ZIP'
+  condition: succeeded()
+  inputs:
+    targetType: 'inline'
+    script: |
+      $source = "$(Build.ArtifactStagingDirectory)/$(LocalPublishDbMigratorFolder)/Steer73.RockIT.DbMigrator.zip"
+      $destination = "$(Build.ArtifactStagingDirectory)/$(LocalPublishDbMigratorFolder)/Steer73.RockIT.DbMigrator.$(environmentName).zip"
+      if (Test-Path $source) {
+        Move-Item -Path $source -Destination $destination -Force
+        Write-Host "Renamed DbMigrator ZIP to include '$(environmentName)'"
+      }
+
+- task: DotNetCoreCLI@2
+  displayName: 'Publish Web App'
+  condition: succeeded()
+  inputs:
+    command: 'publish'
+    publishWebProjects: true
+    projects: '$(Build.SourcesDirectory)/src/Steer73.RockIT.Web/Steer73.RockIT.Web.csproj'
+    arguments: '--configuration $(BuildConfiguration) --no-restore --no-build --output $(Build.ArtifactStagingDirectory)/$(localPublishWebAppFolder)'
+    zipAfterPublish: true
+    nobuild: true
+
+- task: PowerShell@2
+  displayName: 'Rename Web ZIP'
+  condition: succeeded()
+  inputs:
+    targetType: 'inline'
+    script: |
+      $source = "$(Build.ArtifactStagingDirectory)/$(localPublishWebAppFolder)/Steer73.RockIT.Web.zip"
+      $destination = "$(Build.ArtifactStagingDirectory)/$(localPublishWebAppFolder)/Steer73.RockIT.Web.$(environmentName).zip"
+      if (Test-Path $source) {
+        Move-Item -Path $source -Destination $destination -Force
+        Write-Host "Renamed Web ZIP to include '$(environmentName)'"
+      }
+
+#- task: DotNetCoreCLI@2
+#  displayName: 'Publish Azure Function'
+#  condition: succeeded()
+#  inputs:
+#    command: 'publish'
+#    publishWebProjects: false
+#    projects: 'src\Steer73.RockIT.Function\Steer73.RockIT.Function.csproj'
+#    arguments: '--configuration $(BuildConfiguration) --output $(Build.ArtifactStagingDirectory)/$(AzureFunction)'
+#    zipAfterPublish: true
+#    nobuild: true
+
+- task: PublishBuildArtifacts@1
+  displayName: 'Upload DB migrator artifacts'
+  condition: succeeded()
+  inputs:
+    PathtoPublish: $(Build.ArtifactStagingDirectory)/$(LocalPublishDbMigratorFolder)
+    ArtifactName: DbMigrator
+  
+- task: PublishBuildArtifacts@1
+  displayName: 'Upload Web App Artifacts'
+  condition: succeeded()
+  inputs:
+    PathtoPublish: '$(Build.ArtifactStagingDirectory)/$(localPublishWebAppFolder)'
+    ArtifactName: 'WebApp'
+
+#- task: PublishBuildArtifacts@1
+#  displayName: 'Upload Azure Function Artifacts'
+#  condition: succeeded()
+#  inputs:
+#    PathtoPublish: '$(Build.ArtifactStagingDirectory)/$(AzureFunction)'
+#    ArtifactName: 'AzureFunction'
+
+#- task: PublishBuildArtifacts@1
+#  displayName: 'Upload ARM template'
+#  condition: succeeded()
+#  inputs:
+#    PathtoPublish: $(Build.ArtifactStagingDirectory)/arm
+#    ArtifactName: arm
+
+#- task: PublishBuildArtifacts@1
+#  displayName: 'Upload AppSettings'
+#  condition: succeeded()
+#  inputs:
+#    PathtoPublish: $(Build.ArtifactStagingDirectory)/appsettings
+#    ArtifactName: appsettings

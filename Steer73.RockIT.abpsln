@@ -1,0 +1,42 @@
+{
+  "id": "838f7f1b-eb56-42ea-98fc-6ead1533be85",
+  "template": "app",
+  "versions": {
+    "LeptonX": "3.2.1",
+    "AbpFramework": "8.2.1",
+    "AbpCommercial": "8.2.1",
+    "AbpStudio": "0.7.7"
+  },
+  "modules": {
+    "Steer73.RockIT": {
+      "path": "Steer73.RockIT.abpmdl"
+    }
+  }, 
+  "runProfiles": {
+    "Default": {
+      "path": "etc/abp-studio/run-profiles/Default.abprun.json"
+    }
+  },
+  "options": {
+    "httpRequests": {
+        "ignoredUrls": [
+          "^/metrics$"
+      ]
+    }
+  },
+  "creatingStudioConfiguration": {
+    "template": "app",
+    "createdAbpStudioVersion": "0.7.7",
+    "tiered": "false",
+    "uiFramework": "mvc",
+    "databaseProvider": "ef",
+    "databaseManagementSystem": "sqlserver",
+    "separateTenantSchema": "false",
+    "theme": "leptonx",
+    "themeStyle": "system",
+    "mobileFramework": "none",
+    "publicWebsite": "false",
+    "optionalModules": "GDPR",
+    "socialLogin": ""
+  }
+}

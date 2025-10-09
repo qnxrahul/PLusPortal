@@ -1,0 +1,790 @@
+2025-10-07 22:50:51.029 +05:30 [INF] Starting web host.
+2025-10-07 22:51:06.347 +05:30 [FTL] Host terminated unexpectedly!
+Azure.Identity.CredentialUnavailableException: DefaultAzureCredential failed to retrieve a token from the included credentials. See the troubleshooting guide for more information. https://aka.ms/azsdk/net/identity/defaultazurecredential/troubleshoot
+- EnvironmentCredential authentication unavailable. Environment variables are not fully configured. See the troubleshooting guide for more information. https://aka.ms/azsdk/net/identity/environmentcredential/troubleshoot
+- WorkloadIdentityCredential authentication unavailable. The workload options are not fully configured. See the troubleshooting guide for more information. https://aka.ms/azsdk/net/identity/workloadidentitycredential/troubleshoot
+- ManagedIdentityCredential authentication unavailable. Multiple attempts failed to obtain a token from the managed identity endpoint.
+- Process "C:\Program Files\Microsoft Visual Studio\2022\Professional\Common7\IDE\CommonExtensions\Microsoft\Asal\TokenService\Microsoft.Asal.TokenService.exe" has failed with unexpected error: TS003: Error, TS001: This account 'v-Rahul.Sharma@lionbridge.com' needs re-authentication. Please go to Tools->Options->Azure Services Authentication, and re-authenticate the account you want to use..
+- Azure CLI not installed
+- Az.Account module >= 2.2.0 is not installed.
+- Azure Developer CLI could not be found.
+ ---> System.AggregateException: Multiple exceptions were encountered while attempting to authenticate. (EnvironmentCredential authentication unavailable. Environment variables are not fully configured. See the troubleshooting guide for more information. https://aka.ms/azsdk/net/identity/environmentcredential/troubleshoot) (WorkloadIdentityCredential authentication unavailable. The workload options are not fully configured. See the troubleshooting guide for more information. https://aka.ms/azsdk/net/identity/workloadidentitycredential/troubleshoot) (ManagedIdentityCredential authentication unavailable. Multiple attempts failed to obtain a token from the managed identity endpoint.) (Process "C:\Program Files\Microsoft Visual Studio\2022\Professional\Common7\IDE\CommonExtensions\Microsoft\Asal\TokenService\Microsoft.Asal.TokenService.exe" has failed with unexpected error: TS003: Error, TS001: This account 'v-Rahul.Sharma@lionbridge.com' needs re-authentication. Please go to Tools->Options->Azure Services Authentication, and re-authenticate the account you want to use..) (Azure CLI not installed) (Az.Account module >= 2.2.0 is not installed.) (Azure Developer CLI could not be found.)
+ ---> Azure.Identity.CredentialUnavailableException: EnvironmentCredential authentication unavailable. Environment variables are not fully configured. See the troubleshooting guide for more information. https://aka.ms/azsdk/net/identity/environmentcredential/troubleshoot
+   at Azure.Identity.CredentialDiagnosticScope.FailWrapAndThrow(Exception ex, String additionalMessage, Boolean isCredentialUnavailable)
+   at Azure.Identity.EnvironmentCredential.GetTokenImplAsync(Boolean async, TokenRequestContext requestContext, CancellationToken cancellationToken)
+   at Azure.Identity.EnvironmentCredential.GetTokenAsync(TokenRequestContext requestContext, CancellationToken cancellationToken)
+   at Azure.Identity.DefaultAzureCredential.GetTokenFromSourcesAsync(TokenCredential[] sources, TokenRequestContext requestContext, Boolean async, CancellationToken cancellationToken)
+   --- End of inner exception stack trace ---
+ ---> (Inner Exception #1) Azure.Identity.CredentialUnavailableException: WorkloadIdentityCredential authentication unavailable. The workload options are not fully configured. See the troubleshooting guide for more information. https://aka.ms/azsdk/net/identity/workloadidentitycredential/troubleshoot
+   at Azure.Identity.WorkloadIdentityCredential.GetTokenCoreAsync(Boolean async, TokenRequestContext requestContext, CancellationToken cancellationToken)
+   at Azure.Identity.CredentialDiagnosticScope.FailWrapAndThrow(Exception ex, String additionalMessage, Boolean isCredentialUnavailable)
+   at Azure.Identity.WorkloadIdentityCredential.GetTokenCoreAsync(Boolean async, TokenRequestContext requestContext, CancellationToken cancellationToken)
+   at Azure.Identity.WorkloadIdentityCredential.GetTokenAsync(TokenRequestContext requestContext, CancellationToken cancellationToken)
+   at Azure.Identity.DefaultAzureCredential.GetTokenFromSourcesAsync(TokenCredential[] sources, TokenRequestContext requestContext, Boolean async, CancellationToken cancellationToken)<---
+
+ ---> (Inner Exception #2) Azure.Identity.CredentialUnavailableException: ManagedIdentityCredential authentication unavailable. Multiple attempts failed to obtain a token from the managed identity endpoint.
+ ---> System.AggregateException: Retry failed after 4 tries. Retry settings can be adjusted in ClientOptions.Retry or by configuring a custom retry policy in ClientOptions.RetryPolicy. (A socket operation was attempted to an unreachable network. (169.254.169.254:80)) (A socket operation was attempted to an unreachable network. (169.254.169.254:80)) (A socket operation was attempted to an unreachable network. (169.254.169.254:80)) (A socket operation was attempted to an unreachable network. (169.254.169.254:80))
+ ---> Azure.RequestFailedException: A socket operation was attempted to an unreachable network. (169.254.169.254:80)
+ ---> System.Net.Http.HttpRequestException: A socket operation was attempted to an unreachable network. (169.254.169.254:80)
+ ---> System.Net.Sockets.SocketException (10051): A socket operation was attempted to an unreachable network.
+   at System.Net.Sockets.Socket.AwaitableSocketAsyncEventArgs.ThrowException(SocketError error, CancellationToken cancellationToken)
+   at System.Net.Sockets.Socket.AwaitableSocketAsyncEventArgs.System.Threading.Tasks.Sources.IValueTaskSource.GetResult(Int16 token)
+   at System.Net.Sockets.Socket.<ConnectAsync>g__WaitForConnectWithCancellation|285_0(AwaitableSocketAsyncEventArgs saea, ValueTask connectTask, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.ConnectToTcpHostAsync(String host, Int32 port, HttpRequestMessage initialRequest, Boolean async, CancellationToken cancellationToken)
+   --- End of inner exception stack trace ---
+   at System.Net.Http.HttpConnectionPool.ConnectToTcpHostAsync(String host, Int32 port, HttpRequestMessage initialRequest, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.ConnectAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.CreateHttp11ConnectionAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.AddHttp11ConnectionAsync(QueueItem queueItem)
+   at System.Threading.Tasks.TaskCompletionSourceWithCancellation`1.WaitWithCancellationAsync(CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.HttpConnectionWaiter`1.WaitForConnectionWithTelemetryAsync(HttpRequestMessage request, HttpConnectionPool pool, Boolean async, CancellationToken requestCancellationToken)
+   at System.Net.Http.HttpConnectionPool.SendWithVersionDetectionAndRetryAsync(HttpRequestMessage request, Boolean async, Boolean doRequestAuth, CancellationToken cancellationToken)
+   at System.Net.Http.DiagnosticsHandler.SendAsyncCore(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.HttpClient.<SendAsync>g__Core|83_0(HttpRequestMessage request, HttpCompletionOption completionOption, CancellationTokenSource cts, Boolean disposeCts, CancellationTokenSource pendingRequestsCts, CancellationToken originalCancellationToken)
+   at Azure.Core.Pipeline.HttpClientTransport.ProcessAsync(HttpMessage message, Boolean async)
+   --- End of inner exception stack trace ---
+   at Azure.Core.Pipeline.HttpClientTransport.ProcessAsync(HttpMessage message, Boolean async)
+   at Azure.Core.Pipeline.HttpPipelineTransportPolicy.ProcessAsync(HttpMessage message, ReadOnlyMemory`1 pipeline)
+   at Azure.Core.Pipeline.ResponseBodyPolicy.ProcessAsync(HttpMessage message, ReadOnlyMemory`1 pipeline, Boolean async)
+   at Azure.Core.Pipeline.RedirectPolicy.ProcessAsync(HttpMessage message, ReadOnlyMemory`1 pipeline, Boolean async)
+   at Azure.Core.Pipeline.RetryPolicy.ProcessAsync(HttpMessage message, ReadOnlyMemory`1 pipeline, Boolean async)
+   --- End of inner exception stack trace ---
+   at Azure.Core.Pipeline.RetryPolicy.ProcessAsync(HttpMessage message, ReadOnlyMemory`1 pipeline, Boolean async)
+   at Azure.Identity.ManagedIdentitySource.AuthenticateAsync(Boolean async, TokenRequestContext context, CancellationToken cancellationToken)
+   at Azure.Identity.ImdsManagedIdentitySource.AuthenticateAsync(Boolean async, TokenRequestContext context, CancellationToken cancellationToken)
+ ---> (Inner Exception #1) Azure.RequestFailedException: A socket operation was attempted to an unreachable network. (169.254.169.254:80)
+ ---> System.Net.Http.HttpRequestException: A socket operation was attempted to an unreachable network. (169.254.169.254:80)
+ ---> System.Net.Sockets.SocketException (10051): A socket operation was attempted to an unreachable network.
+   at System.Net.Sockets.Socket.AwaitableSocketAsyncEventArgs.ThrowException(SocketError error, CancellationToken cancellationToken)
+   at System.Net.Sockets.Socket.AwaitableSocketAsyncEventArgs.System.Threading.Tasks.Sources.IValueTaskSource.GetResult(Int16 token)
+   at System.Net.Sockets.Socket.<ConnectAsync>g__WaitForConnectWithCancellation|285_0(AwaitableSocketAsyncEventArgs saea, ValueTask connectTask, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.ConnectToTcpHostAsync(String host, Int32 port, HttpRequestMessage initialRequest, Boolean async, CancellationToken cancellationToken)
+   --- End of inner exception stack trace ---
+   at System.Net.Http.HttpConnectionPool.ConnectToTcpHostAsync(String host, Int32 port, HttpRequestMessage initialRequest, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.ConnectAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.CreateHttp11ConnectionAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.AddHttp11ConnectionAsync(QueueItem queueItem)
+   at System.Threading.Tasks.TaskCompletionSourceWithCancellation`1.WaitWithCancellationAsync(CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.HttpConnectionWaiter`1.WaitForConnectionWithTelemetryAsync(HttpRequestMessage request, HttpConnectionPool pool, Boolean async, CancellationToken requestCancellationToken)
+   at System.Net.Http.HttpConnectionPool.SendWithVersionDetectionAndRetryAsync(HttpRequestMessage request, Boolean async, Boolean doRequestAuth, CancellationToken cancellationToken)
+   at System.Net.Http.DiagnosticsHandler.SendAsyncCore(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.HttpClient.<SendAsync>g__Core|83_0(HttpRequestMessage request, HttpCompletionOption completionOption, CancellationTokenSource cts, Boolean disposeCts, CancellationTokenSource pendingRequestsCts, CancellationToken originalCancellationToken)
+   at Azure.Core.Pipeline.HttpClientTransport.ProcessAsync(HttpMessage message, Boolean async)
+   --- End of inner exception stack trace ---
+   at Azure.Core.Pipeline.HttpClientTransport.ProcessAsync(HttpMessage message, Boolean async)
+   at Azure.Core.Pipeline.HttpPipelineTransportPolicy.ProcessAsync(HttpMessage message, ReadOnlyMemory`1 pipeline)
+   at Azure.Core.Pipeline.ResponseBodyPolicy.ProcessAsync(HttpMessage message, ReadOnlyMemory`1 pipeline, Boolean async)
+   at Azure.Core.Pipeline.RedirectPolicy.ProcessAsync(HttpMessage message, ReadOnlyMemory`1 pipeline, Boolean async)
+   at Azure.Core.Pipeline.RetryPolicy.ProcessAsync(HttpMessage message, ReadOnlyMemory`1 pipeline, Boolean async)<---
+
+ ---> (Inner Exception #2) Azure.RequestFailedException: A socket operation was attempted to an unreachable network. (169.254.169.254:80)
+ ---> System.Net.Http.HttpRequestException: A socket operation was attempted to an unreachable network. (169.254.169.254:80)
+ ---> System.Net.Sockets.SocketException (10051): A socket operation was attempted to an unreachable network.
+   at System.Net.Sockets.Socket.AwaitableSocketAsyncEventArgs.ThrowException(SocketError error, CancellationToken cancellationToken)
+   at System.Net.Sockets.Socket.AwaitableSocketAsyncEventArgs.System.Threading.Tasks.Sources.IValueTaskSource.GetResult(Int16 token)
+   at System.Net.Sockets.Socket.<ConnectAsync>g__WaitForConnectWithCancellation|285_0(AwaitableSocketAsyncEventArgs saea, ValueTask connectTask, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.ConnectToTcpHostAsync(String host, Int32 port, HttpRequestMessage initialRequest, Boolean async, CancellationToken cancellationToken)
+   --- End of inner exception stack trace ---
+   at System.Net.Http.HttpConnectionPool.ConnectToTcpHostAsync(String host, Int32 port, HttpRequestMessage initialRequest, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.ConnectAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.CreateHttp11ConnectionAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.AddHttp11ConnectionAsync(QueueItem queueItem)
+   at System.Threading.Tasks.TaskCompletionSourceWithCancellation`1.WaitWithCancellationAsync(CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.HttpConnectionWaiter`1.WaitForConnectionWithTelemetryAsync(HttpRequestMessage request, HttpConnectionPool pool, Boolean async, CancellationToken requestCancellationToken)
+   at System.Net.Http.HttpConnectionPool.SendWithVersionDetectionAndRetryAsync(HttpRequestMessage request, Boolean async, Boolean doRequestAuth, CancellationToken cancellationToken)
+   at System.Net.Http.DiagnosticsHandler.SendAsyncCore(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.HttpClient.<SendAsync>g__Core|83_0(HttpRequestMessage request, HttpCompletionOption completionOption, CancellationTokenSource cts, Boolean disposeCts, CancellationTokenSource pendingRequestsCts, CancellationToken originalCancellationToken)
+   at Azure.Core.Pipeline.HttpClientTransport.ProcessAsync(HttpMessage message, Boolean async)
+   --- End of inner exception stack trace ---
+   at Azure.Core.Pipeline.HttpClientTransport.ProcessAsync(HttpMessage message, Boolean async)
+   at Azure.Core.Pipeline.HttpPipelineTransportPolicy.ProcessAsync(HttpMessage message, ReadOnlyMemory`1 pipeline)
+   at Azure.Core.Pipeline.ResponseBodyPolicy.ProcessAsync(HttpMessage message, ReadOnlyMemory`1 pipeline, Boolean async)
+   at Azure.Core.Pipeline.RedirectPolicy.ProcessAsync(HttpMessage message, ReadOnlyMemory`1 pipeline, Boolean async)
+   at Azure.Core.Pipeline.RetryPolicy.ProcessAsync(HttpMessage message, ReadOnlyMemory`1 pipeline, Boolean async)<---
+
+ ---> (Inner Exception #3) Azure.RequestFailedException: A socket operation was attempted to an unreachable network. (169.254.169.254:80)
+ ---> System.Net.Http.HttpRequestException: A socket operation was attempted to an unreachable network. (169.254.169.254:80)
+ ---> System.Net.Sockets.SocketException (10051): A socket operation was attempted to an unreachable network.
+   at System.Net.Sockets.Socket.AwaitableSocketAsyncEventArgs.ThrowException(SocketError error, CancellationToken cancellationToken)
+   at System.Net.Sockets.Socket.AwaitableSocketAsyncEventArgs.System.Threading.Tasks.Sources.IValueTaskSource.GetResult(Int16 token)
+   at System.Net.Sockets.Socket.<ConnectAsync>g__WaitForConnectWithCancellation|285_0(AwaitableSocketAsyncEventArgs saea, ValueTask connectTask, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.ConnectToTcpHostAsync(String host, Int32 port, HttpRequestMessage initialRequest, Boolean async, CancellationToken cancellationToken)
+   --- End of inner exception stack trace ---
+   at System.Net.Http.HttpConnectionPool.ConnectToTcpHostAsync(String host, Int32 port, HttpRequestMessage initialRequest, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.ConnectAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.CreateHttp11ConnectionAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.AddHttp11ConnectionAsync(QueueItem queueItem)
+   at System.Threading.Tasks.TaskCompletionSourceWithCancellation`1.WaitWithCancellationAsync(CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.HttpConnectionWaiter`1.WaitForConnectionWithTelemetryAsync(HttpRequestMessage request, HttpConnectionPool pool, Boolean async, CancellationToken requestCancellationToken)
+   at System.Net.Http.HttpConnectionPool.SendWithVersionDetectionAndRetryAsync(HttpRequestMessage request, Boolean async, Boolean doRequestAuth, CancellationToken cancellationToken)
+   at System.Net.Http.DiagnosticsHandler.SendAsyncCore(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.HttpClient.<SendAsync>g__Core|83_0(HttpRequestMessage request, HttpCompletionOption completionOption, CancellationTokenSource cts, Boolean disposeCts, CancellationTokenSource pendingRequestsCts, CancellationToken originalCancellationToken)
+   at Azure.Core.Pipeline.HttpClientTransport.ProcessAsync(HttpMessage message, Boolean async)
+   --- End of inner exception stack trace ---
+   at Azure.Core.Pipeline.HttpClientTransport.ProcessAsync(HttpMessage message, Boolean async)
+   at Azure.Core.Pipeline.HttpPipelineTransportPolicy.ProcessAsync(HttpMessage message, ReadOnlyMemory`1 pipeline)
+   at Azure.Core.Pipeline.ResponseBodyPolicy.ProcessAsync(HttpMessage message, ReadOnlyMemory`1 pipeline, Boolean async)
+   at Azure.Core.Pipeline.RedirectPolicy.ProcessAsync(HttpMessage message, ReadOnlyMemory`1 pipeline, Boolean async)
+   at Azure.Core.Pipeline.RetryPolicy.ProcessAsync(HttpMessage message, ReadOnlyMemory`1 pipeline, Boolean async)<---
+
+   --- End of inner exception stack trace ---
+   at Azure.Identity.ImdsManagedIdentitySource.AuthenticateAsync(Boolean async, TokenRequestContext context, CancellationToken cancellationToken)
+   at Azure.Identity.ManagedIdentityClient.AuthenticateCoreAsync(Boolean async, TokenRequestContext context, CancellationToken cancellationToken)
+   at Azure.Identity.ManagedIdentityClient.AppTokenProviderImpl(AppTokenProviderParameters parameters)
+   at Microsoft.Identity.Client.Internal.Requests.ClientCredentialRequest.SendTokenRequestToAppTokenProviderAsync(ILoggerAdapter logger, CancellationToken cancellationToken)
+   at Microsoft.Identity.Client.Internal.Requests.ClientCredentialRequest.GetAccessTokenAsync(CancellationToken cancellationToken, ILoggerAdapter logger)
+   at Microsoft.Identity.Client.Internal.Requests.ClientCredentialRequest.ExecuteAsync(CancellationToken cancellationToken)
+   at Microsoft.Identity.Client.Internal.Requests.RequestBase.RunAsync(CancellationToken cancellationToken)
+   at Microsoft.Identity.Client.ApiConfig.Executors.ConfidentialClientExecutor.ExecuteAsync(AcquireTokenCommonParameters commonParameters, AcquireTokenForClientParameters clientParameters, CancellationToken cancellationToken)
+   at Azure.Identity.AbstractAcquireTokenParameterBuilderExtensions.ExecuteAsync[T](AbstractAcquireTokenParameterBuilder`1 builder, Boolean async, CancellationToken cancellationToken)
+   at Azure.Identity.MsalConfidentialClient.AcquireTokenForClientCoreAsync(String[] scopes, String tenantId, Boolean enableCae, Boolean async, CancellationToken cancellationToken)
+   at Azure.Identity.MsalConfidentialClient.AcquireTokenForClientAsync(String[] scopes, String tenantId, Boolean enableCae, Boolean async, CancellationToken cancellationToken)
+   at Azure.Identity.ManagedIdentityClient.AuthenticateAsync(Boolean async, TokenRequestContext context, CancellationToken cancellationToken)
+   at Azure.Identity.ManagedIdentityCredential.GetTokenImplAsync(Boolean async, TokenRequestContext requestContext, CancellationToken cancellationToken)
+   at Azure.Identity.CredentialDiagnosticScope.FailWrapAndThrow(Exception ex, String additionalMessage, Boolean isCredentialUnavailable)
+   at Azure.Identity.ManagedIdentityCredential.GetTokenImplAsync(Boolean async, TokenRequestContext requestContext, CancellationToken cancellationToken)
+   at Azure.Identity.ManagedIdentityCredential.GetTokenAsync(TokenRequestContext requestContext, CancellationToken cancellationToken)
+   at Azure.Identity.DefaultAzureCredential.GetTokenFromSourcesAsync(TokenCredential[] sources, TokenRequestContext requestContext, Boolean async, CancellationToken cancellationToken)<---
+
+ ---> (Inner Exception #3) Azure.Identity.CredentialUnavailableException: Process "C:\Program Files\Microsoft Visual Studio\2022\Professional\Common7\IDE\CommonExtensions\Microsoft\Asal\TokenService\Microsoft.Asal.TokenService.exe" has failed with unexpected error: TS003: Error, TS001: This account 'v-Rahul.Sharma@lionbridge.com' needs re-authentication. Please go to Tools->Options->Azure Services Authentication, and re-authenticate the account you want to use..
+ ---> System.InvalidOperationException: TS003: Error, TS001: This account 'v-Rahul.Sharma@lionbridge.com' needs re-authentication. Please go to Tools->Options->Azure Services Authentication, and re-authenticate the account you want to use.
+   at Azure.Identity.VisualStudioCredential.RunProcessesAsync(List`1 processStartInfos, Boolean async, CancellationToken cancellationToken)
+   --- End of inner exception stack trace ---
+   at Azure.Identity.VisualStudioCredential.RunProcessesAsync(List`1 processStartInfos, Boolean async, CancellationToken cancellationToken)
+   at Azure.Identity.VisualStudioCredential.GetTokenImplAsync(TokenRequestContext requestContext, Boolean async, CancellationToken cancellationToken)
+   at Azure.Identity.CredentialDiagnosticScope.FailWrapAndThrow(Exception ex, String additionalMessage, Boolean isCredentialUnavailable)
+   at Azure.Identity.VisualStudioCredential.GetTokenImplAsync(TokenRequestContext requestContext, Boolean async, CancellationToken cancellationToken)
+   at Azure.Identity.VisualStudioCredential.GetTokenAsync(TokenRequestContext requestContext, CancellationToken cancellationToken)
+   at Azure.Identity.DefaultAzureCredential.GetTokenFromSourcesAsync(TokenCredential[] sources, TokenRequestContext requestContext, Boolean async, CancellationToken cancellationToken)<---
+
+ ---> (Inner Exception #4) Azure.Identity.CredentialUnavailableException: Azure CLI not installed
+   at Azure.Identity.AzureCliCredential.RequestCliAccessTokenAsync(Boolean async, TokenRequestContext context, CancellationToken cancellationToken)
+   at Azure.Identity.AzureCliCredential.GetTokenImplAsync(Boolean async, TokenRequestContext requestContext, CancellationToken cancellationToken)
+   at Azure.Identity.CredentialDiagnosticScope.FailWrapAndThrow(Exception ex, String additionalMessage, Boolean isCredentialUnavailable)
+   at Azure.Identity.AzureCliCredential.GetTokenImplAsync(Boolean async, TokenRequestContext requestContext, CancellationToken cancellationToken)
+   at Azure.Identity.AzureCliCredential.GetTokenAsync(TokenRequestContext requestContext, CancellationToken cancellationToken)
+   at Azure.Identity.DefaultAzureCredential.GetTokenFromSourcesAsync(TokenCredential[] sources, TokenRequestContext requestContext, Boolean async, CancellationToken cancellationToken)<---
+
+ ---> (Inner Exception #5) Azure.Identity.CredentialUnavailableException: Az.Account module >= 2.2.0 is not installed.
+   at Azure.Identity.AzurePowerShellCredential.CheckForErrors(String output)
+   at Azure.Identity.AzurePowerShellCredential.RequestAzurePowerShellAccessTokenAsync(Boolean async, TokenRequestContext context, CancellationToken cancellationToken)
+   at Azure.Identity.AzurePowerShellCredential.GetTokenImplAsync(Boolean async, TokenRequestContext requestContext, CancellationToken cancellationToken)
+   at Azure.Identity.CredentialDiagnosticScope.FailWrapAndThrow(Exception ex, String additionalMessage, Boolean isCredentialUnavailable)
+   at Azure.Identity.AzurePowerShellCredential.GetTokenImplAsync(Boolean async, TokenRequestContext requestContext, CancellationToken cancellationToken)
+   at Azure.Identity.AzurePowerShellCredential.GetTokenAsync(TokenRequestContext requestContext, CancellationToken cancellationToken)
+   at Azure.Identity.DefaultAzureCredential.GetTokenFromSourcesAsync(TokenCredential[] sources, TokenRequestContext requestContext, Boolean async, CancellationToken cancellationToken)<---
+
+ ---> (Inner Exception #6) Azure.Identity.CredentialUnavailableException: Azure Developer CLI could not be found.
+   at Azure.Identity.AzureDeveloperCliCredential.RequestCliAccessTokenAsync(Boolean async, TokenRequestContext context, CancellationToken cancellationToken)
+   at Azure.Identity.AzureDeveloperCliCredential.GetTokenImplAsync(Boolean async, TokenRequestContext requestContext, CancellationToken cancellationToken)
+   at Azure.Identity.CredentialDiagnosticScope.FailWrapAndThrow(Exception ex, String additionalMessage, Boolean isCredentialUnavailable)
+   at Azure.Identity.AzureDeveloperCliCredential.GetTokenImplAsync(Boolean async, TokenRequestContext requestContext, CancellationToken cancellationToken)
+   at Azure.Identity.AzureDeveloperCliCredential.GetTokenAsync(TokenRequestContext requestContext, CancellationToken cancellationToken)
+   at Azure.Identity.DefaultAzureCredential.GetTokenFromSourcesAsync(TokenCredential[] sources, TokenRequestContext requestContext, Boolean async, CancellationToken cancellationToken)<---
+
+   --- End of inner exception stack trace ---
+   at Azure.Identity.DefaultAzureCredential.GetTokenFromSourcesAsync(TokenCredential[] sources, TokenRequestContext requestContext, Boolean async, CancellationToken cancellationToken)
+   at Azure.Identity.DefaultAzureCredential.GetTokenImplAsync(Boolean async, TokenRequestContext requestContext, CancellationToken cancellationToken)
+   at Azure.Identity.CredentialDiagnosticScope.FailWrapAndThrow(Exception ex, String additionalMessage, Boolean isCredentialUnavailable)
+   at Azure.Identity.DefaultAzureCredential.GetTokenImplAsync(Boolean async, TokenRequestContext requestContext, CancellationToken cancellationToken)
+   at Azure.Identity.DefaultAzureCredential.GetTokenAsync(TokenRequestContext requestContext, CancellationToken cancellationToken)
+   at Azure.Core.Pipeline.BearerTokenAuthenticationPolicy.AccessTokenCache.GetHeaderValueFromCredentialAsync(TokenRequestContext context, Boolean async, CancellationToken cancellationToken)
+   at Azure.Core.Pipeline.BearerTokenAuthenticationPolicy.AccessTokenCache.GetHeaderValueAsync(HttpMessage message, TokenRequestContext context, Boolean async)
+   at Azure.Core.Pipeline.BearerTokenAuthenticationPolicy.AccessTokenCache.GetHeaderValueAsync(HttpMessage message, TokenRequestContext context, Boolean async)
+   at Azure.Core.Pipeline.BearerTokenAuthenticationPolicy.AuthenticateAndAuthorizeRequestAsync(HttpMessage message, TokenRequestContext context)
+   at Azure.Core.Pipeline.BearerTokenAuthenticationPolicy.ProcessAsync(HttpMessage message, ReadOnlyMemory`1 pipeline, Boolean async)
+   at Azure.Core.Pipeline.RedirectPolicy.ProcessAsync(HttpMessage message, ReadOnlyMemory`1 pipeline, Boolean async)
+   at Azure.Core.Pipeline.RetryPolicy.ProcessAsync(HttpMessage message, ReadOnlyMemory`1 pipeline, Boolean async)
+   at Azure.Core.Pipeline.RetryPolicy.ProcessAsync(HttpMessage message, ReadOnlyMemory`1 pipeline, Boolean async)
+   at Microsoft.Extensions.Configuration.AzureAppConfiguration.UserAgentHeaderPolicy.ProcessAsync(HttpMessage message, ReadOnlyMemory`1 pipeline, Boolean async)
+   at Azure.Data.AppConfiguration.ConditionalPageableImplementation.GetNextResponseAsync(MatchConditions conditions, Nullable`1 pageSizeHint, String nextLink, CancellationToken cancellationToken)
+   at Azure.Data.AppConfiguration.ConditionalPageableImplementation.GetAsyncEnumerator(CancellationToken cancellationToken)+MoveNext()
+   at Azure.Data.AppConfiguration.ConditionalPageableImplementation.GetAsyncEnumerator(CancellationToken cancellationToken)+System.Threading.Tasks.Sources.IValueTaskSource<System.Boolean>.GetResult()
+   at Microsoft.Extensions.Configuration.AzureAppConfiguration.AzureAppConfigurationProvider.<>c__DisplayClass33_2.<<LoadSelectedKeyValues>b__2>d.MoveNext()
+--- End of stack trace from previous location ---
+   at Microsoft.Extensions.Configuration.AzureAppConfiguration.AzureAppConfigurationProvider.<>c__DisplayClass33_2.<<LoadSelectedKeyValues>b__2>d.MoveNext()
+--- End of stack trace from previous location ---
+   at Microsoft.Extensions.Configuration.AzureAppConfiguration.TracingUtils.CallWithRequestTracing(Boolean tracingEnabled, RequestType requestType, RequestTracingOptions requestTracingOptions, Func`1 clientCall)
+   at Microsoft.Extensions.Configuration.AzureAppConfiguration.AzureAppConfigurationProvider.LoadSelectedKeyValues(ConfigurationClient client, CancellationToken cancellationToken)
+   at Microsoft.Extensions.Configuration.AzureAppConfiguration.AzureAppConfigurationProvider.<>c__DisplayClass32_0.<<InitializeAsync>b__0>d.MoveNext()
+--- End of stack trace from previous location ---
+   at Microsoft.Extensions.Configuration.AzureAppConfiguration.AzureAppConfigurationProvider.<>c__DisplayClass45_0.<<ExecuteWithFailOverPolicyAsync>b__0>d.MoveNext()
+--- End of stack trace from previous location ---
+   at Microsoft.Extensions.Configuration.AzureAppConfiguration.AzureAppConfigurationProvider.ExecuteWithFailOverPolicyAsync[T](IEnumerable`1 clients, Func`2 funcToExecute, CancellationToken cancellationToken)
+   at Microsoft.Extensions.Configuration.AzureAppConfiguration.AzureAppConfigurationProvider.ExecuteWithFailOverPolicyAsync(IEnumerable`1 clients, Func`2 funcToExecute, CancellationToken cancellationToken)
+   at Microsoft.Extensions.Configuration.AzureAppConfiguration.AzureAppConfigurationProvider.InitializeAsync(IEnumerable`1 clients, CancellationToken cancellationToken)
+   at Microsoft.Extensions.Configuration.AzureAppConfiguration.AzureAppConfigurationProvider.TryInitializeAsync(IEnumerable`1 clients, List`1 startupExceptions, CancellationToken cancellationToken)
+   at Microsoft.Extensions.Configuration.AzureAppConfiguration.AzureAppConfigurationProvider.LoadAsync(Boolean ignoreFailures, CancellationToken cancellationToken)
+   at Microsoft.Extensions.Configuration.AzureAppConfiguration.AzureAppConfigurationProvider.Load()
+   at Microsoft.Extensions.Configuration.ConfigurationManager.AddSource(IConfigurationSource source)
+   at Microsoft.Extensions.Configuration.ConfigurationManager.Microsoft.Extensions.Configuration.IConfigurationBuilder.Add(IConfigurationSource source)
+   at Microsoft.Extensions.Configuration.AzureAppConfigurationExtensions.AddAzureAppConfiguration(IConfigurationBuilder configurationBuilder, Action`1 action, Boolean optional)
+   at Steer73.RockIT.Web.Program.Main(String[] args) in C:\Users\RahulSharma\ROCK PL ATS\src\Steer73.RockIT.Web\Program.cs:line 89
+2025-10-07 23:04:54.651 +05:30 [INF] Starting web host.
+2025-10-07 23:05:06.448 +05:30 [FTL] Host terminated unexpectedly!
+Azure.Identity.CredentialUnavailableException: DefaultAzureCredential failed to retrieve a token from the included credentials. See the troubleshooting guide for more information. https://aka.ms/azsdk/net/identity/defaultazurecredential/troubleshoot
+- EnvironmentCredential authentication unavailable. Environment variables are not fully configured. See the troubleshooting guide for more information. https://aka.ms/azsdk/net/identity/environmentcredential/troubleshoot
+- WorkloadIdentityCredential authentication unavailable. The workload options are not fully configured. See the troubleshooting guide for more information. https://aka.ms/azsdk/net/identity/workloadidentitycredential/troubleshoot
+- ManagedIdentityCredential authentication unavailable. Multiple attempts failed to obtain a token from the managed identity endpoint.
+- Process "C:\Program Files\Microsoft Visual Studio\2022\Professional\Common7\IDE\CommonExtensions\Microsoft\Asal\TokenService\Microsoft.Asal.TokenService.exe" has failed with unexpected error: TS003: Error, TS001: This account 'v-Rahul.Sharma@lionbridge.com' needs re-authentication. Please go to Tools->Options->Azure Services Authentication, and re-authenticate the account you want to use..
+- Azure CLI not installed
+- Az.Account module >= 2.2.0 is not installed.
+- Azure Developer CLI could not be found.
+ ---> System.AggregateException: Multiple exceptions were encountered while attempting to authenticate. (EnvironmentCredential authentication unavailable. Environment variables are not fully configured. See the troubleshooting guide for more information. https://aka.ms/azsdk/net/identity/environmentcredential/troubleshoot) (WorkloadIdentityCredential authentication unavailable. The workload options are not fully configured. See the troubleshooting guide for more information. https://aka.ms/azsdk/net/identity/workloadidentitycredential/troubleshoot) (ManagedIdentityCredential authentication unavailable. Multiple attempts failed to obtain a token from the managed identity endpoint.) (Process "C:\Program Files\Microsoft Visual Studio\2022\Professional\Common7\IDE\CommonExtensions\Microsoft\Asal\TokenService\Microsoft.Asal.TokenService.exe" has failed with unexpected error: TS003: Error, TS001: This account 'v-Rahul.Sharma@lionbridge.com' needs re-authentication. Please go to Tools->Options->Azure Services Authentication, and re-authenticate the account you want to use..) (Azure CLI not installed) (Az.Account module >= 2.2.0 is not installed.) (Azure Developer CLI could not be found.)
+ ---> Azure.Identity.CredentialUnavailableException: EnvironmentCredential authentication unavailable. Environment variables are not fully configured. See the troubleshooting guide for more information. https://aka.ms/azsdk/net/identity/environmentcredential/troubleshoot
+   at Azure.Identity.CredentialDiagnosticScope.FailWrapAndThrow(Exception ex, String additionalMessage, Boolean isCredentialUnavailable)
+   at Azure.Identity.EnvironmentCredential.GetTokenImplAsync(Boolean async, TokenRequestContext requestContext, CancellationToken cancellationToken)
+   at Azure.Identity.EnvironmentCredential.GetTokenAsync(TokenRequestContext requestContext, CancellationToken cancellationToken)
+   at Azure.Identity.DefaultAzureCredential.GetTokenFromSourcesAsync(TokenCredential[] sources, TokenRequestContext requestContext, Boolean async, CancellationToken cancellationToken)
+   --- End of inner exception stack trace ---
+ ---> (Inner Exception #1) Azure.Identity.CredentialUnavailableException: WorkloadIdentityCredential authentication unavailable. The workload options are not fully configured. See the troubleshooting guide for more information. https://aka.ms/azsdk/net/identity/workloadidentitycredential/troubleshoot
+   at Azure.Identity.WorkloadIdentityCredential.GetTokenCoreAsync(Boolean async, TokenRequestContext requestContext, CancellationToken cancellationToken)
+   at Azure.Identity.CredentialDiagnosticScope.FailWrapAndThrow(Exception ex, String additionalMessage, Boolean isCredentialUnavailable)
+   at Azure.Identity.WorkloadIdentityCredential.GetTokenCoreAsync(Boolean async, TokenRequestContext requestContext, CancellationToken cancellationToken)
+   at Azure.Identity.WorkloadIdentityCredential.GetTokenAsync(TokenRequestContext requestContext, CancellationToken cancellationToken)
+   at Azure.Identity.DefaultAzureCredential.GetTokenFromSourcesAsync(TokenCredential[] sources, TokenRequestContext requestContext, Boolean async, CancellationToken cancellationToken)<---
+
+ ---> (Inner Exception #2) Azure.Identity.CredentialUnavailableException: ManagedIdentityCredential authentication unavailable. Multiple attempts failed to obtain a token from the managed identity endpoint.
+ ---> System.AggregateException: Retry failed after 4 tries. Retry settings can be adjusted in ClientOptions.Retry or by configuring a custom retry policy in ClientOptions.RetryPolicy. (A socket operation was attempted to an unreachable network. (169.254.169.254:80)) (A socket operation was attempted to an unreachable network. (169.254.169.254:80)) (A socket operation was attempted to an unreachable network. (169.254.169.254:80)) (A socket operation was attempted to an unreachable network. (169.254.169.254:80))
+ ---> Azure.RequestFailedException: A socket operation was attempted to an unreachable network. (169.254.169.254:80)
+ ---> System.Net.Http.HttpRequestException: A socket operation was attempted to an unreachable network. (169.254.169.254:80)
+ ---> System.Net.Sockets.SocketException (10051): A socket operation was attempted to an unreachable network.
+   at System.Net.Sockets.Socket.AwaitableSocketAsyncEventArgs.ThrowException(SocketError error, CancellationToken cancellationToken)
+   at System.Net.Sockets.Socket.AwaitableSocketAsyncEventArgs.System.Threading.Tasks.Sources.IValueTaskSource.GetResult(Int16 token)
+   at System.Net.Sockets.Socket.<ConnectAsync>g__WaitForConnectWithCancellation|285_0(AwaitableSocketAsyncEventArgs saea, ValueTask connectTask, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.ConnectToTcpHostAsync(String host, Int32 port, HttpRequestMessage initialRequest, Boolean async, CancellationToken cancellationToken)
+   --- End of inner exception stack trace ---
+   at System.Net.Http.HttpConnectionPool.ConnectToTcpHostAsync(String host, Int32 port, HttpRequestMessage initialRequest, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.ConnectAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.CreateHttp11ConnectionAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.AddHttp11ConnectionAsync(QueueItem queueItem)
+   at System.Threading.Tasks.TaskCompletionSourceWithCancellation`1.WaitWithCancellationAsync(CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.HttpConnectionWaiter`1.WaitForConnectionWithTelemetryAsync(HttpRequestMessage request, HttpConnectionPool pool, Boolean async, CancellationToken requestCancellationToken)
+   at System.Net.Http.HttpConnectionPool.SendWithVersionDetectionAndRetryAsync(HttpRequestMessage request, Boolean async, Boolean doRequestAuth, CancellationToken cancellationToken)
+   at System.Net.Http.DiagnosticsHandler.SendAsyncCore(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.HttpClient.<SendAsync>g__Core|83_0(HttpRequestMessage request, HttpCompletionOption completionOption, CancellationTokenSource cts, Boolean disposeCts, CancellationTokenSource pendingRequestsCts, CancellationToken originalCancellationToken)
+   at Azure.Core.Pipeline.HttpClientTransport.ProcessAsync(HttpMessage message, Boolean async)
+   --- End of inner exception stack trace ---
+   at Azure.Core.Pipeline.HttpClientTransport.ProcessAsync(HttpMessage message, Boolean async)
+   at Azure.Core.Pipeline.HttpPipelineTransportPolicy.ProcessAsync(HttpMessage message, ReadOnlyMemory`1 pipeline)
+   at Azure.Core.Pipeline.ResponseBodyPolicy.ProcessAsync(HttpMessage message, ReadOnlyMemory`1 pipeline, Boolean async)
+   at Azure.Core.Pipeline.RedirectPolicy.ProcessAsync(HttpMessage message, ReadOnlyMemory`1 pipeline, Boolean async)
+   at Azure.Core.Pipeline.RetryPolicy.ProcessAsync(HttpMessage message, ReadOnlyMemory`1 pipeline, Boolean async)
+   --- End of inner exception stack trace ---
+   at Azure.Core.Pipeline.RetryPolicy.ProcessAsync(HttpMessage message, ReadOnlyMemory`1 pipeline, Boolean async)
+   at Azure.Identity.ManagedIdentitySource.AuthenticateAsync(Boolean async, TokenRequestContext context, CancellationToken cancellationToken)
+   at Azure.Identity.ImdsManagedIdentitySource.AuthenticateAsync(Boolean async, TokenRequestContext context, CancellationToken cancellationToken)
+ ---> (Inner Exception #1) Azure.RequestFailedException: A socket operation was attempted to an unreachable network. (169.254.169.254:80)
+ ---> System.Net.Http.HttpRequestException: A socket operation was attempted to an unreachable network. (169.254.169.254:80)
+ ---> System.Net.Sockets.SocketException (10051): A socket operation was attempted to an unreachable network.
+   at System.Net.Sockets.Socket.AwaitableSocketAsyncEventArgs.ThrowException(SocketError error, CancellationToken cancellationToken)
+   at System.Net.Sockets.Socket.AwaitableSocketAsyncEventArgs.System.Threading.Tasks.Sources.IValueTaskSource.GetResult(Int16 token)
+   at System.Net.Sockets.Socket.<ConnectAsync>g__WaitForConnectWithCancellation|285_0(AwaitableSocketAsyncEventArgs saea, ValueTask connectTask, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.ConnectToTcpHostAsync(String host, Int32 port, HttpRequestMessage initialRequest, Boolean async, CancellationToken cancellationToken)
+   --- End of inner exception stack trace ---
+   at System.Net.Http.HttpConnectionPool.ConnectToTcpHostAsync(String host, Int32 port, HttpRequestMessage initialRequest, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.ConnectAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.CreateHttp11ConnectionAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.AddHttp11ConnectionAsync(QueueItem queueItem)
+   at System.Threading.Tasks.TaskCompletionSourceWithCancellation`1.WaitWithCancellationAsync(CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.HttpConnectionWaiter`1.WaitForConnectionWithTelemetryAsync(HttpRequestMessage request, HttpConnectionPool pool, Boolean async, CancellationToken requestCancellationToken)
+   at System.Net.Http.HttpConnectionPool.SendWithVersionDetectionAndRetryAsync(HttpRequestMessage request, Boolean async, Boolean doRequestAuth, CancellationToken cancellationToken)
+   at System.Net.Http.DiagnosticsHandler.SendAsyncCore(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.HttpClient.<SendAsync>g__Core|83_0(HttpRequestMessage request, HttpCompletionOption completionOption, CancellationTokenSource cts, Boolean disposeCts, CancellationTokenSource pendingRequestsCts, CancellationToken originalCancellationToken)
+   at Azure.Core.Pipeline.HttpClientTransport.ProcessAsync(HttpMessage message, Boolean async)
+   --- End of inner exception stack trace ---
+   at Azure.Core.Pipeline.HttpClientTransport.ProcessAsync(HttpMessage message, Boolean async)
+   at Azure.Core.Pipeline.HttpPipelineTransportPolicy.ProcessAsync(HttpMessage message, ReadOnlyMemory`1 pipeline)
+   at Azure.Core.Pipeline.ResponseBodyPolicy.ProcessAsync(HttpMessage message, ReadOnlyMemory`1 pipeline, Boolean async)
+   at Azure.Core.Pipeline.RedirectPolicy.ProcessAsync(HttpMessage message, ReadOnlyMemory`1 pipeline, Boolean async)
+   at Azure.Core.Pipeline.RetryPolicy.ProcessAsync(HttpMessage message, ReadOnlyMemory`1 pipeline, Boolean async)<---
+
+ ---> (Inner Exception #2) Azure.RequestFailedException: A socket operation was attempted to an unreachable network. (169.254.169.254:80)
+ ---> System.Net.Http.HttpRequestException: A socket operation was attempted to an unreachable network. (169.254.169.254:80)
+ ---> System.Net.Sockets.SocketException (10051): A socket operation was attempted to an unreachable network.
+   at System.Net.Sockets.Socket.AwaitableSocketAsyncEventArgs.ThrowException(SocketError error, CancellationToken cancellationToken)
+   at System.Net.Sockets.Socket.AwaitableSocketAsyncEventArgs.System.Threading.Tasks.Sources.IValueTaskSource.GetResult(Int16 token)
+   at System.Net.Sockets.Socket.<ConnectAsync>g__WaitForConnectWithCancellation|285_0(AwaitableSocketAsyncEventArgs saea, ValueTask connectTask, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.ConnectToTcpHostAsync(String host, Int32 port, HttpRequestMessage initialRequest, Boolean async, CancellationToken cancellationToken)
+   --- End of inner exception stack trace ---
+   at System.Net.Http.HttpConnectionPool.ConnectToTcpHostAsync(String host, Int32 port, HttpRequestMessage initialRequest, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.ConnectAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.CreateHttp11ConnectionAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.AddHttp11ConnectionAsync(QueueItem queueItem)
+   at System.Threading.Tasks.TaskCompletionSourceWithCancellation`1.WaitWithCancellationAsync(CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.HttpConnectionWaiter`1.WaitForConnectionWithTelemetryAsync(HttpRequestMessage request, HttpConnectionPool pool, Boolean async, CancellationToken requestCancellationToken)
+   at System.Net.Http.HttpConnectionPool.SendWithVersionDetectionAndRetryAsync(HttpRequestMessage request, Boolean async, Boolean doRequestAuth, CancellationToken cancellationToken)
+   at System.Net.Http.DiagnosticsHandler.SendAsyncCore(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.HttpClient.<SendAsync>g__Core|83_0(HttpRequestMessage request, HttpCompletionOption completionOption, CancellationTokenSource cts, Boolean disposeCts, CancellationTokenSource pendingRequestsCts, CancellationToken originalCancellationToken)
+   at Azure.Core.Pipeline.HttpClientTransport.ProcessAsync(HttpMessage message, Boolean async)
+   --- End of inner exception stack trace ---
+   at Azure.Core.Pipeline.HttpClientTransport.ProcessAsync(HttpMessage message, Boolean async)
+   at Azure.Core.Pipeline.HttpPipelineTransportPolicy.ProcessAsync(HttpMessage message, ReadOnlyMemory`1 pipeline)
+   at Azure.Core.Pipeline.ResponseBodyPolicy.ProcessAsync(HttpMessage message, ReadOnlyMemory`1 pipeline, Boolean async)
+   at Azure.Core.Pipeline.RedirectPolicy.ProcessAsync(HttpMessage message, ReadOnlyMemory`1 pipeline, Boolean async)
+   at Azure.Core.Pipeline.RetryPolicy.ProcessAsync(HttpMessage message, ReadOnlyMemory`1 pipeline, Boolean async)<---
+
+ ---> (Inner Exception #3) Azure.RequestFailedException: A socket operation was attempted to an unreachable network. (169.254.169.254:80)
+ ---> System.Net.Http.HttpRequestException: A socket operation was attempted to an unreachable network. (169.254.169.254:80)
+ ---> System.Net.Sockets.SocketException (10051): A socket operation was attempted to an unreachable network.
+   at System.Net.Sockets.Socket.AwaitableSocketAsyncEventArgs.ThrowException(SocketError error, CancellationToken cancellationToken)
+   at System.Net.Sockets.Socket.AwaitableSocketAsyncEventArgs.System.Threading.Tasks.Sources.IValueTaskSource.GetResult(Int16 token)
+   at System.Net.Sockets.Socket.<ConnectAsync>g__WaitForConnectWithCancellation|285_0(AwaitableSocketAsyncEventArgs saea, ValueTask connectTask, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.ConnectToTcpHostAsync(String host, Int32 port, HttpRequestMessage initialRequest, Boolean async, CancellationToken cancellationToken)
+   --- End of inner exception stack trace ---
+   at System.Net.Http.HttpConnectionPool.ConnectToTcpHostAsync(String host, Int32 port, HttpRequestMessage initialRequest, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.ConnectAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.CreateHttp11ConnectionAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.AddHttp11ConnectionAsync(QueueItem queueItem)
+   at System.Threading.Tasks.TaskCompletionSourceWithCancellation`1.WaitWithCancellationAsync(CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.HttpConnectionWaiter`1.WaitForConnectionWithTelemetryAsync(HttpRequestMessage request, HttpConnectionPool pool, Boolean async, CancellationToken requestCancellationToken)
+   at System.Net.Http.HttpConnectionPool.SendWithVersionDetectionAndRetryAsync(HttpRequestMessage request, Boolean async, Boolean doRequestAuth, CancellationToken cancellationToken)
+   at System.Net.Http.DiagnosticsHandler.SendAsyncCore(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.HttpClient.<SendAsync>g__Core|83_0(HttpRequestMessage request, HttpCompletionOption completionOption, CancellationTokenSource cts, Boolean disposeCts, CancellationTokenSource pendingRequestsCts, CancellationToken originalCancellationToken)
+   at Azure.Core.Pipeline.HttpClientTransport.ProcessAsync(HttpMessage message, Boolean async)
+   --- End of inner exception stack trace ---
+   at Azure.Core.Pipeline.HttpClientTransport.ProcessAsync(HttpMessage message, Boolean async)
+   at Azure.Core.Pipeline.HttpPipelineTransportPolicy.ProcessAsync(HttpMessage message, ReadOnlyMemory`1 pipeline)
+   at Azure.Core.Pipeline.ResponseBodyPolicy.ProcessAsync(HttpMessage message, ReadOnlyMemory`1 pipeline, Boolean async)
+   at Azure.Core.Pipeline.RedirectPolicy.ProcessAsync(HttpMessage message, ReadOnlyMemory`1 pipeline, Boolean async)
+   at Azure.Core.Pipeline.RetryPolicy.ProcessAsync(HttpMessage message, ReadOnlyMemory`1 pipeline, Boolean async)<---
+
+   --- End of inner exception stack trace ---
+   at Azure.Identity.ImdsManagedIdentitySource.AuthenticateAsync(Boolean async, TokenRequestContext context, CancellationToken cancellationToken)
+   at Azure.Identity.ManagedIdentityClient.AuthenticateCoreAsync(Boolean async, TokenRequestContext context, CancellationToken cancellationToken)
+   at Azure.Identity.ManagedIdentityClient.AppTokenProviderImpl(AppTokenProviderParameters parameters)
+   at Microsoft.Identity.Client.Internal.Requests.ClientCredentialRequest.SendTokenRequestToAppTokenProviderAsync(ILoggerAdapter logger, CancellationToken cancellationToken)
+   at Microsoft.Identity.Client.Internal.Requests.ClientCredentialRequest.GetAccessTokenAsync(CancellationToken cancellationToken, ILoggerAdapter logger)
+   at Microsoft.Identity.Client.Internal.Requests.ClientCredentialRequest.ExecuteAsync(CancellationToken cancellationToken)
+   at Microsoft.Identity.Client.Internal.Requests.RequestBase.RunAsync(CancellationToken cancellationToken)
+   at Microsoft.Identity.Client.ApiConfig.Executors.ConfidentialClientExecutor.ExecuteAsync(AcquireTokenCommonParameters commonParameters, AcquireTokenForClientParameters clientParameters, CancellationToken cancellationToken)
+   at Azure.Identity.AbstractAcquireTokenParameterBuilderExtensions.ExecuteAsync[T](AbstractAcquireTokenParameterBuilder`1 builder, Boolean async, CancellationToken cancellationToken)
+   at Azure.Identity.MsalConfidentialClient.AcquireTokenForClientCoreAsync(String[] scopes, String tenantId, Boolean enableCae, Boolean async, CancellationToken cancellationToken)
+   at Azure.Identity.MsalConfidentialClient.AcquireTokenForClientAsync(String[] scopes, String tenantId, Boolean enableCae, Boolean async, CancellationToken cancellationToken)
+   at Azure.Identity.ManagedIdentityClient.AuthenticateAsync(Boolean async, TokenRequestContext context, CancellationToken cancellationToken)
+   at Azure.Identity.ManagedIdentityCredential.GetTokenImplAsync(Boolean async, TokenRequestContext requestContext, CancellationToken cancellationToken)
+   at Azure.Identity.CredentialDiagnosticScope.FailWrapAndThrow(Exception ex, String additionalMessage, Boolean isCredentialUnavailable)
+   at Azure.Identity.ManagedIdentityCredential.GetTokenImplAsync(Boolean async, TokenRequestContext requestContext, CancellationToken cancellationToken)
+   at Azure.Identity.ManagedIdentityCredential.GetTokenAsync(TokenRequestContext requestContext, CancellationToken cancellationToken)
+   at Azure.Identity.DefaultAzureCredential.GetTokenFromSourcesAsync(TokenCredential[] sources, TokenRequestContext requestContext, Boolean async, CancellationToken cancellationToken)<---
+
+ ---> (Inner Exception #3) Azure.Identity.CredentialUnavailableException: Process "C:\Program Files\Microsoft Visual Studio\2022\Professional\Common7\IDE\CommonExtensions\Microsoft\Asal\TokenService\Microsoft.Asal.TokenService.exe" has failed with unexpected error: TS003: Error, TS001: This account 'v-Rahul.Sharma@lionbridge.com' needs re-authentication. Please go to Tools->Options->Azure Services Authentication, and re-authenticate the account you want to use..
+ ---> System.InvalidOperationException: TS003: Error, TS001: This account 'v-Rahul.Sharma@lionbridge.com' needs re-authentication. Please go to Tools->Options->Azure Services Authentication, and re-authenticate the account you want to use.
+   at Azure.Identity.VisualStudioCredential.RunProcessesAsync(List`1 processStartInfos, Boolean async, CancellationToken cancellationToken)
+   --- End of inner exception stack trace ---
+   at Azure.Identity.VisualStudioCredential.RunProcessesAsync(List`1 processStartInfos, Boolean async, CancellationToken cancellationToken)
+   at Azure.Identity.VisualStudioCredential.GetTokenImplAsync(TokenRequestContext requestContext, Boolean async, CancellationToken cancellationToken)
+   at Azure.Identity.CredentialDiagnosticScope.FailWrapAndThrow(Exception ex, String additionalMessage, Boolean isCredentialUnavailable)
+   at Azure.Identity.VisualStudioCredential.GetTokenImplAsync(TokenRequestContext requestContext, Boolean async, CancellationToken cancellationToken)
+   at Azure.Identity.VisualStudioCredential.GetTokenAsync(TokenRequestContext requestContext, CancellationToken cancellationToken)
+   at Azure.Identity.DefaultAzureCredential.GetTokenFromSourcesAsync(TokenCredential[] sources, TokenRequestContext requestContext, Boolean async, CancellationToken cancellationToken)<---
+
+ ---> (Inner Exception #4) Azure.Identity.CredentialUnavailableException: Azure CLI not installed
+   at Azure.Identity.AzureCliCredential.RequestCliAccessTokenAsync(Boolean async, TokenRequestContext context, CancellationToken cancellationToken)
+   at Azure.Identity.AzureCliCredential.GetTokenImplAsync(Boolean async, TokenRequestContext requestContext, CancellationToken cancellationToken)
+   at Azure.Identity.CredentialDiagnosticScope.FailWrapAndThrow(Exception ex, String additionalMessage, Boolean isCredentialUnavailable)
+   at Azure.Identity.AzureCliCredential.GetTokenImplAsync(Boolean async, TokenRequestContext requestContext, CancellationToken cancellationToken)
+   at Azure.Identity.AzureCliCredential.GetTokenAsync(TokenRequestContext requestContext, CancellationToken cancellationToken)
+   at Azure.Identity.DefaultAzureCredential.GetTokenFromSourcesAsync(TokenCredential[] sources, TokenRequestContext requestContext, Boolean async, CancellationToken cancellationToken)<---
+
+ ---> (Inner Exception #5) Azure.Identity.CredentialUnavailableException: Az.Account module >= 2.2.0 is not installed.
+   at Azure.Identity.AzurePowerShellCredential.CheckForErrors(String output)
+   at Azure.Identity.AzurePowerShellCredential.RequestAzurePowerShellAccessTokenAsync(Boolean async, TokenRequestContext context, CancellationToken cancellationToken)
+   at Azure.Identity.AzurePowerShellCredential.GetTokenImplAsync(Boolean async, TokenRequestContext requestContext, CancellationToken cancellationToken)
+   at Azure.Identity.CredentialDiagnosticScope.FailWrapAndThrow(Exception ex, String additionalMessage, Boolean isCredentialUnavailable)
+   at Azure.Identity.AzurePowerShellCredential.GetTokenImplAsync(Boolean async, TokenRequestContext requestContext, CancellationToken cancellationToken)
+   at Azure.Identity.AzurePowerShellCredential.GetTokenAsync(TokenRequestContext requestContext, CancellationToken cancellationToken)
+   at Azure.Identity.DefaultAzureCredential.GetTokenFromSourcesAsync(TokenCredential[] sources, TokenRequestContext requestContext, Boolean async, CancellationToken cancellationToken)<---
+
+ ---> (Inner Exception #6) Azure.Identity.CredentialUnavailableException: Azure Developer CLI could not be found.
+   at Azure.Identity.AzureDeveloperCliCredential.RequestCliAccessTokenAsync(Boolean async, TokenRequestContext context, CancellationToken cancellationToken)
+   at Azure.Identity.AzureDeveloperCliCredential.GetTokenImplAsync(Boolean async, TokenRequestContext requestContext, CancellationToken cancellationToken)
+   at Azure.Identity.CredentialDiagnosticScope.FailWrapAndThrow(Exception ex, String additionalMessage, Boolean isCredentialUnavailable)
+   at Azure.Identity.AzureDeveloperCliCredential.GetTokenImplAsync(Boolean async, TokenRequestContext requestContext, CancellationToken cancellationToken)
+   at Azure.Identity.AzureDeveloperCliCredential.GetTokenAsync(TokenRequestContext requestContext, CancellationToken cancellationToken)
+   at Azure.Identity.DefaultAzureCredential.GetTokenFromSourcesAsync(TokenCredential[] sources, TokenRequestContext requestContext, Boolean async, CancellationToken cancellationToken)<---
+
+   --- End of inner exception stack trace ---
+   at Azure.Identity.DefaultAzureCredential.GetTokenFromSourcesAsync(TokenCredential[] sources, TokenRequestContext requestContext, Boolean async, CancellationToken cancellationToken)
+   at Azure.Identity.DefaultAzureCredential.GetTokenImplAsync(Boolean async, TokenRequestContext requestContext, CancellationToken cancellationToken)
+   at Azure.Identity.CredentialDiagnosticScope.FailWrapAndThrow(Exception ex, String additionalMessage, Boolean isCredentialUnavailable)
+   at Azure.Identity.DefaultAzureCredential.GetTokenImplAsync(Boolean async, TokenRequestContext requestContext, CancellationToken cancellationToken)
+   at Azure.Identity.DefaultAzureCredential.GetTokenAsync(TokenRequestContext requestContext, CancellationToken cancellationToken)
+   at Azure.Core.Pipeline.BearerTokenAuthenticationPolicy.AccessTokenCache.GetHeaderValueFromCredentialAsync(TokenRequestContext context, Boolean async, CancellationToken cancellationToken)
+   at Azure.Core.Pipeline.BearerTokenAuthenticationPolicy.AccessTokenCache.GetHeaderValueAsync(HttpMessage message, TokenRequestContext context, Boolean async)
+   at Azure.Core.Pipeline.BearerTokenAuthenticationPolicy.AccessTokenCache.GetHeaderValueAsync(HttpMessage message, TokenRequestContext context, Boolean async)
+   at Azure.Core.Pipeline.BearerTokenAuthenticationPolicy.AuthenticateAndAuthorizeRequestAsync(HttpMessage message, TokenRequestContext context)
+   at Azure.Core.Pipeline.BearerTokenAuthenticationPolicy.ProcessAsync(HttpMessage message, ReadOnlyMemory`1 pipeline, Boolean async)
+   at Azure.Core.Pipeline.RedirectPolicy.ProcessAsync(HttpMessage message, ReadOnlyMemory`1 pipeline, Boolean async)
+   at Azure.Core.Pipeline.RetryPolicy.ProcessAsync(HttpMessage message, ReadOnlyMemory`1 pipeline, Boolean async)
+   at Azure.Core.Pipeline.RetryPolicy.ProcessAsync(HttpMessage message, ReadOnlyMemory`1 pipeline, Boolean async)
+   at Microsoft.Extensions.Configuration.AzureAppConfiguration.UserAgentHeaderPolicy.ProcessAsync(HttpMessage message, ReadOnlyMemory`1 pipeline, Boolean async)
+   at Azure.Data.AppConfiguration.ConditionalPageableImplementation.GetNextResponseAsync(MatchConditions conditions, Nullable`1 pageSizeHint, String nextLink, CancellationToken cancellationToken)
+   at Azure.Data.AppConfiguration.ConditionalPageableImplementation.GetAsyncEnumerator(CancellationToken cancellationToken)+MoveNext()
+   at Azure.Data.AppConfiguration.ConditionalPageableImplementation.GetAsyncEnumerator(CancellationToken cancellationToken)+System.Threading.Tasks.Sources.IValueTaskSource<System.Boolean>.GetResult()
+   at Microsoft.Extensions.Configuration.AzureAppConfiguration.AzureAppConfigurationProvider.<>c__DisplayClass33_2.<<LoadSelectedKeyValues>b__2>d.MoveNext()
+--- End of stack trace from previous location ---
+   at Microsoft.Extensions.Configuration.AzureAppConfiguration.AzureAppConfigurationProvider.<>c__DisplayClass33_2.<<LoadSelectedKeyValues>b__2>d.MoveNext()
+--- End of stack trace from previous location ---
+   at Microsoft.Extensions.Configuration.AzureAppConfiguration.TracingUtils.CallWithRequestTracing(Boolean tracingEnabled, RequestType requestType, RequestTracingOptions requestTracingOptions, Func`1 clientCall)
+   at Microsoft.Extensions.Configuration.AzureAppConfiguration.AzureAppConfigurationProvider.LoadSelectedKeyValues(ConfigurationClient client, CancellationToken cancellationToken)
+   at Microsoft.Extensions.Configuration.AzureAppConfiguration.AzureAppConfigurationProvider.<>c__DisplayClass32_0.<<InitializeAsync>b__0>d.MoveNext()
+--- End of stack trace from previous location ---
+   at Microsoft.Extensions.Configuration.AzureAppConfiguration.AzureAppConfigurationProvider.<>c__DisplayClass45_0.<<ExecuteWithFailOverPolicyAsync>b__0>d.MoveNext()
+--- End of stack trace from previous location ---
+   at Microsoft.Extensions.Configuration.AzureAppConfiguration.AzureAppConfigurationProvider.ExecuteWithFailOverPolicyAsync[T](IEnumerable`1 clients, Func`2 funcToExecute, CancellationToken cancellationToken)
+   at Microsoft.Extensions.Configuration.AzureAppConfiguration.AzureAppConfigurationProvider.ExecuteWithFailOverPolicyAsync(IEnumerable`1 clients, Func`2 funcToExecute, CancellationToken cancellationToken)
+   at Microsoft.Extensions.Configuration.AzureAppConfiguration.AzureAppConfigurationProvider.InitializeAsync(IEnumerable`1 clients, CancellationToken cancellationToken)
+   at Microsoft.Extensions.Configuration.AzureAppConfiguration.AzureAppConfigurationProvider.TryInitializeAsync(IEnumerable`1 clients, List`1 startupExceptions, CancellationToken cancellationToken)
+   at Microsoft.Extensions.Configuration.AzureAppConfiguration.AzureAppConfigurationProvider.LoadAsync(Boolean ignoreFailures, CancellationToken cancellationToken)
+   at Microsoft.Extensions.Configuration.AzureAppConfiguration.AzureAppConfigurationProvider.Load()
+   at Microsoft.Extensions.Configuration.ConfigurationManager.AddSource(IConfigurationSource source)
+   at Microsoft.Extensions.Configuration.ConfigurationManager.Microsoft.Extensions.Configuration.IConfigurationBuilder.Add(IConfigurationSource source)
+   at Microsoft.Extensions.Configuration.AzureAppConfigurationExtensions.AddAzureAppConfiguration(IConfigurationBuilder configurationBuilder, Action`1 action, Boolean optional)
+   at Steer73.RockIT.Web.Program.Main(String[] args) in C:\Users\RahulSharma\ROCK PL ATS\src\Steer73.RockIT.Web\Program.cs:line 89
+2025-10-07 23:10:38.465 +05:30 [INF] Starting web host.
+2025-10-07 23:10:50.722 +05:30 [FTL] Host terminated unexpectedly!
+Azure.Identity.CredentialUnavailableException: DefaultAzureCredential failed to retrieve a token from the included credentials. See the troubleshooting guide for more information. https://aka.ms/azsdk/net/identity/defaultazurecredential/troubleshoot
+- EnvironmentCredential authentication unavailable. Environment variables are not fully configured. See the troubleshooting guide for more information. https://aka.ms/azsdk/net/identity/environmentcredential/troubleshoot
+- WorkloadIdentityCredential authentication unavailable. The workload options are not fully configured. See the troubleshooting guide for more information. https://aka.ms/azsdk/net/identity/workloadidentitycredential/troubleshoot
+- ManagedIdentityCredential authentication unavailable. Multiple attempts failed to obtain a token from the managed identity endpoint.
+- Process "C:\Program Files\Microsoft Visual Studio\2022\Professional\Common7\IDE\CommonExtensions\Microsoft\Asal\TokenService\Microsoft.Asal.TokenService.exe" has failed with unexpected error: TS003: Error, TS001: This account 'v-Rahul.Sharma@lionbridge.com' needs re-authentication. Please go to Tools->Options->Azure Services Authentication, and re-authenticate the account you want to use..
+- Azure CLI not installed
+- Az.Account module >= 2.2.0 is not installed.
+- Azure Developer CLI could not be found.
+ ---> System.AggregateException: Multiple exceptions were encountered while attempting to authenticate. (EnvironmentCredential authentication unavailable. Environment variables are not fully configured. See the troubleshooting guide for more information. https://aka.ms/azsdk/net/identity/environmentcredential/troubleshoot) (WorkloadIdentityCredential authentication unavailable. The workload options are not fully configured. See the troubleshooting guide for more information. https://aka.ms/azsdk/net/identity/workloadidentitycredential/troubleshoot) (ManagedIdentityCredential authentication unavailable. Multiple attempts failed to obtain a token from the managed identity endpoint.) (Process "C:\Program Files\Microsoft Visual Studio\2022\Professional\Common7\IDE\CommonExtensions\Microsoft\Asal\TokenService\Microsoft.Asal.TokenService.exe" has failed with unexpected error: TS003: Error, TS001: This account 'v-Rahul.Sharma@lionbridge.com' needs re-authentication. Please go to Tools->Options->Azure Services Authentication, and re-authenticate the account you want to use..) (Azure CLI not installed) (Az.Account module >= 2.2.0 is not installed.) (Azure Developer CLI could not be found.)
+ ---> Azure.Identity.CredentialUnavailableException: EnvironmentCredential authentication unavailable. Environment variables are not fully configured. See the troubleshooting guide for more information. https://aka.ms/azsdk/net/identity/environmentcredential/troubleshoot
+   at Azure.Identity.CredentialDiagnosticScope.FailWrapAndThrow(Exception ex, String additionalMessage, Boolean isCredentialUnavailable)
+   at Azure.Identity.EnvironmentCredential.GetTokenImplAsync(Boolean async, TokenRequestContext requestContext, CancellationToken cancellationToken)
+   at Azure.Identity.EnvironmentCredential.GetTokenAsync(TokenRequestContext requestContext, CancellationToken cancellationToken)
+   at Azure.Identity.DefaultAzureCredential.GetTokenFromSourcesAsync(TokenCredential[] sources, TokenRequestContext requestContext, Boolean async, CancellationToken cancellationToken)
+   --- End of inner exception stack trace ---
+ ---> (Inner Exception #1) Azure.Identity.CredentialUnavailableException: WorkloadIdentityCredential authentication unavailable. The workload options are not fully configured. See the troubleshooting guide for more information. https://aka.ms/azsdk/net/identity/workloadidentitycredential/troubleshoot
+   at Azure.Identity.WorkloadIdentityCredential.GetTokenCoreAsync(Boolean async, TokenRequestContext requestContext, CancellationToken cancellationToken)
+   at Azure.Identity.CredentialDiagnosticScope.FailWrapAndThrow(Exception ex, String additionalMessage, Boolean isCredentialUnavailable)
+   at Azure.Identity.WorkloadIdentityCredential.GetTokenCoreAsync(Boolean async, TokenRequestContext requestContext, CancellationToken cancellationToken)
+   at Azure.Identity.WorkloadIdentityCredential.GetTokenAsync(TokenRequestContext requestContext, CancellationToken cancellationToken)
+   at Azure.Identity.DefaultAzureCredential.GetTokenFromSourcesAsync(TokenCredential[] sources, TokenRequestContext requestContext, Boolean async, CancellationToken cancellationToken)<---
+
+ ---> (Inner Exception #2) Azure.Identity.CredentialUnavailableException: ManagedIdentityCredential authentication unavailable. Multiple attempts failed to obtain a token from the managed identity endpoint.
+ ---> System.AggregateException: Retry failed after 4 tries. Retry settings can be adjusted in ClientOptions.Retry or by configuring a custom retry policy in ClientOptions.RetryPolicy. (A socket operation was attempted to an unreachable network. (169.254.169.254:80)) (A socket operation was attempted to an unreachable network. (169.254.169.254:80)) (A socket operation was attempted to an unreachable network. (169.254.169.254:80)) (A socket operation was attempted to an unreachable network. (169.254.169.254:80))
+ ---> Azure.RequestFailedException: A socket operation was attempted to an unreachable network. (169.254.169.254:80)
+ ---> System.Net.Http.HttpRequestException: A socket operation was attempted to an unreachable network. (169.254.169.254:80)
+ ---> System.Net.Sockets.SocketException (10051): A socket operation was attempted to an unreachable network.
+   at System.Net.Sockets.Socket.AwaitableSocketAsyncEventArgs.ThrowException(SocketError error, CancellationToken cancellationToken)
+   at System.Net.Sockets.Socket.AwaitableSocketAsyncEventArgs.System.Threading.Tasks.Sources.IValueTaskSource.GetResult(Int16 token)
+   at System.Net.Sockets.Socket.<ConnectAsync>g__WaitForConnectWithCancellation|285_0(AwaitableSocketAsyncEventArgs saea, ValueTask connectTask, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.ConnectToTcpHostAsync(String host, Int32 port, HttpRequestMessage initialRequest, Boolean async, CancellationToken cancellationToken)
+   --- End of inner exception stack trace ---
+   at System.Net.Http.HttpConnectionPool.ConnectToTcpHostAsync(String host, Int32 port, HttpRequestMessage initialRequest, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.ConnectAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.CreateHttp11ConnectionAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.AddHttp11ConnectionAsync(QueueItem queueItem)
+   at System.Threading.Tasks.TaskCompletionSourceWithCancellation`1.WaitWithCancellationAsync(CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.HttpConnectionWaiter`1.WaitForConnectionWithTelemetryAsync(HttpRequestMessage request, HttpConnectionPool pool, Boolean async, CancellationToken requestCancellationToken)
+   at System.Net.Http.HttpConnectionPool.SendWithVersionDetectionAndRetryAsync(HttpRequestMessage request, Boolean async, Boolean doRequestAuth, CancellationToken cancellationToken)
+   at System.Net.Http.DiagnosticsHandler.SendAsyncCore(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.HttpClient.<SendAsync>g__Core|83_0(HttpRequestMessage request, HttpCompletionOption completionOption, CancellationTokenSource cts, Boolean disposeCts, CancellationTokenSource pendingRequestsCts, CancellationToken originalCancellationToken)
+   at Azure.Core.Pipeline.HttpClientTransport.ProcessAsync(HttpMessage message, Boolean async)
+   --- End of inner exception stack trace ---
+   at Azure.Core.Pipeline.HttpClientTransport.ProcessAsync(HttpMessage message, Boolean async)
+   at Azure.Core.Pipeline.HttpPipelineTransportPolicy.ProcessAsync(HttpMessage message, ReadOnlyMemory`1 pipeline)
+   at Azure.Core.Pipeline.ResponseBodyPolicy.ProcessAsync(HttpMessage message, ReadOnlyMemory`1 pipeline, Boolean async)
+   at Azure.Core.Pipeline.RedirectPolicy.ProcessAsync(HttpMessage message, ReadOnlyMemory`1 pipeline, Boolean async)
+   at Azure.Core.Pipeline.RetryPolicy.ProcessAsync(HttpMessage message, ReadOnlyMemory`1 pipeline, Boolean async)
+   --- End of inner exception stack trace ---
+   at Azure.Core.Pipeline.RetryPolicy.ProcessAsync(HttpMessage message, ReadOnlyMemory`1 pipeline, Boolean async)
+   at Azure.Identity.ManagedIdentitySource.AuthenticateAsync(Boolean async, TokenRequestContext context, CancellationToken cancellationToken)
+   at Azure.Identity.ImdsManagedIdentitySource.AuthenticateAsync(Boolean async, TokenRequestContext context, CancellationToken cancellationToken)
+ ---> (Inner Exception #1) Azure.RequestFailedException: A socket operation was attempted to an unreachable network. (169.254.169.254:80)
+ ---> System.Net.Http.HttpRequestException: A socket operation was attempted to an unreachable network. (169.254.169.254:80)
+ ---> System.Net.Sockets.SocketException (10051): A socket operation was attempted to an unreachable network.
+   at System.Net.Sockets.Socket.AwaitableSocketAsyncEventArgs.ThrowException(SocketError error, CancellationToken cancellationToken)
+   at System.Net.Sockets.Socket.AwaitableSocketAsyncEventArgs.System.Threading.Tasks.Sources.IValueTaskSource.GetResult(Int16 token)
+   at System.Net.Sockets.Socket.<ConnectAsync>g__WaitForConnectWithCancellation|285_0(AwaitableSocketAsyncEventArgs saea, ValueTask connectTask, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.ConnectToTcpHostAsync(String host, Int32 port, HttpRequestMessage initialRequest, Boolean async, CancellationToken cancellationToken)
+   --- End of inner exception stack trace ---
+   at System.Net.Http.HttpConnectionPool.ConnectToTcpHostAsync(String host, Int32 port, HttpRequestMessage initialRequest, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.ConnectAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.CreateHttp11ConnectionAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.AddHttp11ConnectionAsync(QueueItem queueItem)
+   at System.Threading.Tasks.TaskCompletionSourceWithCancellation`1.WaitWithCancellationAsync(CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.HttpConnectionWaiter`1.WaitForConnectionWithTelemetryAsync(HttpRequestMessage request, HttpConnectionPool pool, Boolean async, CancellationToken requestCancellationToken)
+   at System.Net.Http.HttpConnectionPool.SendWithVersionDetectionAndRetryAsync(HttpRequestMessage request, Boolean async, Boolean doRequestAuth, CancellationToken cancellationToken)
+   at System.Net.Http.DiagnosticsHandler.SendAsyncCore(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.HttpClient.<SendAsync>g__Core|83_0(HttpRequestMessage request, HttpCompletionOption completionOption, CancellationTokenSource cts, Boolean disposeCts, CancellationTokenSource pendingRequestsCts, CancellationToken originalCancellationToken)
+   at Azure.Core.Pipeline.HttpClientTransport.ProcessAsync(HttpMessage message, Boolean async)
+   --- End of inner exception stack trace ---
+   at Azure.Core.Pipeline.HttpClientTransport.ProcessAsync(HttpMessage message, Boolean async)
+   at Azure.Core.Pipeline.HttpPipelineTransportPolicy.ProcessAsync(HttpMessage message, ReadOnlyMemory`1 pipeline)
+   at Azure.Core.Pipeline.ResponseBodyPolicy.ProcessAsync(HttpMessage message, ReadOnlyMemory`1 pipeline, Boolean async)
+   at Azure.Core.Pipeline.RedirectPolicy.ProcessAsync(HttpMessage message, ReadOnlyMemory`1 pipeline, Boolean async)
+   at Azure.Core.Pipeline.RetryPolicy.ProcessAsync(HttpMessage message, ReadOnlyMemory`1 pipeline, Boolean async)<---
+
+ ---> (Inner Exception #2) Azure.RequestFailedException: A socket operation was attempted to an unreachable network. (169.254.169.254:80)
+ ---> System.Net.Http.HttpRequestException: A socket operation was attempted to an unreachable network. (169.254.169.254:80)
+ ---> System.Net.Sockets.SocketException (10051): A socket operation was attempted to an unreachable network.
+   at System.Net.Sockets.Socket.AwaitableSocketAsyncEventArgs.ThrowException(SocketError error, CancellationToken cancellationToken)
+   at System.Net.Sockets.Socket.AwaitableSocketAsyncEventArgs.System.Threading.Tasks.Sources.IValueTaskSource.GetResult(Int16 token)
+   at System.Net.Sockets.Socket.<ConnectAsync>g__WaitForConnectWithCancellation|285_0(AwaitableSocketAsyncEventArgs saea, ValueTask connectTask, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.ConnectToTcpHostAsync(String host, Int32 port, HttpRequestMessage initialRequest, Boolean async, CancellationToken cancellationToken)
+   --- End of inner exception stack trace ---
+   at System.Net.Http.HttpConnectionPool.ConnectToTcpHostAsync(String host, Int32 port, HttpRequestMessage initialRequest, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.ConnectAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.CreateHttp11ConnectionAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.AddHttp11ConnectionAsync(QueueItem queueItem)
+   at System.Threading.Tasks.TaskCompletionSourceWithCancellation`1.WaitWithCancellationAsync(CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.HttpConnectionWaiter`1.WaitForConnectionWithTelemetryAsync(HttpRequestMessage request, HttpConnectionPool pool, Boolean async, CancellationToken requestCancellationToken)
+   at System.Net.Http.HttpConnectionPool.SendWithVersionDetectionAndRetryAsync(HttpRequestMessage request, Boolean async, Boolean doRequestAuth, CancellationToken cancellationToken)
+   at System.Net.Http.DiagnosticsHandler.SendAsyncCore(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.HttpClient.<SendAsync>g__Core|83_0(HttpRequestMessage request, HttpCompletionOption completionOption, CancellationTokenSource cts, Boolean disposeCts, CancellationTokenSource pendingRequestsCts, CancellationToken originalCancellationToken)
+   at Azure.Core.Pipeline.HttpClientTransport.ProcessAsync(HttpMessage message, Boolean async)
+   --- End of inner exception stack trace ---
+   at Azure.Core.Pipeline.HttpClientTransport.ProcessAsync(HttpMessage message, Boolean async)
+   at Azure.Core.Pipeline.HttpPipelineTransportPolicy.ProcessAsync(HttpMessage message, ReadOnlyMemory`1 pipeline)
+   at Azure.Core.Pipeline.ResponseBodyPolicy.ProcessAsync(HttpMessage message, ReadOnlyMemory`1 pipeline, Boolean async)
+   at Azure.Core.Pipeline.RedirectPolicy.ProcessAsync(HttpMessage message, ReadOnlyMemory`1 pipeline, Boolean async)
+   at Azure.Core.Pipeline.RetryPolicy.ProcessAsync(HttpMessage message, ReadOnlyMemory`1 pipeline, Boolean async)<---
+
+ ---> (Inner Exception #3) Azure.RequestFailedException: A socket operation was attempted to an unreachable network. (169.254.169.254:80)
+ ---> System.Net.Http.HttpRequestException: A socket operation was attempted to an unreachable network. (169.254.169.254:80)
+ ---> System.Net.Sockets.SocketException (10051): A socket operation was attempted to an unreachable network.
+   at System.Net.Sockets.Socket.AwaitableSocketAsyncEventArgs.ThrowException(SocketError error, CancellationToken cancellationToken)
+   at System.Net.Sockets.Socket.AwaitableSocketAsyncEventArgs.System.Threading.Tasks.Sources.IValueTaskSource.GetResult(Int16 token)
+   at System.Net.Sockets.Socket.<ConnectAsync>g__WaitForConnectWithCancellation|285_0(AwaitableSocketAsyncEventArgs saea, ValueTask connectTask, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.ConnectToTcpHostAsync(String host, Int32 port, HttpRequestMessage initialRequest, Boolean async, CancellationToken cancellationToken)
+   --- End of inner exception stack trace ---
+   at System.Net.Http.HttpConnectionPool.ConnectToTcpHostAsync(String host, Int32 port, HttpRequestMessage initialRequest, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.ConnectAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.CreateHttp11ConnectionAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.AddHttp11ConnectionAsync(QueueItem queueItem)
+   at System.Threading.Tasks.TaskCompletionSourceWithCancellation`1.WaitWithCancellationAsync(CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.HttpConnectionWaiter`1.WaitForConnectionWithTelemetryAsync(HttpRequestMessage request, HttpConnectionPool pool, Boolean async, CancellationToken requestCancellationToken)
+   at System.Net.Http.HttpConnectionPool.SendWithVersionDetectionAndRetryAsync(HttpRequestMessage request, Boolean async, Boolean doRequestAuth, CancellationToken cancellationToken)
+   at System.Net.Http.DiagnosticsHandler.SendAsyncCore(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.HttpClient.<SendAsync>g__Core|83_0(HttpRequestMessage request, HttpCompletionOption completionOption, CancellationTokenSource cts, Boolean disposeCts, CancellationTokenSource pendingRequestsCts, CancellationToken originalCancellationToken)
+   at Azure.Core.Pipeline.HttpClientTransport.ProcessAsync(HttpMessage message, Boolean async)
+   --- End of inner exception stack trace ---
+   at Azure.Core.Pipeline.HttpClientTransport.ProcessAsync(HttpMessage message, Boolean async)
+   at Azure.Core.Pipeline.HttpPipelineTransportPolicy.ProcessAsync(HttpMessage message, ReadOnlyMemory`1 pipeline)
+   at Azure.Core.Pipeline.ResponseBodyPolicy.ProcessAsync(HttpMessage message, ReadOnlyMemory`1 pipeline, Boolean async)
+   at Azure.Core.Pipeline.RedirectPolicy.ProcessAsync(HttpMessage message, ReadOnlyMemory`1 pipeline, Boolean async)
+   at Azure.Core.Pipeline.RetryPolicy.ProcessAsync(HttpMessage message, ReadOnlyMemory`1 pipeline, Boolean async)<---
+
+   --- End of inner exception stack trace ---
+   at Azure.Identity.ImdsManagedIdentitySource.AuthenticateAsync(Boolean async, TokenRequestContext context, CancellationToken cancellationToken)
+   at Azure.Identity.ManagedIdentityClient.AuthenticateCoreAsync(Boolean async, TokenRequestContext context, CancellationToken cancellationToken)
+   at Azure.Identity.ManagedIdentityClient.AppTokenProviderImpl(AppTokenProviderParameters parameters)
+   at Microsoft.Identity.Client.Internal.Requests.ClientCredentialRequest.SendTokenRequestToAppTokenProviderAsync(ILoggerAdapter logger, CancellationToken cancellationToken)
+   at Microsoft.Identity.Client.Internal.Requests.ClientCredentialRequest.GetAccessTokenAsync(CancellationToken cancellationToken, ILoggerAdapter logger)
+   at Microsoft.Identity.Client.Internal.Requests.ClientCredentialRequest.ExecuteAsync(CancellationToken cancellationToken)
+   at Microsoft.Identity.Client.Internal.Requests.RequestBase.RunAsync(CancellationToken cancellationToken)
+   at Microsoft.Identity.Client.ApiConfig.Executors.ConfidentialClientExecutor.ExecuteAsync(AcquireTokenCommonParameters commonParameters, AcquireTokenForClientParameters clientParameters, CancellationToken cancellationToken)
+   at Azure.Identity.AbstractAcquireTokenParameterBuilderExtensions.ExecuteAsync[T](AbstractAcquireTokenParameterBuilder`1 builder, Boolean async, CancellationToken cancellationToken)
+   at Azure.Identity.MsalConfidentialClient.AcquireTokenForClientCoreAsync(String[] scopes, String tenantId, Boolean enableCae, Boolean async, CancellationToken cancellationToken)
+   at Azure.Identity.MsalConfidentialClient.AcquireTokenForClientAsync(String[] scopes, String tenantId, Boolean enableCae, Boolean async, CancellationToken cancellationToken)
+   at Azure.Identity.ManagedIdentityClient.AuthenticateAsync(Boolean async, TokenRequestContext context, CancellationToken cancellationToken)
+   at Azure.Identity.ManagedIdentityCredential.GetTokenImplAsync(Boolean async, TokenRequestContext requestContext, CancellationToken cancellationToken)
+   at Azure.Identity.CredentialDiagnosticScope.FailWrapAndThrow(Exception ex, String additionalMessage, Boolean isCredentialUnavailable)
+   at Azure.Identity.ManagedIdentityCredential.GetTokenImplAsync(Boolean async, TokenRequestContext requestContext, CancellationToken cancellationToken)
+   at Azure.Identity.ManagedIdentityCredential.GetTokenAsync(TokenRequestContext requestContext, CancellationToken cancellationToken)
+   at Azure.Identity.DefaultAzureCredential.GetTokenFromSourcesAsync(TokenCredential[] sources, TokenRequestContext requestContext, Boolean async, CancellationToken cancellationToken)<---
+
+ ---> (Inner Exception #3) Azure.Identity.CredentialUnavailableException: Process "C:\Program Files\Microsoft Visual Studio\2022\Professional\Common7\IDE\CommonExtensions\Microsoft\Asal\TokenService\Microsoft.Asal.TokenService.exe" has failed with unexpected error: TS003: Error, TS001: This account 'v-Rahul.Sharma@lionbridge.com' needs re-authentication. Please go to Tools->Options->Azure Services Authentication, and re-authenticate the account you want to use..
+ ---> System.InvalidOperationException: TS003: Error, TS001: This account 'v-Rahul.Sharma@lionbridge.com' needs re-authentication. Please go to Tools->Options->Azure Services Authentication, and re-authenticate the account you want to use.
+   at Azure.Identity.VisualStudioCredential.RunProcessesAsync(List`1 processStartInfos, Boolean async, CancellationToken cancellationToken)
+   --- End of inner exception stack trace ---
+   at Azure.Identity.VisualStudioCredential.RunProcessesAsync(List`1 processStartInfos, Boolean async, CancellationToken cancellationToken)
+   at Azure.Identity.VisualStudioCredential.GetTokenImplAsync(TokenRequestContext requestContext, Boolean async, CancellationToken cancellationToken)
+   at Azure.Identity.CredentialDiagnosticScope.FailWrapAndThrow(Exception ex, String additionalMessage, Boolean isCredentialUnavailable)
+   at Azure.Identity.VisualStudioCredential.GetTokenImplAsync(TokenRequestContext requestContext, Boolean async, CancellationToken cancellationToken)
+   at Azure.Identity.VisualStudioCredential.GetTokenAsync(TokenRequestContext requestContext, CancellationToken cancellationToken)
+   at Azure.Identity.DefaultAzureCredential.GetTokenFromSourcesAsync(TokenCredential[] sources, TokenRequestContext requestContext, Boolean async, CancellationToken cancellationToken)<---
+
+ ---> (Inner Exception #4) Azure.Identity.CredentialUnavailableException: Azure CLI not installed
+   at Azure.Identity.AzureCliCredential.RequestCliAccessTokenAsync(Boolean async, TokenRequestContext context, CancellationToken cancellationToken)
+   at Azure.Identity.AzureCliCredential.GetTokenImplAsync(Boolean async, TokenRequestContext requestContext, CancellationToken cancellationToken)
+   at Azure.Identity.CredentialDiagnosticScope.FailWrapAndThrow(Exception ex, String additionalMessage, Boolean isCredentialUnavailable)
+   at Azure.Identity.AzureCliCredential.GetTokenImplAsync(Boolean async, TokenRequestContext requestContext, CancellationToken cancellationToken)
+   at Azure.Identity.AzureCliCredential.GetTokenAsync(TokenRequestContext requestContext, CancellationToken cancellationToken)
+   at Azure.Identity.DefaultAzureCredential.GetTokenFromSourcesAsync(TokenCredential[] sources, TokenRequestContext requestContext, Boolean async, CancellationToken cancellationToken)<---
+
+ ---> (Inner Exception #5) Azure.Identity.CredentialUnavailableException: Az.Account module >= 2.2.0 is not installed.
+   at Azure.Identity.AzurePowerShellCredential.CheckForErrors(String output)
+   at Azure.Identity.AzurePowerShellCredential.RequestAzurePowerShellAccessTokenAsync(Boolean async, TokenRequestContext context, CancellationToken cancellationToken)
+   at Azure.Identity.AzurePowerShellCredential.GetTokenImplAsync(Boolean async, TokenRequestContext requestContext, CancellationToken cancellationToken)
+   at Azure.Identity.CredentialDiagnosticScope.FailWrapAndThrow(Exception ex, String additionalMessage, Boolean isCredentialUnavailable)
+   at Azure.Identity.AzurePowerShellCredential.GetTokenImplAsync(Boolean async, TokenRequestContext requestContext, CancellationToken cancellationToken)
+   at Azure.Identity.AzurePowerShellCredential.GetTokenAsync(TokenRequestContext requestContext, CancellationToken cancellationToken)
+   at Azure.Identity.DefaultAzureCredential.GetTokenFromSourcesAsync(TokenCredential[] sources, TokenRequestContext requestContext, Boolean async, CancellationToken cancellationToken)<---
+
+ ---> (Inner Exception #6) Azure.Identity.CredentialUnavailableException: Azure Developer CLI could not be found.
+   at Azure.Identity.AzureDeveloperCliCredential.RequestCliAccessTokenAsync(Boolean async, TokenRequestContext context, CancellationToken cancellationToken)
+   at Azure.Identity.AzureDeveloperCliCredential.GetTokenImplAsync(Boolean async, TokenRequestContext requestContext, CancellationToken cancellationToken)
+   at Azure.Identity.CredentialDiagnosticScope.FailWrapAndThrow(Exception ex, String additionalMessage, Boolean isCredentialUnavailable)
+   at Azure.Identity.AzureDeveloperCliCredential.GetTokenImplAsync(Boolean async, TokenRequestContext requestContext, CancellationToken cancellationToken)
+   at Azure.Identity.AzureDeveloperCliCredential.GetTokenAsync(TokenRequestContext requestContext, CancellationToken cancellationToken)
+   at Azure.Identity.DefaultAzureCredential.GetTokenFromSourcesAsync(TokenCredential[] sources, TokenRequestContext requestContext, Boolean async, CancellationToken cancellationToken)<---
+
+   --- End of inner exception stack trace ---
+   at Azure.Identity.DefaultAzureCredential.GetTokenFromSourcesAsync(TokenCredential[] sources, TokenRequestContext requestContext, Boolean async, CancellationToken cancellationToken)
+   at Azure.Identity.DefaultAzureCredential.GetTokenImplAsync(Boolean async, TokenRequestContext requestContext, CancellationToken cancellationToken)
+   at Azure.Identity.CredentialDiagnosticScope.FailWrapAndThrow(Exception ex, String additionalMessage, Boolean isCredentialUnavailable)
+   at Azure.Identity.DefaultAzureCredential.GetTokenImplAsync(Boolean async, TokenRequestContext requestContext, CancellationToken cancellationToken)
+   at Azure.Identity.DefaultAzureCredential.GetTokenAsync(TokenRequestContext requestContext, CancellationToken cancellationToken)
+   at Azure.Core.Pipeline.BearerTokenAuthenticationPolicy.AccessTokenCache.GetHeaderValueFromCredentialAsync(TokenRequestContext context, Boolean async, CancellationToken cancellationToken)
+   at Azure.Core.Pipeline.BearerTokenAuthenticationPolicy.AccessTokenCache.GetHeaderValueAsync(HttpMessage message, TokenRequestContext context, Boolean async)
+   at Azure.Core.Pipeline.BearerTokenAuthenticationPolicy.AccessTokenCache.GetHeaderValueAsync(HttpMessage message, TokenRequestContext context, Boolean async)
+   at Azure.Core.Pipeline.BearerTokenAuthenticationPolicy.AuthenticateAndAuthorizeRequestAsync(HttpMessage message, TokenRequestContext context)
+   at Azure.Core.Pipeline.BearerTokenAuthenticationPolicy.ProcessAsync(HttpMessage message, ReadOnlyMemory`1 pipeline, Boolean async)
+   at Azure.Core.Pipeline.RedirectPolicy.ProcessAsync(HttpMessage message, ReadOnlyMemory`1 pipeline, Boolean async)
+   at Azure.Core.Pipeline.RetryPolicy.ProcessAsync(HttpMessage message, ReadOnlyMemory`1 pipeline, Boolean async)
+   at Azure.Core.Pipeline.RetryPolicy.ProcessAsync(HttpMessage message, ReadOnlyMemory`1 pipeline, Boolean async)
+   at Microsoft.Extensions.Configuration.AzureAppConfiguration.UserAgentHeaderPolicy.ProcessAsync(HttpMessage message, ReadOnlyMemory`1 pipeline, Boolean async)
+   at Azure.Data.AppConfiguration.ConditionalPageableImplementation.GetNextResponseAsync(MatchConditions conditions, Nullable`1 pageSizeHint, String nextLink, CancellationToken cancellationToken)
+   at Azure.Data.AppConfiguration.ConditionalPageableImplementation.GetAsyncEnumerator(CancellationToken cancellationToken)+MoveNext()
+   at Azure.Data.AppConfiguration.ConditionalPageableImplementation.GetAsyncEnumerator(CancellationToken cancellationToken)+System.Threading.Tasks.Sources.IValueTaskSource<System.Boolean>.GetResult()
+   at Microsoft.Extensions.Configuration.AzureAppConfiguration.AzureAppConfigurationProvider.<>c__DisplayClass33_2.<<LoadSelectedKeyValues>b__2>d.MoveNext()
+--- End of stack trace from previous location ---
+   at Microsoft.Extensions.Configuration.AzureAppConfiguration.AzureAppConfigurationProvider.<>c__DisplayClass33_2.<<LoadSelectedKeyValues>b__2>d.MoveNext()
+--- End of stack trace from previous location ---
+   at Microsoft.Extensions.Configuration.AzureAppConfiguration.TracingUtils.CallWithRequestTracing(Boolean tracingEnabled, RequestType requestType, RequestTracingOptions requestTracingOptions, Func`1 clientCall)
+   at Microsoft.Extensions.Configuration.AzureAppConfiguration.AzureAppConfigurationProvider.LoadSelectedKeyValues(ConfigurationClient client, CancellationToken cancellationToken)
+   at Microsoft.Extensions.Configuration.AzureAppConfiguration.AzureAppConfigurationProvider.<>c__DisplayClass32_0.<<InitializeAsync>b__0>d.MoveNext()
+--- End of stack trace from previous location ---
+   at Microsoft.Extensions.Configuration.AzureAppConfiguration.AzureAppConfigurationProvider.<>c__DisplayClass45_0.<<ExecuteWithFailOverPolicyAsync>b__0>d.MoveNext()
+--- End of stack trace from previous location ---
+   at Microsoft.Extensions.Configuration.AzureAppConfiguration.AzureAppConfigurationProvider.ExecuteWithFailOverPolicyAsync[T](IEnumerable`1 clients, Func`2 funcToExecute, CancellationToken cancellationToken)
+   at Microsoft.Extensions.Configuration.AzureAppConfiguration.AzureAppConfigurationProvider.ExecuteWithFailOverPolicyAsync(IEnumerable`1 clients, Func`2 funcToExecute, CancellationToken cancellationToken)
+   at Microsoft.Extensions.Configuration.AzureAppConfiguration.AzureAppConfigurationProvider.InitializeAsync(IEnumerable`1 clients, CancellationToken cancellationToken)
+   at Microsoft.Extensions.Configuration.AzureAppConfiguration.AzureAppConfigurationProvider.TryInitializeAsync(IEnumerable`1 clients, List`1 startupExceptions, CancellationToken cancellationToken)
+   at Microsoft.Extensions.Configuration.AzureAppConfiguration.AzureAppConfigurationProvider.LoadAsync(Boolean ignoreFailures, CancellationToken cancellationToken)
+   at Microsoft.Extensions.Configuration.AzureAppConfiguration.AzureAppConfigurationProvider.Load()
+   at Microsoft.Extensions.Configuration.ConfigurationManager.AddSource(IConfigurationSource source)
+   at Microsoft.Extensions.Configuration.ConfigurationManager.Microsoft.Extensions.Configuration.IConfigurationBuilder.Add(IConfigurationSource source)
+   at Microsoft.Extensions.Configuration.AzureAppConfigurationExtensions.AddAzureAppConfiguration(IConfigurationBuilder configurationBuilder, Action`1 action, Boolean optional)
+   at Steer73.RockIT.Web.Program.Main(String[] args) in C:\Users\RahulSharma\ROCK PL ATS\src\Steer73.RockIT.Web\Program.cs:line 89
+2025-10-07 23:16:23.603 +05:30 [INF] Starting web host.
+2025-10-07 23:16:34.563 +05:30 [FTL] Host terminated unexpectedly!
+Azure.RequestFailedException: Service request failed.
+Status: 401 (Unauthorized)
+
+Headers:
+Date: Tue, 07 Oct 2025 17:46:33 GMT
+Connection: keep-alive
+WWW-Authenticate: HMAC-SHA256,Bearer error="invalid_token", error_description="The received access token does not have authorization to perform action over the requested scope or the scope is invalid. If access was recently granted, please refresh your credentials."
+x-ms-request-id: 68167992-9284-43d1-9bfd-11ed81b60460
+x-ms-client-request-id: 6e9da3e1-c9ea-457f-acbf-d53f776d70e4
+x-ms-correlation-request-id: 68167992-9284-43d1-9bfd-11ed81b60460
+x-ms-date: REDACTED
+Strict-Transport-Security: max-age=31536000; includeSubDomains
+Access-Control-Allow-Origin: *
+Content-Length: 0
+
+   at Azure.Data.AppConfiguration.ConditionalPageableImplementation.GetResponse(HttpMessage message)
+   at Azure.Data.AppConfiguration.ConditionalPageableImplementation.GetNextResponseAsync(MatchConditions conditions, Nullable`1 pageSizeHint, String nextLink, CancellationToken cancellationToken)
+   at Azure.Data.AppConfiguration.ConditionalPageableImplementation.GetAsyncEnumerator(CancellationToken cancellationToken)+MoveNext()
+   at Azure.Data.AppConfiguration.ConditionalPageableImplementation.GetAsyncEnumerator(CancellationToken cancellationToken)+System.Threading.Tasks.Sources.IValueTaskSource<System.Boolean>.GetResult()
+   at Microsoft.Extensions.Configuration.AzureAppConfiguration.AzureAppConfigurationProvider.<>c__DisplayClass33_2.<<LoadSelectedKeyValues>b__2>d.MoveNext()
+--- End of stack trace from previous location ---
+   at Microsoft.Extensions.Configuration.AzureAppConfiguration.AzureAppConfigurationProvider.<>c__DisplayClass33_2.<<LoadSelectedKeyValues>b__2>d.MoveNext()
+--- End of stack trace from previous location ---
+   at Microsoft.Extensions.Configuration.AzureAppConfiguration.TracingUtils.CallWithRequestTracing(Boolean tracingEnabled, RequestType requestType, RequestTracingOptions requestTracingOptions, Func`1 clientCall)
+   at Microsoft.Extensions.Configuration.AzureAppConfiguration.AzureAppConfigurationProvider.LoadSelectedKeyValues(ConfigurationClient client, CancellationToken cancellationToken)
+   at Microsoft.Extensions.Configuration.AzureAppConfiguration.AzureAppConfigurationProvider.<>c__DisplayClass32_0.<<InitializeAsync>b__0>d.MoveNext()
+--- End of stack trace from previous location ---
+   at Microsoft.Extensions.Configuration.AzureAppConfiguration.AzureAppConfigurationProvider.<>c__DisplayClass45_0.<<ExecuteWithFailOverPolicyAsync>b__0>d.MoveNext()
+--- End of stack trace from previous location ---
+   at Microsoft.Extensions.Configuration.AzureAppConfiguration.AzureAppConfigurationProvider.ExecuteWithFailOverPolicyAsync[T](IEnumerable`1 clients, Func`2 funcToExecute, CancellationToken cancellationToken)
+   at Microsoft.Extensions.Configuration.AzureAppConfiguration.AzureAppConfigurationProvider.ExecuteWithFailOverPolicyAsync(IEnumerable`1 clients, Func`2 funcToExecute, CancellationToken cancellationToken)
+   at Microsoft.Extensions.Configuration.AzureAppConfiguration.AzureAppConfigurationProvider.InitializeAsync(IEnumerable`1 clients, CancellationToken cancellationToken)
+   at Microsoft.Extensions.Configuration.AzureAppConfiguration.AzureAppConfigurationProvider.TryInitializeAsync(IEnumerable`1 clients, List`1 startupExceptions, CancellationToken cancellationToken)
+   at Microsoft.Extensions.Configuration.AzureAppConfiguration.AzureAppConfigurationProvider.LoadAsync(Boolean ignoreFailures, CancellationToken cancellationToken)
+   at Microsoft.Extensions.Configuration.AzureAppConfiguration.AzureAppConfigurationProvider.Load()
+   at Microsoft.Extensions.Configuration.ConfigurationManager.AddSource(IConfigurationSource source)
+   at Microsoft.Extensions.Configuration.ConfigurationManager.Microsoft.Extensions.Configuration.IConfigurationBuilder.Add(IConfigurationSource source)
+   at Microsoft.Extensions.Configuration.AzureAppConfigurationExtensions.AddAzureAppConfiguration(IConfigurationBuilder configurationBuilder, Action`1 action, Boolean optional)
+   at Steer73.RockIT.Web.Program.Main(String[] args) in C:\Users\RahulSharma\ROCK PL ATS\src\Steer73.RockIT.Web\Program.cs:line 89
+2025-10-07 23:18:23.205 +05:30 [INF] Starting web host.
+2025-10-07 23:18:32.761 +05:30 [FTL] Host terminated unexpectedly!
+Azure.RequestFailedException: Service request failed.
+Status: 401 (Unauthorized)
+
+Headers:
+Date: Tue, 07 Oct 2025 17:48:32 GMT
+Connection: keep-alive
+WWW-Authenticate: HMAC-SHA256,Bearer error="invalid_token", error_description="The received access token does not have authorization to perform action over the requested scope or the scope is invalid. If access was recently granted, please refresh your credentials."
+x-ms-request-id: 72d49bb8-de49-4d63-9f36-b0a4d90a8763
+x-ms-client-request-id: b969e494-3b41-45e7-bb1e-df7022013095
+x-ms-correlation-request-id: 72d49bb8-de49-4d63-9f36-b0a4d90a8763
+x-ms-date: REDACTED
+Strict-Transport-Security: max-age=31536000; includeSubDomains
+Access-Control-Allow-Origin: *
+Content-Length: 0
+
+   at Azure.Data.AppConfiguration.ConditionalPageableImplementation.GetResponse(HttpMessage message)
+   at Azure.Data.AppConfiguration.ConditionalPageableImplementation.GetNextResponseAsync(MatchConditions conditions, Nullable`1 pageSizeHint, String nextLink, CancellationToken cancellationToken)
+   at Azure.Data.AppConfiguration.ConditionalPageableImplementation.GetAsyncEnumerator(CancellationToken cancellationToken)+MoveNext()
+   at Azure.Data.AppConfiguration.ConditionalPageableImplementation.GetAsyncEnumerator(CancellationToken cancellationToken)+System.Threading.Tasks.Sources.IValueTaskSource<System.Boolean>.GetResult()
+   at Microsoft.Extensions.Configuration.AzureAppConfiguration.AzureAppConfigurationProvider.<>c__DisplayClass33_2.<<LoadSelectedKeyValues>b__2>d.MoveNext()
+--- End of stack trace from previous location ---
+   at Microsoft.Extensions.Configuration.AzureAppConfiguration.AzureAppConfigurationProvider.<>c__DisplayClass33_2.<<LoadSelectedKeyValues>b__2>d.MoveNext()
+--- End of stack trace from previous location ---
+   at Microsoft.Extensions.Configuration.AzureAppConfiguration.TracingUtils.CallWithRequestTracing(Boolean tracingEnabled, RequestType requestType, RequestTracingOptions requestTracingOptions, Func`1 clientCall)
+   at Microsoft.Extensions.Configuration.AzureAppConfiguration.AzureAppConfigurationProvider.LoadSelectedKeyValues(ConfigurationClient client, CancellationToken cancellationToken)
+   at Microsoft.Extensions.Configuration.AzureAppConfiguration.AzureAppConfigurationProvider.<>c__DisplayClass32_0.<<InitializeAsync>b__0>d.MoveNext()
+--- End of stack trace from previous location ---
+   at Microsoft.Extensions.Configuration.AzureAppConfiguration.AzureAppConfigurationProvider.<>c__DisplayClass45_0.<<ExecuteWithFailOverPolicyAsync>b__0>d.MoveNext()
+--- End of stack trace from previous location ---
+   at Microsoft.Extensions.Configuration.AzureAppConfiguration.AzureAppConfigurationProvider.ExecuteWithFailOverPolicyAsync[T](IEnumerable`1 clients, Func`2 funcToExecute, CancellationToken cancellationToken)
+   at Microsoft.Extensions.Configuration.AzureAppConfiguration.AzureAppConfigurationProvider.ExecuteWithFailOverPolicyAsync(IEnumerable`1 clients, Func`2 funcToExecute, CancellationToken cancellationToken)
+   at Microsoft.Extensions.Configuration.AzureAppConfiguration.AzureAppConfigurationProvider.InitializeAsync(IEnumerable`1 clients, CancellationToken cancellationToken)
+   at Microsoft.Extensions.Configuration.AzureAppConfiguration.AzureAppConfigurationProvider.TryInitializeAsync(IEnumerable`1 clients, List`1 startupExceptions, CancellationToken cancellationToken)
+   at Microsoft.Extensions.Configuration.AzureAppConfiguration.AzureAppConfigurationProvider.LoadAsync(Boolean ignoreFailures, CancellationToken cancellationToken)
+   at Microsoft.Extensions.Configuration.AzureAppConfiguration.AzureAppConfigurationProvider.Load()
+   at Microsoft.Extensions.Configuration.ConfigurationManager.AddSource(IConfigurationSource source)
+   at Microsoft.Extensions.Configuration.ConfigurationManager.Microsoft.Extensions.Configuration.IConfigurationBuilder.Add(IConfigurationSource source)
+   at Microsoft.Extensions.Configuration.AzureAppConfigurationExtensions.AddAzureAppConfiguration(IConfigurationBuilder configurationBuilder, Action`1 action, Boolean optional)
+   at Steer73.RockIT.Web.Program.Main(String[] args) in C:\Users\RahulSharma\ROCK PL ATS\src\Steer73.RockIT.Web\Program.cs:line 89
+2025-10-07 23:20:45.278 +05:30 [INF] Starting web host.
+2025-10-07 23:20:57.716 +05:30 [FTL] Host terminated unexpectedly!
+Azure.RequestFailedException: Service request failed.
+Status: 401 (Unauthorized)
+
+Headers:
+Date: Tue, 07 Oct 2025 17:50:57 GMT
+Connection: keep-alive
+WWW-Authenticate: HMAC-SHA256,Bearer error="invalid_token", error_description="The received access token does not have authorization to perform action over the requested scope or the scope is invalid. If access was recently granted, please refresh your credentials."
+x-ms-request-id: 13c872bc-7b4a-4988-9921-36446043d6d1
+x-ms-client-request-id: 1f767654-8e90-48c7-9a66-356b717400b9
+x-ms-correlation-request-id: 13c872bc-7b4a-4988-9921-36446043d6d1
+x-ms-date: REDACTED
+Strict-Transport-Security: max-age=31536000; includeSubDomains
+Access-Control-Allow-Origin: *
+Content-Length: 0
+
+   at Azure.Data.AppConfiguration.ConditionalPageableImplementation.GetResponse(HttpMessage message)
+   at Azure.Data.AppConfiguration.ConditionalPageableImplementation.GetNextResponseAsync(MatchConditions conditions, Nullable`1 pageSizeHint, String nextLink, CancellationToken cancellationToken)
+   at Azure.Data.AppConfiguration.ConditionalPageableImplementation.GetAsyncEnumerator(CancellationToken cancellationToken)+MoveNext()
+   at Azure.Data.AppConfiguration.ConditionalPageableImplementation.GetAsyncEnumerator(CancellationToken cancellationToken)+System.Threading.Tasks.Sources.IValueTaskSource<System.Boolean>.GetResult()
+   at Microsoft.Extensions.Configuration.AzureAppConfiguration.AzureAppConfigurationProvider.<>c__DisplayClass33_2.<<LoadSelectedKeyValues>b__2>d.MoveNext()
+--- End of stack trace from previous location ---
+   at Microsoft.Extensions.Configuration.AzureAppConfiguration.AzureAppConfigurationProvider.<>c__DisplayClass33_2.<<LoadSelectedKeyValues>b__2>d.MoveNext()
+--- End of stack trace from previous location ---
+   at Microsoft.Extensions.Configuration.AzureAppConfiguration.TracingUtils.CallWithRequestTracing(Boolean tracingEnabled, RequestType requestType, RequestTracingOptions requestTracingOptions, Func`1 clientCall)
+   at Microsoft.Extensions.Configuration.AzureAppConfiguration.AzureAppConfigurationProvider.LoadSelectedKeyValues(ConfigurationClient client, CancellationToken cancellationToken)
+   at Microsoft.Extensions.Configuration.AzureAppConfiguration.AzureAppConfigurationProvider.<>c__DisplayClass32_0.<<InitializeAsync>b__0>d.MoveNext()
+--- End of stack trace from previous location ---
+   at Microsoft.Extensions.Configuration.AzureAppConfiguration.AzureAppConfigurationProvider.<>c__DisplayClass45_0.<<ExecuteWithFailOverPolicyAsync>b__0>d.MoveNext()
+--- End of stack trace from previous location ---
+   at Microsoft.Extensions.Configuration.AzureAppConfiguration.AzureAppConfigurationProvider.ExecuteWithFailOverPolicyAsync[T](IEnumerable`1 clients, Func`2 funcToExecute, CancellationToken cancellationToken)
+   at Microsoft.Extensions.Configuration.AzureAppConfiguration.AzureAppConfigurationProvider.ExecuteWithFailOverPolicyAsync(IEnumerable`1 clients, Func`2 funcToExecute, CancellationToken cancellationToken)
+   at Microsoft.Extensions.Configuration.AzureAppConfiguration.AzureAppConfigurationProvider.InitializeAsync(IEnumerable`1 clients, CancellationToken cancellationToken)
+   at Microsoft.Extensions.Configuration.AzureAppConfiguration.AzureAppConfigurationProvider.TryInitializeAsync(IEnumerable`1 clients, List`1 startupExceptions, CancellationToken cancellationToken)
+   at Microsoft.Extensions.Configuration.AzureAppConfiguration.AzureAppConfigurationProvider.LoadAsync(Boolean ignoreFailures, CancellationToken cancellationToken)
+   at Microsoft.Extensions.Configuration.AzureAppConfiguration.AzureAppConfigurationProvider.Load()
+   at Microsoft.Extensions.Configuration.ConfigurationManager.AddSource(IConfigurationSource source)
+   at Microsoft.Extensions.Configuration.ConfigurationManager.Microsoft.Extensions.Configuration.IConfigurationBuilder.Add(IConfigurationSource source)
+   at Microsoft.Extensions.Configuration.AzureAppConfigurationExtensions.AddAzureAppConfiguration(IConfigurationBuilder configurationBuilder, Action`1 action, Boolean optional)
+   at Steer73.RockIT.Web.Program.Main(String[] args) in C:\Users\RahulSharma\ROCK PL ATS\src\Steer73.RockIT.Web\Program.cs:line 89
+2025-10-07 23:33:51.193 +05:30 [INF] Starting web host.

@@ -1,0 +1,277 @@
+@page "/Vacancies/{id:Guid}/Edit"
+@using Microsoft.AspNetCore.Mvc.Localization
+@using Steer73.RockIT.Enums
+@using Steer73.RockIT.Localization
+@using Steer73.RockIT.Web.Pages.Vacancies
+@using Volo.Abp.AspNetCore.Mvc.UI.Bootstrap.TagHelpers.Modal
+@using Steer73.RockIT.Vacancies;
+@using System.Globalization
+@inject IHtmlLocalizer<RockITResource> L
+@model EditModel
+
+@section styles {
+    <link href="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.core.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.snow.css" rel="stylesheet" />
+    <style>
+        .abp-view-modal .modal {
+            position: static;
+            display: block;
+            opacity: inherit !important;
+        }
+
+            .abp-view-modal .modal.fade .modal-dialog {
+                transition: inherit !important;
+                transform: inherit !important;
+                max-width: 100%;
+            }
+
+        .abp-view-modal .modal-header .btn-close {
+            display: none;
+        }
+
+        #Vacancy_Description-error {
+            display: block;
+        }
+
+        #editor {
+            height: 12rem;
+            max-height: 12rem;
+            overflow: auto;
+        }
+
+    </style>
+}
+@section scripts {
+    <script src="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.js"></script>
+    <abp-script src="/Pages/Vacancies/edit.js" />
+    <script>
+        let quill = null;
+
+
+        window.addEventListener("DOMContentLoaded", (event) => {
+            quill = new Quill('#editor', {
+                theme: 'snow',
+                modules: {
+                    toolbar: [
+                        ['link']
+                    ]
+                }                                
+            });
+
+            const content = @Html.Raw(Json.Serialize(Model.Input.Description));
+            quill.clipboard.dangerouslyPasteHTML(content);
+
+            let $form = $('#editForm');
+
+            $form.on('submit', function (e) {
+                const quillContent = document.querySelector('input#Input_Description');
+                quillContent.value = !isQuillEmpty(quill) ? quill.root.innerHTML : ''; // This sends the Quill content as HTML
+            });
+        });
+
+        function isQuillEmpty(quillInstance) {
+            if ((quillInstance.getContents()['ops'] || []).length !== 1) { return false }
+            return quillInstance.getText().trim().length === 0
+        }
+    </script>
+}
+
+<div class="abp-view-modal">
+    <form id="editForm" asp-page="/Vacancies/Edit"  asp-route-id="@Model.Id" autocomplete="off">
+        <abp-modal id="VacancyEditModal">
+            <abp-modal-header title="@L["Update"].Value"></abp-modal-header>
+
+            <abp-modal-body>
+                <abp-input asp-for="Input.Title" />
+ 
+                <div class="mb-3">
+                    <label class="form-label" asp-for="Input.CompanyId"></label><span> *</span>
+                    <select asp-for="Input.CompanyId"
+                            class="auto-complete-select"
+                            data-autocomplete-api-url="/api/app/companies/for-auto-complete"
+                            data-autocomplete-display-property="name"
+                            data-autocomplete-value-property="id"
+                            data-autocomplete-items-property="items"
+                            data-autocomplete-filter-param-name="filter">
+                        @if (Model.SelectedCompany is not null)
+                        {
+                            <option selected value="@Model.SelectedCompany.Id">@Model.SelectedCompany.Name</option>
+                        }
+                    </select>
+                    <span asp-validation-for="Input.CompanyId" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label" for="Ezekia_DisplayName">@L["EzekiaID"].Value</label>
+                    <input class="form-control" id="Ezekia_DisplayName" value="@ViewData["EzekiaIDDisplayName"]" readonly />
+                </div>
+
+                <abp-select asp-for="Input.IdentityUserId" asp-items="Model.IdentityUserLookupListRequired" />
+                
+                <div class="mb-3">
+                    <label class="form-label" asp-for="Input.ContributorIds"></label>
+                    <select asp-for="Input.ContributorIds"
+                            class="auto-complete-select"
+                            multiple="multiple"
+                            data-autocomplete-api-url="/api/app/vacancies/for-user-auto-complete"
+                            data-autocomplete-display-property="name"
+                            data-autocomplete-value-property="id"
+                            data-autocomplete-items-property="items"
+                            data-autocomplete-filter-param-name="filter">
+                        @foreach (var contributor in Model.SelectedContributors)
+                        {
+                            <option selected value="@contributor.IdentityUserId">@contributor.Contributor.DisplayName</option>
+                        }
+                    </select>
+                    <span asp-validation-for="Input.ContributorIds" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label" asp-for="Input.PracticeGroupIds"></label><span> *</span>
+                    <select asp-for="Input.PracticeGroupIds"
+                            class="auto-complete-select"
+                            multiple="multiple"
+                            data-autocomplete-api-url="/api/app/practice-groups/for-auto-complete"
+                            data-autocomplete-display-property="name"
+                            data-autocomplete-value-property="id"
+                            data-autocomplete-items-property="items"
+                            data-autocomplete-filter-param-name="filter">
+                        @foreach (var practiceGroup in Model.SelectedPracticeGroups)
+                        {
+                            <option selected value="@practiceGroup.Id">@practiceGroup.Name</option>
+                        }
+                    </select>
+                    <span asp-validation-for="Input.PracticeGroupIds" class="text-danger"></span>
+                </div>
+
+                <abp-input asp-for="Input.Role" />
+
+                <div class="mb-3">
+                    <label class="form-label" asp-for="Input.RoleTypeIds">@L["RoleType"].Value</label>
+                    <select asp-for="Input.RoleTypeIds"
+                            class="auto-complete-select"
+                            multiple="multiple"
+                            data-autocomplete-api-url="/api/app/vacancies/of-role-types"
+                            data-autocomplete-display-property="name"
+                            data-autocomplete-value-property="id"
+                            data-autocomplete-items-property="items">
+                        @foreach (var srt in Model.SelectedRoleTypes)
+                        {
+                            <option selected value="@srt.Value">@srt.Text</option>
+                        }
+                    </select>
+                </div>
+
+                <abp-input asp-for="Input.Salary" />
+
+                <abp-input asp-for="Input.Benefits" />
+
+                <abp-input asp-for="Input.Location" />
+
+                <div class="mb-3">
+                    <label class="form-label" asp-for="Input.Regions"></label><span> *</span>
+                    <select asp-for="Input.Regions"
+                            class="auto-complete-select"
+                            multiple="multiple"
+                            data-autocomplete-api-url="/api/app/regions"
+                            data-autocomplete-display-property="description"
+                            data-autocomplete-value-property="id"
+                            data-autocomplete-items-property="items"
+                            data-autocomplete-filter-param-name="filter">
+                        @if (Model.Input.Regions != null)
+                        {
+                            foreach (var region in Model.Input.Regions)
+                            {
+                                <option selected value="@((int)region)">@region.GetDescription()</option>
+                            }
+                        }
+                    </select>
+                    <span asp-validation-for="Input.Regions" class="text-danger"></span>
+                </div>
+
+                <abp-input asp-for="Input.Description" hidden="true" add-margin-bottom-class="false" />
+                <div id="editor" class="mb-3"></div>
+
+                <abp-input asp-for="Input.BrochureFileId" type="hidden" />
+                <div class="mb-3">
+                    <label for="vacancybrochureFileFile" class="form-label">@L["BrochureFile"]</label>
+                    <div class="mb-2 @(Model.Input.BrochureFileId != null && Model.Input.BrochureFileId != Guid.Empty ? "" : "d-none")" id="vacancybrochureFileManager">
+                        <div class="btn-group" role="group">
+                            <button type="button" class="btn btn-primary download-selected-file-btn" data-file-id="@Model.Input.BrochureFileId" data-bs-toggle="tooltip" data-bs-placement="top" title="@L["DownloadSelectedFile"].Value"><i class="fa fa-file-alt"></i></button>
+                            <button type="button" class="btn btn-primary btn-danger" id="RemoveSelectedvacancyBrochureFile" data-bs-toggle="tooltip" data-bs-placement="top" title="@L["RemoveSelectedFile"].Value"><i class="fa fa-trash"></i></button>
+                        </div>
+                    </div>
+                    <div id="vacancybrochureFileInputGroup" class="@(Model.Input.BrochureFileId != null && Model.Input.BrochureFileId != Guid.Empty ? "d-none" : "")">
+                        <input class="form-control" type="file" id="vacancybrochureFileFile" name="vacancybrochureFileFile" />
+                        <span class="text-danger field-validation-valid" data-valmsg-for="vacancybrochureFileFile" data-valmsg-replace="true"></span>
+                        <abp-button size="Small" button-type="Primary" class="js-clear-file mt-1" data-input-id="vacancybrochureFileFile" data-file-id="Input_BrochureFileId">@L["ClearFile"]</abp-button>
+                    </div>
+                </div>
+
+                <abp-input asp-for="Input.AdditionalFileId" type="hidden" />
+                <div class="mb-3">
+                    <label for="vacancyadditionalFileFile" class="form-label">@L["AdditionalFile"]</label>
+                    <div class="mb-2 @(Model.Input.AdditionalFileId != null && Model.Input.AdditionalFileId != Guid.Empty ? "" : "d-none")" id="vacancyadditionalFileManager">
+                        <div class="btn-group" role="group">
+                            <button type="button" class="btn btn-primary download-selected-file-btn" data-file-id="@Model.Input.AdditionalFileId" data-bs-toggle="tooltip" data-bs-placement="top" title="@L["DownloadSelectedFile"].Value"><i class="fa fa-file-alt"></i></button>
+                            <button type="button" class="btn btn-primary btn-danger" id="RemoveSelectedvacancyAdditionalFile" data-bs-toggle="tooltip" data-bs-placement="top" title="@L["RemoveSelectedFile"].Value"><i class="fa fa-trash"></i></button>
+                        </div>
+                    </div>
+                    <div id="vacancyadditionalFileInputGroup" class="@(Model.Input.AdditionalFileId != null && Model.Input.AdditionalFileId != Guid.Empty ? "d-none" : "")">
+                        <input class="form-control" type="file" id="vacancyadditionalFileFile" name="vacancyadditionalFileFile" />
+                        <span class="text-danger field-validation-valid" data-valmsg-for="vacancyadditionalFileFile" data-valmsg-replace="true"></span>
+                        <abp-button size="Small" button-type="Primary" class="js-clear-file mt-1" data-input-id="vacancyadditionalFileFile" data-file-id="Input_AdditionalFileId">@L["ClearFile"]</abp-button>
+                    </div>
+                </div>
+
+                <abp-input asp-for="Input.FormalInterviewDate" />
+
+                <abp-input asp-for="Input.SecondInterviewDate" />
+
+                <abp-date-picker asp-for="Input.ExternalPostingDate" auto-update-input="true" visible-date-format="DD/MM/YYYY" />
+
+                <abp-date-picker asp-for="Input.ExpiringDate" auto-update-input="true" visible-date-format="DD/MM/YYYY" />
+
+                <abp-date-picker asp-for="Input.ClosingDate" auto-update-input="true" visible-date-format="DD/MM/YYYY" />
+
+                <div class="mb-3">
+                    <label class="form-label" for="Vacancy_MediaSourceIds">@L["MediaSource"].Value</label>
+                    <select asp-for="Input.MediaSourceIds"
+                            class="auto-complete-select"
+                            multiple="multiple"
+                            data-autocomplete-api-url="/api/app/vacancies/of-media-sources"
+                            data-autocomplete-display-property="name"
+                            data-autocomplete-value-property="id"
+                            data-autocomplete-items-property="items"
+                            data-autocomplete-filter-param-name="filter">
+                        @foreach (var sms in Model.SelectedMediaSources)
+                        {
+                            <option selected value="@sms.Value">@sms.Text</option>
+                        }
+                    </select>
+                </div>
+                
+                <abp-select asp-for="Input.VacancyFormDefinitionId" asp-items="Model.VacancyFormDefinitionLookupList" label="@L["VacancyFormDefinition"].Value" />
+                
+                <abp-select asp-for="Input.DiversityFormDefinitionId" asp-items="Model.DiversityFormDefinitionLookupList" label="@L["DiversityFormDefinition"].Value" />
+
+                <abp-input asp-for="Input.LinkedInUrl" />
+
+                <abp-input asp-for="Input.Reference" readonly="@(true)" />
+
+                <abp-input asp-for="Input.ShowDiversity" />
+
+                <abp-input asp-for="Input.Flag_HideVacancy" label="@L["FlagHideVacancy"].Value" />
+
+                <abp-input asp-for="Input.ConcurrencyStamp" hidden="true" suppress-label="true" />
+
+
+            </abp-modal-body>
+
+            <abp-modal-footer>
+                <a href="/Vacancies" class="btn btn-outline-primary">Cancel</a>
+                <button class="btn btn-primary" data-busy-text="Saving..." type="submit"><i class="fa fa-check"></i> <span>Save</span></button>
+            </abp-modal-footer>
+        </abp-modal>
+    </form>
+</div>

@@ -1,0 +1,702 @@
+//       SUMMARY TABLE     
+// =========================
+// 1. Utils
+// =========================
+
+
+// 1. Utils
+// =========================
+
+.page {
+	padding-top: 13.2rem;
+
+	@include breakpoint(991px) {
+		padding-top: 10rem;
+	}
+}
+
+
+
+.people-links {
+	display: flex;
+	align-items: center;
+	flex-wrap: wrap;
+
+	@include breakpoint(991px) {
+		padding-top: 1.8rem;
+	}
+
+	a,
+	button {
+		margin-right: 12px;
+	}
+
+	a {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		position: relative;
+		height: 4rem;
+		width: 4rem;
+		background-color: #fff;
+		border-radius: 50%;
+
+		&.linkedin {
+			svg {
+				@include transform(translate(1px, -1px));
+			}
+		}
+
+		&:before {
+			content: '';
+			display: block;
+			position: absolute;
+			top: 0;
+			left: 0;
+			height: 100%;
+			width: 100%;
+			border: 1px solid $lightpink;
+			border-radius: 50%;
+			pointer-events: none;
+		}
+
+		&:after {
+			content: '';
+			display: block;
+			position: absolute;
+			top: 0;
+			left: 0;
+			height: 100%;
+			width: 100%;
+			border: 3px solid $lightpink;
+			opacity: 0;
+			@include transition(all 0.4s $smooth);
+			@include transform(scale(1.2));
+			border-radius: 50%;
+		}
+
+		&:hover {
+			&:after {
+				opacity: 1;
+				@include transform(scale(1));
+			}
+		}
+
+		&.phone {
+			height: 3.2rem !important;
+			width: 18rem !important;
+			display: flex;
+			align-items: center;
+			border-radius: 100px;
+			margin-top: 8px;
+			padding-left: 8px;
+			justify-content: flex-start;
+
+			path,
+			rect {
+				@include transition(all 0.4s $smooth);
+			}
+
+			@media screen and (min-width: 992px) {
+				&:hover {
+					svg {
+						rect {
+							fill: $pink;
+						}
+
+						path {
+							fill: #fff;
+						}
+					}
+				}
+			}
+
+			svg {
+				display: block;
+				margin-right: 1.6rem;
+			}
+
+			&:before,
+			&:after {
+				display: none;
+			}
+
+			span {
+				color: $midgrey1;
+				font-weight: 600;
+				font-size: 1.4rem;
+			}
+		}
+	}
+
+	.read-bio {
+		display: flex;
+		align-items: center;
+		height: 4rem;
+		background-color: $lightpink;
+		border-radius: 100px;
+		min-width: 8.8rem;
+		justify-content: center;
+		appearance: none;
+		border: none;
+		color: $grey;
+		font-weight: 700;
+		font-size: 1.4rem;
+		@include transition(all 0.4s $smooth);
+
+		span {
+			display: block;
+			@include transform(translateY(-1px));
+		}
+
+		&:hover {
+			background-color: $pink;
+			color: #fff;
+		}
+	}
+}
+
+.dark .people-links {
+	.read-bio {
+		&:hover {
+			background-color: #fff;
+			color: $pink;
+		}
+	}
+
+	a {
+		background-color: $midgrey1;
+
+		&.linkedin {
+			svg {
+				path {
+					fill: #fff;
+				}
+			}
+		}
+
+		&:hover {
+			&:before {
+				border-color: $lightpink;
+			}
+		}
+	}
+}
+
+.component {
+	&.padS {
+		padding-top: 4rem;
+
+		@include breakpoint(991px) {
+			padding-top: 2rem;
+		}
+
+		&.padBottom {
+			padding-bottom: 4rem;
+
+			@include breakpoint(991px) {
+				padding-bottom: 2rem;
+			}
+		}
+	}
+
+	&.padM {
+		padding-top: 6rem;
+
+		@include breakpoint(991px) {
+			padding-top: 4rem;
+		}
+
+		&.padBottom {
+			padding-bottom: 6rem;
+
+			@include breakpoint(991px) {
+				padding-bottom: 4rem;
+			}
+		}
+	}
+
+	&.padL {
+		padding-top: 18rem;
+
+		@include breakpoint(991px) {
+			padding-top: 8rem;
+		}
+
+		&.padBottom {
+			padding-bottom: 18rem;
+
+			@include breakpoint(991px) {
+				padding-bottom: 8rem;
+			}
+		}
+	}
+}
+
+.full {
+	display: block;
+	height: 100%;
+	width: 100%;
+	object-fit: cover;
+	object-position: center;
+}
+
+
+.btn {
+	height: 4.8rem;
+	width: 22.4rem;
+	display: flex;
+	align-items: center;
+	border: 1px solid rgba(167, 171, 178, 0.5);
+	border-radius: 100px;
+	padding: 0 2.8rem;
+	color: #fff;
+	font-family: 'Open Sans';
+	font-size: 1.4rem;
+	font-weight: 700;
+	background-color: $pink;
+	justify-content: center;
+	@include transition(all 0.4s $smooth);
+
+	@include breakpoint(991px) {
+
+		&:hover,
+		&:active {
+			color: $pink !important;
+			border: 1px solid rgba(167, 171, 178, 0.5) !important;
+			background-color: #fff !important;
+		}
+	}
+
+	@media screen and (min-width: 992px) {
+		&:hover {
+			background-color: $pink;
+			border-color: $pink;
+			color: #fff;
+		}
+	}
+
+	&-square {
+		border-radius: 0;
+		text-align: center;
+		color: #fff;
+	}
+
+	&-secondary {
+		background-color: $grey;
+		color: #fff;
+	}
+
+	&-md-stretch {
+		@include breakpoint($breakpoint-md) {
+			width: 100%;
+		}
+	}
+}
+
+.buttons {
+	display: flex;
+	align-items: center;
+
+	.btn {
+		margin-right: 2rem;
+	}
+
+	@include breakpoint(991px) {
+		.btn {
+			width: calc(100% - 6.8rem);
+		}
+	}
+}
+
+.play-video {
+	display: flex;
+	align-items: center;
+	background-color: #fff;
+	height: 4.8rem;
+	width: 4.8rem;
+	border: 1px solid rgba(167, 171, 178, 0.5);
+	border-radius: 50%;
+	padding: 0;
+	justify-content: center;
+	@include transition(all 0.4s $smooth);
+	position: relative;
+
+	&:after {
+		content: '';
+		display: block;
+		position: absolute;
+		top: -1px;
+		left: -1px;
+		height: calc(100% + 2px);
+		width: calc(100% + 2px);
+		border: 3px solid $pink;
+		opacity: 0;
+		@include transition(all 0.4s $smooth);
+		@include transform(scale(1.2));
+		border-radius: 50%;
+	}
+
+	svg {
+		display: block;
+	}
+
+	@media screen and (min-width: 992px) {
+		&:hover {
+			&:after {
+				opacity: 1;
+				@include transform(scale(1));
+			}
+		}
+	}
+}
+
+.play-with-text {
+	appearance: none;
+	border: none;
+	display: flex;
+	align-items: center;
+	background-color: transparent;
+
+	.text {
+		color: $pink;
+		font-weight: 700;
+		font-size: 1.4rem;
+		margin-left: 1rem;
+	}
+
+	@media screen and (min-width: 992px) {
+		&:hover {
+			.play-video:after {
+				opacity: 1;
+				@include transform(scale(1));
+			}
+		}
+	}
+}
+
+
+
+
+
+
+.nice-select {
+	height: 4.8rem;
+	width: 30.4rem;
+	border: none;
+	box-shadow: 0 0 0 1px rgba(167, 171, 178, 0.5);
+	border-radius: 32px;
+	display: flex;
+	align-items: center;
+	color: $grey;
+	font-weight: 600;
+	background-color: transparent;
+
+	&:after {
+		border: none;
+		height: 1.2rem;
+		width: 1rem;
+		background: url(../../img/arrow-select.svg) no-repeat center;
+		background-size: contain;
+		@include transform(rotate(0));
+		transform-origin: center;
+		right: 2rem;
+	}
+
+	&.open {
+		background-color: #fff;
+		border-color: #fff;
+		box-shadow: none;
+		border-radius: 24px 24px 0 0;
+
+		&:after {
+			@include transform(rotate(180deg));
+		}
+	}
+
+	.nice-select-dropdown {
+		width: 100%;
+		border-radius: 0 0 24px 24px;
+		border: none;
+		left: 0;
+		box-shadow: none;
+		margin: 0;
+
+		.list {
+			padding-top: 2rem;
+			padding-bottom: 2rem;
+			position: relative;
+			margin: 0;
+
+			&:before {
+				content: '';
+				display: block;
+				position: absolute;
+				width: calc(100% - 3.6rem);
+				height: 1px;
+				background-color: rgba(167, 171, 178, 0.5);
+				top: 1px;
+				left: 1.8rem;
+			}
+
+			li {
+				background-color: transparent;
+				font-size: 1.4rem;
+				font-weight: 600;
+				color: $grey;
+				line-height: 1;
+				padding-top: .5rem;
+				padding-bottom: .5rem;
+				padding-left: 3rem;
+				position: relative;
+				white-space: initial;
+
+				&.selected {
+					background-color: transparent;
+
+					&:before {
+						content: '';
+						display: block;
+						height: 4px;
+						width: 4px;
+						background-color: $ctapink;
+						border-radius: 50%;
+						position: absolute;
+						top: 1rem;
+						left: 2rem;
+					}
+				}
+
+				&:focus,
+				&:active,
+				&:hover {
+					background-color: transparent;
+				}
+
+				&:hover {
+					color: $pink;
+				}
+			}
+		}
+	}
+}
+
+.rich-text .nice-select-dropdown ul li:before {
+	display: none;
+}
+
+
+
+.load-more {
+	width: 100%;
+	background-color: transparent;
+	border-color: $pink;
+	height: 5.6rem;
+}
+
+
+
+.tags {
+	display: flex;
+	flex-wrap: wrap;
+
+	.tag {
+		display: flex;
+		align-items: center;
+		margin-right: .8rem;
+		height: 2.8rem;
+		justify-content: center;
+		border: 1px solid rgba(167, 171, 178, 0.5);
+		color: $midgrey1;
+		font-weight: 600;
+		font-size: 1.4rem;
+		padding: 0 1.2rem;
+		border-radius: 2rem;
+
+		&:last-child {
+			margin-right: 0;
+		}
+	}
+}
+
+
+
+.filters {
+	padding: 0 0 8rem 0;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+
+	@include breakpoint(991px) {
+		display: block;
+
+		select {
+			position: absolute;
+		}
+	}
+
+	p {
+		color: $midgrey1;
+
+		@include breakpoint(991px) {
+			text-align: center;
+			margin-bottom: 2rem;
+		}
+	}
+
+	form {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		max-width: 90%;
+
+		@include breakpoint(991px) {
+			max-width: 100%;
+			flex-wrap: wrap;
+			justify-content: center;
+		}
+	}
+
+	.btn {
+		text-align: left;
+
+		@include breakpoint(991px) {
+			text-align: center;
+			width: 16rem;
+			margin-top: 2rem;
+		}
+	}
+
+	.nice-select {
+		max-width: 28%;
+		margin-right: 1rem;
+
+		@include breakpoint(991px) {
+			width: 80%;
+			max-width: 80%;
+			margin: 0 auto 1rem auto;
+		}
+	}
+}
+
+
+
+
+.share {
+	position: relative;
+
+	&__btn {
+		appearance: none;
+		border: none;
+		padding: 0;
+		height: 4rem;
+		width: 4rem;
+		background: url(../../img/share.svg) no-repeat center;
+		background-size: contain;
+		cursor: pointer;
+	}
+
+	&__links {
+		height: 4.8rem;
+		display: flex;
+		align-items: center;
+		border-radius: 45px;
+		background-color: #fff;
+		position: absolute;
+		top: -0.4rem;
+		left: -1px;
+		padding: 0 1rem;
+		opacity: 0;
+		@include transform(scaleX(0));
+		transform-origin: left center;
+		@include transition(transform .1s linear .4s, opacity 0.4s $smooth);
+
+		a {
+			margin-right: 2.4rem;
+			opacity: 0;
+			visibility: hidden;
+			@include transition(all 0.6s $smooth);
+
+			&:last-child {
+				margin-right: 0;
+			}
+
+			svg {
+				path {
+					@include transition(all 0.4s $smooth);
+				}
+			}
+
+			&:not(.email):hover {
+				path:first-child {
+					fill: $pink;
+				}
+
+				path:not(:first-child) {
+					fill: #fff;
+				}
+			}
+
+			&.email:hover {
+				path:first-child {
+					fill: $pink;
+				}
+
+				path:not(:first-child) {
+					stroke: #fff;
+				}
+			}
+		}
+	}
+
+	&__close {
+		appearance: none;
+		padding: 0;
+		border: none;
+		background: transparent;
+		margin-right: 4rem;
+		opacity: 0;
+		visibility: hidden;
+		@include transition(all 0.6s $smooth);
+
+		rect {
+			@include transition(fill 0.4s $smooth);
+		}
+
+		&:hover {
+			rect:first-child {
+				fill: $pink;
+			}
+		}
+	}
+
+	&.show {
+		.share__links {
+			@include transform(scaleX(1));
+			opacity: 1;
+			@include transition(transform .6s $smooth);
+
+			.share__close,
+			a {
+				opacity: 1;
+				visibility: visible;
+				@include transition(all 0.6s $smooth .4s);
+			}
+		}
+	}
+}
+
+.country-selector {
+	display: none;
+}
+
+.border-1 {
+	&.card {
+		border-width: 1px;
+	}
+}
+
+.card-link-icon {
+	width: 1.4rem;
+	height: 1.8rem;
+}

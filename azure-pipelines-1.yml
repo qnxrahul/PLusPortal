@@ -1,0 +1,113 @@
+parameters:
+- name: SourceBranch
+  displayName: Source Branch
+  type: string
+  default: main
+  values:
+  - main
+- name: TargetBranch
+  displayName: Target Branch
+  type: string
+  default: steer73-main
+  values:
+  - steer73-main
+
+variables:
+- name: GitUserEmail
+  readonly: true
+  value: alex@steer73.com
+- name: GitUserName
+  readonly: true
+  value: Steer73 Code Shipment Service
+- name: TargetDevOpsInstance
+  readonly: true
+  value: dev.azure.com
+- name: TargetRepositoryPath
+  readonly: true
+  value: ROCKITSpecialists/_git/ROCK%20ATS
+
+pool:
+  vmImage: ubuntu-latest
+
+trigger: none
+
+steps:
+- checkout: self
+  displayName: Clone the repo
+  persistCredentials: true
+  fetchDepth: 0
+
+- script: |
+    echo "Configuring git to use '$(GitUserEmail)' & '$(GitUserName)'" &&
+    git config --global user.email "$(GitUserEmail)" &&
+    git config --global user.name "$(GitUserName)"
+  displayName: Configure Git
+
+- script: |
+    git fetch &&
+    git switch ${{ parameters.SourceBranch }}
+  displayName: Checkout source branch
+
+- script: |
+    if git show-ref --quiet ${{ parameters.TargetBranch }}; then
+      echo "Target branch exists" &&
+      echo "##vso[task.setvariable variable=TargetBranchExists;]true" &&
+      echo "##vso[task.setvariable variable=AllowUnrelatedHistories;]"
+    else
+      echo "Target branch doesn't exist" &&
+      echo "##vso[task.setvariable variable=TargetBranchExists;]false" &&
+      echo "##vso[task.setvariable variable=AllowUnrelatedHistories;]--allow-unrelated-histories"
+    fi
+  displayName: Check if target branch exists
+
+- script: |
+    echo "Creating an empty orphan shipping branch" &&
+    git switch --orphan ${{ parameters.TargetBranch }} &&
+    git commit -m "Init branch" --allow-empty &&
+    git push --set-upstream origin ${{ parameters.TargetBranch }}
+  condition: eq(variables['TargetBranchExists'], false)
+  displayName: Create target branch if not exists
+
+- script: |
+    git switch ${{ parameters.SourceBranch }} &&
+    LastSourceBranchCommitHash=$(git rev-parse HEAD) &&
+    echo "##vso[task.setvariable variable=LastSourceBranchCommitHash;]${LastSourceBranchCommitHash}" &&
+
+    git switch ${{ parameters.TargetBranch }} &&
+    LastTargetBranchCommitHash=$(git rev-parse HEAD) &&
+    echo "##vso[task.setvariable variable=LastTargetBranchCommitHash;]${LastTargetBranchCommitHash}" &&
+
+    echo "The last hash values of source and target branches are '${LastSourceBranchCommitHash}' and '${LastTargetBranchCommitHash}'" &&
+
+    if [ "$(TargetBranchExists)" = false ]; then
+      echo "No merge base will be used since it's the initial commit"
+    else
+      git switch ${{ parameters.TargetBranch }} &&
+      LastShippedCommitHash=$(git log -1 --format=%B | awk 'NF > 0 && NR > 1') &&
+      echo "##vso[task.setvariable variable=MergeBaseHash;]${LastShippedCommitHash}" &&
+      echo "The last shipped commit from the source branch, for which its hash is found from the description field of the last commit in the target branch, will be used as the merge base: ${LastShippedCommitHash}"
+    fi
+  displayName: Find the merge base hash and last commit hashes
+
+- script: |
+    git switch ${{ parameters.TargetBranch }} &&
+    echo "Grafting $(LastTargetBranchCommitHash) onto $(MergeBaseHash)" &&
+    git replace --graft $(LastTargetBranchCommitHash) $(MergeBaseHash)
+  condition: eq(variables['TargetBranchExists'], true)
+  displayName: Graft target branch onto the source branch if target exists
+
+- script: |
+    git switch ${{ parameters.TargetBranch }} &&
+    git merge $(AllowUnrelatedHistories) --squash -X theirs ${{ parameters.SourceBranch }} &&
+
+    if [ "$(TargetBranchExists)" = true ]; then
+      echo "Deleting the grafted replace ref $(LastTargetBranchCommitHash)" &&
+      git replace -d $(LastTargetBranchCommitHash)
+    fi &&
+
+    git commit -m "Code shipment" -m "$(LastSourceBranchCommitHash)" --allow-empty &&
+    git push
+  displayName: Update local target branch
+
+- script: git push https://$(TargetOrgPAT)@$(TargetDevOpsInstance)/$(TargetRepositoryPath)
+  displayName: Ship the code

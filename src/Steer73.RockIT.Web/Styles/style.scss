@@ -1,0 +1,34 @@
+// 1. Libraries
+// =========================
+$grid-gutter-width: 1.6rem;
+
+// @import "node_modules/bootstrap/scss/bootstrap";
+
+
+// 2. Base & helpers
+// =========================
+@import "base/reset";
+@import "base/fonts";
+@import "base/variables";
+@import "helpers/mixins";
+@import "base/text";
+@import "base/common";
+@import "base/layout";
+@import "base/variables";
+
+// 3. Components
+// =========================
+@import "components/form";
+@import "components/header";
+@import "components/footer";
+@import "components/home";
+@import "components/search";
+@import "components/vacancy";
+@import "components/practice-groups";
+@import "components/more-info";
+
+// 4. Pages
+
+// 5. Miscellaneous
+// =========================
+@import "shame";

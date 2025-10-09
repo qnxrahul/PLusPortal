@@ -1,0 +1,109 @@
+﻿@page "{vacancyId}"
+@model Steer73.RockIT.Web.Pages.VacancyDetailModel
+@using Steer73.RockIT.Enums
+
+@{
+    Layout = "_CandidatePortalLayout.cshtml";
+}
+
+<div class="container main">
+    <div class="row">
+        <div class="col-sm-12 col-md-8 col-lg-9">
+            <div class="vacancy__details d-flex gap-5">
+                @{
+                    var logoUrl = string.IsNullOrWhiteSpace(Model.VacancyDto.Company.LogoUrl)
+                    ? "/images/company/default-company-logo.jpg"
+                    : Model.VacancyDto.Company.LogoUrl;
+                }
+                <img class="flex-grow-0 flex-shrink-0" src="@logoUrl" />
+                <div class="d-flex flex-grow-1 flex-column gap-lg-2">
+                    <div class="d-flex gap-5 justify-content-between">
+                        <span class="title">@Model.VacancyDto.Vacancy.Title</span>
+                        <span class="reference vacancy__pill">@Model.VacancyDto.Vacancy.ProjectId</span>
+                    </div>
+                    <div class="d-flex flex-column">
+                        <span>@Model.VacancyDto.Company?.Name</span>
+                        <span class="text-black-50">@Model.VacancyDto.Vacancy.Location</span>
+                    </div>
+                    @if (Model.VacancyDto.Vacancy.VacancyStatus != VacancyStatus.Expired.ToString() 
+                        && Model.VacancyDto.Vacancy.VacancyStatus != VacancyStatus.Closed.ToString())
+                    {
+                        <a class="btn btn-primary" href="/VacancyForm/@Model.VacancyId">Apply Now</a>
+                    }
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-12 col-md-4 col-lg-3 mt-2 mt-lg-0">
+            <div class="card vacancy__creator">
+                <div class="d-flex flex-column gap-3">
+                    <p class="text-black-50">Role coordinated by:</p>
+                    <div class="d-flex flex-row">
+                        <img src="/api/account/profile-picture-file/@Model.VacancyDto.IdentityUser.Id" />
+                        <div class="d-flex flex-column justify-content-center ms-2">
+                            <span class="fw-bold vacancy__creator-name">@Model.VacancyDto.IdentityUser.Name @Model.VacancyDto.IdentityUser.Surname</span>
+                            <span>@Model.CompanyRole</span>
+                        </div>
+                    </div>
+                    <div class="d-flex flex-column">
+                        @if (!string.IsNullOrEmpty(Model.VacancyDto.IdentityUser.PhoneNumber))
+                        {
+                            <span>t: @Model.VacancyDto.IdentityUser.PhoneNumber</span>
+                        }
+                        @if (!string.IsNullOrEmpty(Model.VacancyDto.IdentityUser.Email))
+                        {
+                            <span>e: <a href="mailto:@Model.VacancyDto.IdentityUser.Email">@Model.VacancyDto.IdentityUser.Email</a></span>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="divider my-4 my-lg-5"></div>
+        <div class="vacancy__info col-12">
+            <div>
+                <span>Sector</span>    
+                <span>@string.Join(", ", Model.VacancyDto.Vacancy.GroupNames)</span>
+            </div>
+            <div>
+                <span>Salary & Benefits</span>
+                <span>@Model.VacancyDto.Vacancy.Salary @Model.VacancyDto.Vacancy.Benefits</span>
+            </div>
+            <div>
+                <span>Expiry 
+
+
+                </span>
+                <span>@Model.VacancyDto.Vacancy.ExpiringDate.ToString("dd/MM/yyyy")</span>
+            </div>
+           @*  <div>
+                <span>Formal Interview Date</span>
+                <span>@Model.VacancyDto.Vacancy.FormalInterviewDate</span>
+            </div> *@
+        </div>
+        <div class="divider my-4 my-lg-5"></div>
+        
+        @{
+            var todayDateOnly = DateOnly.FromDateTime(DateTime.UtcNow);
+            bool isTrulyExpired =
+            Model.VacancyDto.Vacancy.VacancyStatus == VacancyStatus.Expired.ToString()
+            && todayDateOnly > Model.VacancyDto.Vacancy.ExpiringDate;
+        }
+
+        @if (Model.VacancyDto.Vacancy.VacancyStatus == VacancyStatus.Expired.ToString() 
+        || isTrulyExpired)
+        {
+            <div class="col-12">
+                <div class="alert alert-danger" role="alert">
+                    This vacancy is no longer available.
+                </div>
+            </div>
+        } else {
+            <div class="col-12">
+                @Html.Raw(Steer73.RockIT.Web.Utilities.Helpers.SanitizeDescription(Model.VacancyDto.Vacancy.Description))
+            </div>
+            <div class="vacancy__action col-12 ">
+                <a class="btn btn-secondary" href="/VacancyMoreInfo/@Model.VacancyId">Request More Information</a>
+                <a class="btn btn-primary" href="/VacancyForm/@Model.VacancyId">Apply Now</a>
+            </div>
+        }
+    </div>
+</div>

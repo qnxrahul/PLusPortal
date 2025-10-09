@@ -1,0 +1,71 @@
+//       SUMMARY TABLE     
+// =========================
+// 1. Global
+// =========================
+
+
+// 1. Global
+// =========================
+
+* {
+  box-sizing: border-box;
+  outline: none;
+}
+
+html {
+  overflow-x: hidden;
+}
+
+body {
+  background-color: #F0F2F4;
+  text-rendering: optimizeLegibility;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+  font-smoothing: antialiased;
+  overflow-x: hidden;
+
+  &.dark {
+    background-color: $grey;
+  }
+
+  &.report {
+    background-color: $offblack;
+
+    .header {
+      display: none;
+    }
+  }
+}
+
+img {
+  max-width: 100%;
+}
+
+::-moz-selection {
+  background: #000;
+  color: #fff;
+  text-shadow: none;
+}
+
+::selection {
+  background: #000;
+  color: #fff;
+  text-shadow: none;
+}
+
+.container {
+  @include breakpoint(991px) {
+    padding: 0 1.6rem;
+  }
+
+  @media (min-width: 992px) and (max-width: 1200px) {
+    max-width: 950px;
+  }
+}
+
+@media (min-width: 1480px) {
+  .container {
+      max-width: 1424px;
+  }
+}
+

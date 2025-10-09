@@ -1,0 +1,50 @@
+﻿@page
+@using System.Text.RegularExpressions
+@model Steer73.RockIT.Web.Pages.IndexModel
+
+@{
+    Layout = "_CandidatePortalLayout.cshtml";
+}
+
+<div class="container main">
+    <partial name="_MainTitle" />
+
+    <div>
+        @await Component.InvokeAsync("Search")
+    </div>
+
+    <div class="row practice-group-list">
+        <div class="col-sm-12 col-lg-3 d-flex flex-column justify-content-between">
+            <div class="side-heading">Browse by <span>Sector</span></div>
+            <div class="pb-4 d-none d-lg-block">
+                <img src="~/images/logo/logo-icon.png" />
+            </div>
+        </div>
+        <div class="col-sm-12 col-lg-9">
+            <div class="d-flex flex-column">
+                @if (Model.PracticeGroups.Count > 0)
+                {
+                    <div class="d-flex flex-column flex-lg-row flex-md-row flex-wrap gap-1 practice-groups">
+                        @foreach (var practiceGroup in Model.PracticeGroups)
+                        {
+                            var practiceGroupClass = Regex.Replace(practiceGroup.Name, @"[^a-zA-Z0-9]", "").ToLower();
+
+                            <a href="/PracticeGroup/@practiceGroup.Id" class="d-flex w-100 card flex-grow-1 practice-group @(practiceGroupClass)">
+                                <img src="~/images/card-link.png" class="card-link-icon" />
+                                <div class="card-body d-flex align-items-end">
+                                    <span class="title">
+                                        @practiceGroup.Name
+                                    </span>
+                                </div>
+                            </a>
+                        }
+                    </div>
+                }
+                else
+                {
+                    <div>No Practice Groups Available</div>
+                }
+            </div>
+        </div>
+    </div>
+</div>

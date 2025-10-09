@@ -1,0 +1,25 @@
+Startup Error at 2025-10-08 10:27:48 UTC
+Environment: Development
+Machine: WL-MS-768
+OS: Microsoft Windows NT 10.0.26100.0
+Exception Type: Volo.Abp.AbpInitializationException
+Message: An error occurred during ConfigureServicesAsync phase of the module Volo.Abp.AspNetCore.Mvc.AbpAspNetCoreMvcModule, Volo.Abp.AspNetCore.Mvc, Version=8.3.0.0, Culture=neutral, PublicKeyToken=null. See the inner exception for details.
+Stack Trace:
+   at Volo.Abp.AbpApplicationBase.ConfigureServicesAsync()
+   at Volo.Abp.AbpApplicationFactory.CreateAsync[TStartupModule](IServiceCollection services, Action`1 optionsAction)
+   at Microsoft.Extensions.DependencyInjection.ServiceCollectionApplicationExtensions.AddApplicationAsync[TStartupModule](IServiceCollection services, Action`1 optionsAction)
+   at Microsoft.Extensions.DependencyInjection.WebApplicationBuilderExtensions.AddApplicationAsync[TStartupModule](WebApplicationBuilder builder, Action`1 optionsAction)
+   at Steer73.RockIT.Web.Program.Main(String[] args) in C:\Users\RahulSharma\ROCK PL ATS\src\Steer73.RockIT.Web\Program.cs:line 108
+
+Inner Exception:
+Type: System.Reflection.ReflectionTypeLoadException
+Message: Unable to load one or more of the requested types.
+Method 'GetSessionAsync' in type 'Volo.Abp.Identity.IdentitySettingsController' from assembly 'Volo.Abp.Identity.Pro.HttpApi, Version=8.1.0.0, Culture=neutral, PublicKeyToken=null' does not have an implementation.
+Stack Trace:
+   at System.Reflection.RuntimeModule.GetTypes(RuntimeModule module)
+   at Microsoft.AspNetCore.Mvc.Controllers.ControllerFeatureProvider.PopulateFeature(IEnumerable`1 parts, ControllerFeature feature)
+   at Microsoft.AspNetCore.Mvc.ApplicationParts.ApplicationPartManager.PopulateFeature[TFeature](TFeature feature)
+   at Microsoft.Extensions.DependencyInjection.MvcCoreMvcBuilderExtensions.AddControllersAsServices(IMvcBuilder builder)
+   at Volo.Abp.AspNetCore.Mvc.AbpAspNetCoreMvcModule.ConfigureServices(ServiceConfigurationContext context)
+   at Volo.Abp.Modularity.AbpModule.ConfigureServicesAsync(ServiceConfigurationContext context)
+   at Volo.Abp.AbpApplicationBase.ConfigureServicesAsync()

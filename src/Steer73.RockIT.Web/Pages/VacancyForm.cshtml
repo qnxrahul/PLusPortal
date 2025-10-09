@@ -1,0 +1,199 @@
+﻿@page "{vacancyId}"
+@using System.Web
+@model Steer73.RockIT.Web.Pages.VacancyFormModel
+@{
+    Layout = "_CandidatePortalLayout.cshtml";
+}
+
+@section scripts {
+    <!-- SurveyJS Form Library resources -->
+    <link href="https://unpkg.com/survey-core@1.12.23/defaultV2.min.css" type="text/css" rel="stylesheet">
+    <script src="https://unpkg.com/survey-core@1.12.23/survey.core.min.js"></script>
+    <script src="https://unpkg.com/survey-js-ui@1.12.23/survey-js-ui.min.js"></script>
+
+    <!-- Survey Creator resources -->
+    <link href="https://unpkg.com/survey-creator-core@1.12.23/survey-creator-core.min.css" type="text/css" rel="stylesheet">
+    <script src="https://unpkg.com/survey-creator-core@1.12.23/survey-creator-core.min.js"></script>
+    <script src="https://unpkg.com/survey-creator-js@1.12.23/survey-creator-js.min.js"></script>
+    <script src="/scripts/survey-config.js"></script>
+    <script src="/scripts/vacancy.js"></script>
+
+    <script type="text/javascript">
+        @if (Model.VacancyDto?.FormDefinition?.FormDetails is not null)
+        {
+            <text>var formDefinitionDetails = @Html.Raw(Model.VacancyDto.FormDefinition.FormDetails); </text>
+        }
+        else
+        {
+            <text>var formDefinitionDetails = ""; </text>
+        }
+
+        @if (Model.VacancyDto?.FormDefinition1?.FormDetails is not null)
+        {
+            <text>var formDefinitionDiversity = @Html.Raw(Model.VacancyDto.FormDefinition1.FormDetails); </text>
+        }
+        else
+        {
+            <text>var formDefinitionDiversity = ""; </text>
+        }
+
+        @if (Model.VacancyDto?.Vacancy?.ShowDiversity == true)
+        {
+            <text>var showDiversityForm = true; </text>
+        }
+        else
+        {
+            <text>var showDiversityForm = false; </text>
+        }
+    </script>
+}
+
+
+<abp-input asp-for="FormDefinitionDetails"></abp-input>
+
+<div class="container main">
+    <div class="vacancy-form row">
+        <div class="col-sm-12 col-lg-2">
+            <span class="side-heading">Fill in <span>your details</span></span>
+        </div>
+        <div class="col-sm-12 col-lg-10 card js-job-1">
+            <div class="d-flex justify-content-between px-4 pt-2">
+                <div class="d-flex flex-column">
+                    <span class="vacancy__title">@Model.VacancyDto.Vacancy.Title</span>
+                    <span class="vacancy__subtitle">@Model.VacancyDto.Vacancy.Location</span>
+                </div>
+                <span class="vacancy__pill align-self-start">@Model.VacancyDto.Vacancy.ProjectId</span>
+            </div>
+            <div class="divider my-4"></div>
+            <div class="card-body p-0 px-4">
+                <form class="js-form-1">
+                    <fieldset class="row">
+                        <abp-input type="hidden" asp-for="VacancyId"></abp-input>
+                        <div class="col-sm-12 col-md-6">
+                            <abp-input asp-for="FirstName"></abp-input>
+                        </div>
+                        <div class="col-sm-12 col-md-6">
+                            <abp-input asp-for="LastName"></abp-input>
+                        </div>
+                        <div class="col-sm-12 col-md-6">
+                            <abp-input asp-for="EmailAddress"></abp-input>
+                        </div>
+                        <div class="col-sm-12 col-md-6">
+                            <abp-input asp-for="Title"></abp-input>
+                        </div>
+                        <div class="col-sm-12 col-md-6">
+                            <abp-input asp-for="Aka"></abp-input>
+                        </div>
+                        <div class="col-sm-12 col-md-6">
+                            <abp-input asp-for="PhoneNumber"></abp-input>
+                        </div>
+                        <div class="col-sm-12 col-md-6">
+                            <abp-input asp-for="Landline"></abp-input>
+                        </div>
+                        <div class="col-sm-12 col-md-6">
+                            <abp-input asp-for="CurrentRole"></abp-input>
+                        </div>
+                        <div class="col-sm-12 col-md-6">
+                            <abp-input asp-for="CurrentCompany"></abp-input>
+                        </div>
+                        <div class="col-sm-12 col-md-6">
+                            <abp-select asp-for="CurrentPositionType" asp-items="Model.PositionTypeList" />
+                        </div>
+
+                        <div class="col-sm-12 col-md-6 d-flex flex-column mb-2 form-file-upload">
+                            @* <abp-input asp-for="FileCv"></abp-input> *@
+                            <label class="form-label">CV *</label>
+                            <input class="" name="FileCv" type="file" data-val="true" data-val-required="The CV field is required." id="FileCv" />
+                            <div class="drop-zone js-file-upload-box">
+                                <i class="fa fa-add"></i>
+                                <span>Upload CV</span>
+                            </div>
+                            <span class="subtitle">pdf, docx file not exceeding 2MB</span>
+                            <span class="subtitle d-none">Click again to re-upload the file</span>
+                            <span asp-validation-for="FileCv"></span>
+                        </div>
+
+                        <div class="col-sm-12 col-md-6 d-flex flex-column mb-2 form-file-upload">
+                            <label class="form-label">Cover Letter *</label>
+                            <input class="" name="FileCoverLetter" type="file" data-val="true" data-val-required="The Cover Letter field is required." id="FileCoverLetter" />
+                            <div class="drop-zone js-file-upload-box">
+                                <i class="fa fa-add"></i>
+                                <span>Upload cover letter</span>
+                            </div>
+                            <span class="subtitle">pdf, docx file not exceeding 2MB</span>
+                            <span class="subtitle d-none">Click again to re-upload the file</span>
+                            <span asp-validation-for="FileCoverLetter"></span>
+                        </div>
+
+                        <div class="col-sm-12 col-md-6 d-flex flex-column mb-2 form-file-upload">
+                           <label class="form-label">Additional Documents</label>
+                            <input class="" name="FileAdditionalDoc" type="file" />
+                            <div class="drop-zone js-file-upload-box">
+                                <i class="fa fa-add"></i>
+                                <span>Upload additional documents</span>
+                            </div>
+                            <span class="subtitle">pdf, docx file not exceeding 2MB</span>
+                            <span class="subtitle d-none">Click again to re-upload the file</span>
+                            <span asp-validation-for="FileAdditionalDoc"></span>
+                        </div>
+
+                        <div class="col-12 my-3">
+                            <input type="checkbox" class="form-checkbox js-terms-conditions" id="TermsConditionsCheck" />
+                            <label for="TermsConditionsCheck">
+                                I have read and understood the <a href="https://perrettlaver.com/terms-of-use/">Terms & conditions</a> and <a href="https://perrettlaver.com/privacy-policy/">Privacy Policy</a>.
+                                I confirm that I have read and understood how Perrett Laver will process my data.
+                            </label>
+                        </div>
+                    </fieldset>
+                </form>
+            </div>
+            <div class="card-footer d-flex justify-content-end">
+                <a class="btn btn-secondary m-1" href="/VacancyDetail/@Model.VacancyId">Cancel</a>
+                <a class="btn btn-primary js-job-1-next m-1">Next</a>
+            </div>
+        </div>
+        <div class="col-sm-12 col-lg-10 card js-job-2 d-none">
+            <div class="card-body">
+                @(await Html.PartialAsync("Shared/Vacancy/_DiversityInfo.cshtml"))
+            </div>
+        </div>
+        <div class="col-sm-12 col-lg-10 card js-job-3 d-none">
+            <div class="card-body">
+            </div>
+        </div>
+        <div class="col-sm-12 col-lg-10 card js-job-4 d-none">
+            <div class="card-body">
+            </div>
+        </div>
+        <div class="col-sm-12 col-lg-10 card card__status js-submit-message d-none">
+            <h1>Please wait while your job application is getting posted</h1>
+        </div>
+        <div class="col-sm-12 col-lg-10 card card__status js-success-message d-none">
+            @if (Model.IsRegistrationVacancy)
+            {
+                <h1>Thank you for registering with Perrett Laver.</h1>
+            }
+            else
+            {
+                <h1>Your job application has been successfully submitted.</h1>
+            }
+        </div>
+        <div class="col-sm-12 col-lg-10 card card__status js-error-message d-none">
+            <h1>Something went wrong</h1>
+            <a href="/VacancyForm/@Model.VacancyId" class="mt-2">Please try again later</a>
+        </div>
+        <div class="col-sm-12 col-lg-10 offset-lg-2 footer-info mt-5">
+            <p>
+                Protecting your personal data is of the upmost importance to Perrett Laver and we take this responsibility very seriously. Any information obtained by our trading divisions is held and processed in accordance with the relevant data protection legislation. The data you provide us with is securely stored on our computerised database and transferred to our clients for the purposes of presenting you as a candidate and/or considering your suitability for a role you have registered interest in.
+            </p>
+
+            <p>
+                In line with GDPR, we ask that you do NOT send us any information that can identify children or any of your Sensitive Personal Data (racial or ethnic origin, political opinions, religious or philosophical beliefs, trade union membership, data concerning health or sex life and sexual orientation, genetic and / or biometric data) in your CV and application documentation. Following this notice, any inclusion of your Sensitive Personal Data in your CV/application documentation will be understood by us as your express consent to process this information going forward.
+            </p>
+
+            <p>
+                Perrett Laver is a Data Controller and a Data Processor, as defined under the General Data Protection Regulation (GDPR). Our legal basis for much of our data processing activity is 'Legitimate Interests'. For more information about this, your rights, and our approach to Data Protection and Privacy, please <a href="http://www.perrettlaver.com/information/privacy-policy/">visit our website</a>.
+            </p>
+        </div>
+    </div>
+</div>

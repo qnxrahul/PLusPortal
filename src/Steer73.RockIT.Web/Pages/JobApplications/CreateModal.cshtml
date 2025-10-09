@@ -1,0 +1,86 @@
+@page
+@using Microsoft.AspNetCore.Mvc.Localization
+@using Steer73.RockIT.Localization
+@using Volo.Abp.AspNetCore.Mvc.UI.Bootstrap.TagHelpers.Modal
+@using Steer73.RockIT.Web.Pages.JobApplications
+@using Steer73.RockIT.JobApplications;
+@using System.Globalization
+@inject IHtmlLocalizer<RockITResource> L
+@model CreateModalModel
+@{
+    Layout = null;
+}
+
+
+<form data-ajaxForm="true" asp-page="/JobApplications/CreateModal" autocomplete="off">
+    <abp-modal id="JobApplicationCreateModal">
+        <abp-modal-header title="@L["NewJobApplication"].Value"></abp-modal-header>
+
+        <abp-modal-body>
+            @*//<suite-custom-code-block-1>*@
+            @*//</suite-custom-code-block-1>*@
+
+
+
+
+            <abp-input asp-for="JobApplication.FirstName" />
+
+
+            <abp-input asp-for="JobApplication.LastName" />
+
+
+            <abp-input asp-for="JobApplication.EmailAddress" />
+
+
+            <abp-input asp-for="JobApplication.Title" />
+
+
+            <abp-input asp-for="JobApplication.PhoneNumber" />
+
+
+            <abp-input asp-for="JobApplication.Landline" />
+
+
+            <abp-input asp-for="JobApplication.CurrentRole" />
+
+
+            <abp-input asp-for="JobApplication.CurrentCompany" />
+
+
+            <abp-input asp-for="JobApplication.CurrentPositionType" />
+            <abp-input asp-for="JobApplication.CVUrl" type="hidden" />
+
+            <div class="mb-3">
+                <label for="jobApplicationcVFile" class="form-label">@L["CV"]</label>
+                <input class="form-control" type="file" id="jobApplicationcVFile" name="jobApplicationcVFile" />
+                <span class="text-danger field-validation-valid" data-valmsg-for="jobApplicationcVFile" data-valmsg-replace="true"></span>
+            </div>
+            <abp-input asp-for="JobApplication.CoverLetterUrl" type="hidden" />
+
+            <div class="mb-3">
+                <label for="jobApplicationcoverLetterFile" class="form-label">@L["CoverLetter"]</label>
+                <input class="form-control" type="file" id="jobApplicationcoverLetterFile" name="jobApplicationcoverLetterFile" />
+                <span class="text-danger field-validation-valid" data-valmsg-for="jobApplicationcoverLetterFile" data-valmsg-replace="true"></span>
+            </div>
+            <abp-input asp-for="JobApplication.AdditionalDocumentUrl" type="hidden" />
+
+            <div class="mb-3">
+                <label for="jobApplicationadditionalDocumentFile" class="form-label">@L["AdditionalDocument"]</label>
+                <input class="form-control" type="file" id="jobApplicationadditionalDocumentFile" name="jobApplicationadditionalDocumentFile" />
+                <span class="text-danger field-validation-valid" data-valmsg-for="jobApplicationadditionalDocumentFile" data-valmsg-replace="true"></span>
+            </div>
+
+            <abp-select asp-for="JobApplication.VacancyId" asp-items="Model.VacancyLookupListRequired" label="@L["Vacancy"].Value" />
+
+            @*//<suite-custom-code-block-2>*@
+            @*//</suite-custom-code-block-2>*@
+            @*//<suite-custom-code-block-3>*@
+            @*//</suite-custom-code-block-3>*@
+        </abp-modal-body>
+
+        <abp-modal-footer buttons="@(AbpModalButtons.Cancel|AbpModalButtons.Save)">
+            @*//<suite-custom-code-block-4>*@
+            @*//</suite-custom-code-block-4>*@
+        </abp-modal-footer>
+    </abp-modal>
+</form>

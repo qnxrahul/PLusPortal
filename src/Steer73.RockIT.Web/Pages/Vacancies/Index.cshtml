@@ -1,0 +1,203 @@
+@page
+@using Microsoft.AspNetCore.Authorization
+@using Volo.Abp.AspNetCore.Mvc.UI.Layout
+@using Steer73.RockIT.Permissions
+@using Steer73.RockIT.Web.Pages.Vacancies
+@using Steer73.RockIT.Web.Menus
+@using Microsoft.AspNetCore.Mvc.Localization
+@using Steer73.RockIT.Localization
+@inject IHtmlLocalizer<RockITResource> L
+@inject IAuthorizationService Authorization
+@model IndexModel
+@inject IPageLayout PageLayout
+@{
+    PageLayout.Content.Title = L["Vacancies"].Value;
+    PageLayout.Content.MenuItemName = RockITMenus.Vacancies;
+}
+
+@section styles
+{
+@*//<suite-custom-code-block-1>*@
+@*//</suite-custom-code-block-1>*@
+}
+
+@section scripts
+{
+    <abp-script src="/Pages/Vacancies/index.js" />
+@*//<suite-custom-code-block-2>*@
+@*//</suite-custom-code-block-2>*@
+}
+
+@section content_toolbar {
+
+    @if (await Authorization.IsGrantedAsync(RockITSharedPermissions.Vacancies.Create))
+    {
+        @* <abp-button id="NewVacancyButton" text="@L["NewVacancy"].Value" icon="plus" size="Small" button-type="Primary" href="/vacancies/CreateModal" /> *@
+        <a class="btn btn-primary btn-sm" href="/Vacancies/Create"><i class="fa fa-plus"></i> @L["NewVacancy"].Value</a>
+    }
+@*//<suite-custom-code-block-3>*@
+@*//</suite-custom-code-block-3>*@
+}
+
+@*//<suite-custom-code-block-4>*@
+@*//</suite-custom-code-block-4>*@
+
+<abp-card>
+    <abp-card-body>
+		<abp-row class="mb-3">
+            <abp-column size-md="_12">
+                <form id="SearchForm" autocomplete="off">
+                    <div class="input-group">
+                        <input class="form-control page-search-filter-text" id="FilterText" placeholder="@L["Search"]"/>
+                        <abp-button button-type="Primary" type="submit" icon="search"/>
+                    </div>
+                </form>
+            </abp-column>
+            <abp-column size-md="_12" class="mt-3">
+                <a href="javascript:;" id="AdvancedFilterSectionToggler" class="text-decoration-none">@L["SeeAdvancedFilters"]</a>
+            </abp-column>
+        </abp-row>
+
+        <abp-row id="AdvancedFilterSection" style="display: none;">
+            <abp-column size="_3">
+                <abp-select asp-for="StatusFilter" label="@L["Status"].Value" />
+            </abp-column>
+            <abp-column size="_3">
+                <abp-input asp-for="TitleFilter" label="@L["Title"].Value" />
+            </abp-column>
+            <abp-column size="_3">
+                <abp-input asp-for="ReferenceFilter" label="@L["Reference"].Value" />
+            </abp-column>
+            <abp-column size="_3">
+                <abp-input asp-for="RegionFilter" label="@L["Region"].Value" />
+            </abp-column>
+            <abp-column size="_3">
+                <abp-input asp-for="RoleFilter" label="@L["Role"].Value" />
+            </abp-column>
+            <abp-column size="_3">
+                <abp-input asp-for="BenefitsFilter" label="@L["Benefits"].Value" />
+            </abp-column>
+            <abp-column size="_3">
+                <abp-input asp-for="LocationFilter" label="@L["Location"].Value" />
+            </abp-column>
+            <abp-column size="_3">
+                <abp-input asp-for="SalaryFilter" label="@L["Salary"].Value" />
+            </abp-column>
+            <abp-column size="_3">
+                <abp-input asp-for="DescriptionFilter" label="@L["Description"].Value" />
+            </abp-column>
+            <abp-column size="_3">
+                <abp-input type="date" asp-for="FormalInterviewDateFilterMin" label="@L["MinFormalInterviewDate"].Value" />
+            </abp-column>
+
+            <abp-column size="_3">
+                <abp-input type="date" asp-for="FormalInterviewDateFilterMax" label="@L["MaxFormalInterviewDate"].Value" />
+            </abp-column>
+
+            <abp-column size="_3">
+                <abp-input type="date" asp-for="SecondInterviewDateFilterMin" label="@L["MinSecondInterviewDate"].Value" />
+            </abp-column>
+
+            <abp-column size="_3">
+                <abp-input type="date" asp-for="SecondInterviewDateFilterMax" label="@L["MaxSecondInterviewDate"].Value" />
+            </abp-column>
+
+            <abp-column size="_3">
+                <abp-input type="date" asp-for="ExternalPostingDateFilterMin" label="@L["MinExternalPostingDate"].Value" />
+            </abp-column>
+
+            <abp-column size="_3">
+                <abp-input type="date" asp-for="ExternalPostingDateFilterMax" label="@L["MaxExternalPostingDate"].Value" />
+            </abp-column>
+
+            <abp-column size="_3">
+                <abp-input type="date" asp-for="ClosingDateFilterMin" label="@L["MinClosingDate"].Value" />
+            </abp-column>
+
+            <abp-column size="_3">
+                <abp-input type="date" asp-for="ClosingDateFilterMax" label="@L["MaxClosingDate"].Value" />
+            </abp-column>
+
+            <abp-column size="_3">
+                <abp-input type="date" asp-for="ExpiringDateFilterMin" label="@L["MinExpiringDate"].Value" />
+            </abp-column>
+
+            <abp-column size="_3">
+                <abp-input type="date" asp-for="ExpiringDateFilterMax" label="@L["MaxExpiringDate"].Value" />
+            </abp-column>
+
+            <abp-column size="_3">
+                <abp-select asp-for="ShowDiversityFilter" label="@L["ShowDiversity"].Value" />
+            </abp-column>
+            <abp-column size="_3">
+                <div class="mb-3">
+                    <label class="form-label" asp-for="CompanyIdFilter"></label>
+                    <select asp-for="CompanyIdFilter"
+                            class="auto-complete-select"
+                            data-autocomplete-api-url="/api/app/companies/for-auto-complete"
+                            data-autocomplete-display-property="name"
+                            data-autocomplete-value-property="id"
+                            data-autocomplete-items-property="items"
+                            data-autocomplete-filter-param-name="filter"
+                            data-autocomplete-allow-clear="true">
+                    </select>
+                </div>
+            </abp-column>
+            <abp-column size="_3">
+                <abp-select asp-for="IdentityUserIdFilter" label="@L["IdentityUser"].Value" />
+            </abp-column>
+            <abp-column size="_3">
+                <abp-select asp-for="PracticeGroupIdFilter" label="@L["PracticeGroup"].Value" />
+            </abp-column>
+            <abp-column size="_3">
+                <abp-select asp-for="VacancyFormDefinitionIdFilter" label="@L["VacancyFormDefinition"].Value" />
+            </abp-column>
+            <abp-column size="_3">
+                <abp-select asp-for="DiversityFormDefinitionIdFilter" label="@L["DiversityFormDefinition"].Value" />
+            </abp-column>
+@*//<suite-custom-code-block-5>*@
+@*//</suite-custom-code-block-5>*@
+        </abp-row>
+
+
+        <abp-table striped-rows="true" id="VacanciesTable">
+            <thead>
+				<tr>
+				    
+				    
+					<th>@L["Actions"]</th>
+                    <th>@L["JobTitle"]</th>
+                    <th>@L["Status"]</th>
+                    <th>@L["CreationTime"]</th>
+					<th>@L["Reference"]</th>
+					<th>@L["Region"]</th>
+					<th>@L["RoleLevel"]</th>
+					<th>@L["Benefits"]</th>
+                    <th>@L["Location"]</th>
+                    <th>@L["Salary"]</th>
+                    <th>@L["LinkedInUrl"]</th>
+					<th>@L["FormalInterviewDate"]</th>
+					<th>@L["SecondInterviewDate"]</th>
+					<th>@L["ExternalPostingDate"]</th>
+					<th>@L["ClosingDate"]</th>
+					<th>@L["ExpiringDate"]</th>
+					<th>@L["BrochureFile"]</th>
+					<th>@L["AdditionalFile"]</th>
+					<th>@L["ShowDiversity"]</th>
+					<th>@L["Company"]</th>
+					<th>@L["RoleCoordinatedBy"]</th>
+					<th>@L["PracticeGroup"]</th>
+					<th>@L["VacancyFormDefinition"]</th>
+					<th>@L["DiversityFormDefinition"]</th>
+                    <th>@L["EzekiaID"]</th>
+                    <th>@L["CopyUrl"]</th>   
+@*//<suite-custom-code-block-6>*@
+@*//</suite-custom-code-block-6>*@
+				</tr>
+            </thead>
+        </abp-table>
+    </abp-card-body>
+</abp-card>
+
+@*//<suite-custom-code-block-7>*@
+@*//</suite-custom-code-block-7>*@

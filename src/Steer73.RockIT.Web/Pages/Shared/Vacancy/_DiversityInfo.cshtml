@@ -1,0 +1,153 @@
+﻿@using Steer73.RockIT.Enums;
+
+<div class="row">
+    <div class="col-12 mb-4">
+        <p>
+            Perrett Laver is committed to Equal Opportunities for all candidates and shall adhere to such a policy at all times.
+            To monitor the effectiveness of our Equality and Diversity Policy, we ask all applicants to complete these questions.
+            The information you provide is for monitoring purposes only and will be kept separate from your application form.
+            It will not be used regarding any decisions making of employment and will be treated in the strictest confidence.
+        </p>
+    </div>
+    <div class="col-12">
+        <form class="js-diversity-form form-diversity">
+            <fieldset class="row">
+                <div class="col-12 mb-2 field js-option-container">
+                    <label>Are you happy to complete this form?</label>
+                    @foreach (YesNo yesNo in Enum.GetValues(typeof(YesNo)))
+                    {
+                        <div>
+                            <input type="radio" id="HappyToCompleteForm_@yesNo" name="Diversity_HappyToCompleteForm" value="@yesNo" />
+                            <label for="HappyToCompleteForm_@yesNo">@yesNo.GetDescription()</label>
+                        </div>
+                    }
+                </div>
+                <div class="col-12 mb-2 field js-option-container">
+                    <label>Please indicate your age range?</label>
+                    @foreach (AgeRange ageRange in Enum.GetValues(typeof(AgeRange)))
+                    {
+                        <div>
+                            <input type="radio" id="AgeRange_@ageRange" name="Diversity_AgeRange" value="@ageRange" />
+                            <label for="AgeRange_@ageRange">@ageRange.GetDescription()</label>
+                        </div>
+                    }
+                </div>
+                <div class="col-12 mb-2 field js-option-container">
+                    <label>Please select the option which best represents your gender identity</label>
+                    @foreach (GenderOrSex gender in Enum.GetValues(typeof(GenderOrSex)))
+                    {
+                        <div>
+                            <input type="radio" id="Gender_@gender" name="Diversity_Gender" value="@gender" class="@(gender == GenderOrSex.Other ? "js-toggle-input":"")" />
+                            <label for="Gender_@gender">@gender.GetDescription()</label>
+                        </div>
+                    }
+                    <input class="d-none form-control js-other-input" name="Diversity_OtherGender" />
+                </div>
+                <div class="col-12 mb-2 field js-option-container">
+                    <label>Is your gender identity the same as the gender you were originally assigned at birth</label>
+                    @foreach (YesNoPreferNotToSay yesNo in Enum.GetValues(typeof(YesNoPreferNotToSay)))
+                    {
+                        <div>
+                            <input type="radio" id="GenderIdentitySameAsBirth_@yesNo" name="Diversity_GenderIdentitySameAsBirth" value="@yesNo" />
+                            <label for="GenderIdentitySameAsBirth_@yesNo">@yesNo.GetDescription()</label>
+                        </div>
+                    }
+                </div>
+                <div class="col-12 mb-2 field js-option-container">
+                    <label>Select the option which best represents your sex</label>
+                    @foreach (GenderOrSex sex in Enum.GetValues(typeof(GenderOrSex)))
+                    {
+                        <div>
+                            <input type="radio" id="Sex_@sex" name="Diversity_Sex" value="@sex" class="@(sex == GenderOrSex.Other ? "js-toggle-input":"")" />
+                            <label for="Sex_@sex">@sex.GetDescription()</label>
+                        </div>
+                    }
+                    <input class="d-none form-control js-other-input" name="Diversity_OtherSex" />
+                </div>
+                <div class="col-12 mb-2 field js-option-container">
+                    <label>What would you describe as your sexual orientation?</label>
+                    @foreach (SexualOrientation sexualOrientation in Enum.GetValues(typeof(SexualOrientation)))
+                    {
+                        <div>
+                            <input type="radio" id="SexualOrientation_@sexualOrientation" name="Diversity_SexualOrientation" value="@sexualOrientation" class="@(sexualOrientation == SexualOrientation.PreferToSelfDescribe ? "js-toggle-input":"")" />
+                            <label for="SexualOrientation_@sexualOrientation">@sexualOrientation.GetDescription()</label>
+                        </div>
+                    }
+                    <input class="d-none form-control js-other-input" name="Diversity_OtherSexualOrientation" />
+                </div>
+                <div class="col-12 mb-2 field js-option-container">
+                    <label>Please indicate your ethnic origin</label>
+                    @foreach (Ethnicity ethnicity in Enum.GetValues(typeof(Ethnicity)))
+                    {
+                        <div>
+                            <input type="radio" id="Ethnicity_@ethnicity" name="Diversity_Ethnicity" value="@ethnicity" class="@(ethnicity == Ethnicity.Other ? "js-toggle-input":"")" />
+                            <label for="Ethnicity_@ethnicity">@ethnicity.GetDescription()</label>
+                        </div>
+                    }
+                    <input class="d-none form-control js-other-input" name="Diversity_OtherEthnicity" />
+                </div>
+                <div class="col-12 mb-2 field js-option-container">
+                    <label>Please indicate your religion or belief</label>
+                    @foreach (Religion religion in Enum.GetValues(typeof(Religion)))
+                    {
+                        <div>
+                            <input type="radio" id="ReligionOrBelief_@religion" name="Diversity_ReligionOrBelief" value="@religion" class="@(religion == Religion.Other ? "js-toggle-input":"")" />
+                            <label for="ReligionOrBelief_@religion">@religion.GetDescription()</label>
+                        </div>
+                    }
+                    <input class="d-none form-control js-other-input" name="Diversity_OtherReligionOrBelief" />
+                </div>
+                <div class="col-12 mb-2 field js-option-container">
+                    <label>Do you consider yourself to have a disability?</label>
+                    <p>
+                        A disabled person is defined under the Equality Act 2010 as someone with a physical or mental impairment which
+                        as a substantial and long-term adverse effect on that person's ability to carry out normal day-to-day activities.
+                    </p>
+                    @foreach (YesNoPreferNotToSay disability in Enum.GetValues(typeof(YesNoPreferNotToSay)))
+                    {
+                        <div>
+                            <input type="radio" id="Disability_@disability" name="Diversity_Disability" value="@disability" />
+                            <label for="Disability_@disability">@disability.GetDescription()</label>
+                        </div>
+                    }
+                </div>
+                <div class="col-12 mb-2 field js-option-container">
+                    <label>What is your education level?</label>
+                    @foreach (EducationLevel educationLevel in Enum.GetValues(typeof(EducationLevel)))
+                    {
+                        <div>
+                            <input type="radio" id="EducationLevel_@educationLevel" name="Diversity_EducationLevel" value="@educationLevel" />
+                            <label for="EducationLevel_@educationLevel">@educationLevel.GetDescription()</label>
+                        </div>
+                    }
+                </div>
+                <div class="col-12 mb-2 field js-option-container">
+                    <label>What type of School(s) did you mainly attend during your secondary education?</label>
+                    @foreach (TypeOfSecondarySchool typeOfSchool in Enum.GetValues(typeof(TypeOfSecondarySchool)))
+                    {
+                        <div>
+                            <input type="radio" id="TypeOfSecondarySchool_@typeOfSchool" name="Diversity_TypeOfSecondarySchool" value="@typeOfSchool" class="@(typeOfSchool == TypeOfSecondarySchool.Other ? "js-toggle-input":"")" />
+                            <label for="TypeOfSecondarySchool_@typeOfSchool">@typeOfSchool.GetDescription()</label>
+                        </div>
+                    }
+                    <input class="d-none form-control js-other-input" name="Diversity_OtherTypeOfSecondarySchool" />
+                </div>
+                <div class="col-12 mb-2 field js-option-container">
+                    <label>Do any of your parents have any higher education qualifications such as a degree, diploma, or certification of higher education?</label>
+                    @foreach (YesNoPreferNotToSayDontKnow yesNoDontKnow in Enum.GetValues(typeof(YesNoPreferNotToSayDontKnow)))
+                    {
+                        <div>
+                            <input type="radio" id="HigherEducationQualifications_@yesNoDontKnow" name="Diversity_HigherEducationQualifications" value="@yesNoDontKnow" />
+                            <label for="HigherEducationQualifications_@yesNoDontKnow">@yesNoDontKnow.GetDescription()</label>
+                        </div>
+                    }
+                </div>
+            </fieldset>
+        </form>
+    </div>
+    <div class="col-12 d-flex flex-column flex-md-row justify-content-end gap-2">
+        <a class="btn btn-secondary btn-md-stretch" href="/VacancyDetail/@Model.VacancyId">Cancel</a>
+        <a class="btn btn-primary btn-md-stretch js-job-2-skip">Skip</a>
+        <a class="btn btn-primary btn-md-stretch js-job-2-next">Next</a>
+    </div>
+</div>

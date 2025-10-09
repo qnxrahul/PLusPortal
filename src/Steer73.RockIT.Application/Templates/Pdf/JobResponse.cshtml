@@ -1,0 +1,35 @@
+﻿@using Steer73.RockIT.Templates.Dtos
+@using System.Collections.Generic
+@using System.Linq
+@using System.Text.Json.Nodes
+@inherits Volo.Abp.TextTemplating.Razor.RazorTemplatePageBase<JobResponsePdfDto>
+
+@foreach (var page in Model.Survey.Pages)
+{
+    @foreach (var element in page.Elements)
+    {
+        var question = string.IsNullOrWhiteSpace(element.Title) ? element.Name : element.Title;
+        var response = Model.ElementNameResponsePairs.GetValueOrDefault(element.Name, null);
+        if (response != null && element.Choices.Count > 0)
+        {
+            var choicesDictionary = element.Choices.ToDictionary(c => c.Value, c => c.Text);
+            if (response is JsonArray arrayResponse)
+            {
+                var texts = arrayResponse
+                .Select(jsonNode => choicesDictionary.GetValueOrDefault(jsonNode!.ToString(), jsonNode!.ToString()))
+                .ToList();
+                response = string.Join(", ", texts);
+            }
+            else
+            {
+                var stringResponse = response.ToString();
+                response = choicesDictionary.GetValueOrDefault(stringResponse, stringResponse);
+            }
+        }
+        <p>
+            <strong>@question</strong><br/>
+            @response
+        </p>
+    }
+}
+

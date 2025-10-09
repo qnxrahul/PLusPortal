@@ -1,0 +1,32 @@
+@page
+@using Microsoft.AspNetCore.Mvc.Localization
+@using Steer73.RockIT.Localization
+@inject IHtmlLocalizer<RockITResource> L
+@model Steer73.RockIT.Web.Pages.Shared.VacancyReferenceModal
+@{
+    Layout = null;
+}
+
+@*//<suite-custom-code-block-1>*@
+@*//</suite-custom-code-block-1>*@
+
+<div>
+    <abp-modal id="VacancyReferenceModal" size="Large">
+        <abp-modal-header title="@(L["ConfirmVacancySelection"].Value)"></abp-modal-header>
+        <abp-modal-body>
+            <p><strong>Id:</strong> @Model.Id</p>
+            <p><strong>Project Id:</strong> @Model.ProjectId</p>
+            <p><strong>Name:</strong> @Model.ProjectName</p>
+            <p><strong>Company Name:</strong> @Model.CompanyName</p>
+        </abp-modal-body>
+        <div class="modal-footer">
+            <button id="OkButton" type="button" class="btn btn-primary">@L["Confirm"]</button>
+            <button id="CancelButton" type="button" class="btn btn-secondary" data-bs-dismiss="modal">@L["Cancel"]</button>
+        </div>
+    </abp-modal>
+</div>
+
+<abp-script src="/Pages/Shared/vacancyReferenceModal.js" />
+
+@*//<suite-custom-code-block-2>*@
+@*//</suite-custom-code-block-2>*@

@@ -1,0 +1,137 @@
+{
+  "items": [
+    {
+      "key": "EzekiaConfiguration:ApiKey",
+      "label": null,
+      "value": "",
+      "content_type": null,
+      "tags": {}
+    },
+    {
+      "key": "EzekiaConfiguration:BaseApiUrl",
+      "label": null,
+      "value": "https://demo.ezekia.com/api",
+      "content_type": null,
+      "tags": {}
+    },
+    {
+      "key": "EzekiaConfiguration:UpdatedPeriodInMs",
+      "label": null,
+      "value": "86400000",
+      "content_type": null,
+      "tags": {}
+    },
+    {
+      "key": "EzekiaConfiguration:CompaniesPerPage",
+      "label": null,
+      "value": "2500",
+      "content_type": null,
+      "tags": {}
+    },
+    {
+      "key": "EzekiaConfiguration:MaxIterations",
+      "label": null,
+      "value": "100000",
+      "content_type": null,
+      "tags": {}
+    },
+    {
+      "key": "RockITATS:AzureBlobStorage:ConnectionString",
+      "label": null,
+      "value": "",
+      "content_type": null,
+      "tags": {}
+    },
+    {
+      "key": "RockITATS:Settings:KeyVaultUrl",
+      "label": null,
+      "value": "https://rockats-ro-vault-staging.vault.azure.net/",
+      "content_type": null,
+      "tags": {}
+    },
+    {
+      "key": "RockITATS:Settings:Sentinel",
+      "label": null,
+      "value": "4",
+      "content_type": null,
+      "tags": {}
+    },
+    {
+      "key": "RockITATS:SSO:AuthorityRootUrl",
+      "label": null,
+      "value": "https://login.microsoftonline.com",
+      "content_type": null,
+      "tags": {}
+    },
+    {
+      "key": "RockITATS:SSO:CallbackPath",
+      "label": null,
+      "value": "/signin-azuread-oidc",
+      "content_type": null,
+      "tags": {}
+    },
+    {
+      "key": "RockITATS:SSO:ClientId",
+      "label": null,
+      "value": "",
+      "content_type": null,
+      "tags": {}
+    },
+    {
+      "key": "RockITATS:SSO:ClientSecret",
+      "label": null,
+      "value": "",
+      "content_type": null,
+      "tags": {}
+    },
+    {
+      "key": "RockITATS:SSO:TenantId",
+      "label": null,
+      "value": "",
+      "content_type": null,
+      "tags": {}
+    },
+    {
+      "key": "Settings.Abp.Mailing.Smtp.Password",
+      "label": null,
+      "value": "",
+      "content_type": null,
+      "tags": {}
+    },
+    {
+      "key": "RockITATS:Settings:EncryptionCertificateName",
+      "label": null,
+      "value": "EncryptionCert",
+      "content_type": null,
+      "tags": {}
+    },
+    {
+      "key": "RockITATS:Settings:SigningCertificateName",
+      "label": null,
+      "value": "SigningCert",
+      "content_type": null,
+      "tags": {}
+    },
+    {
+      "key": "OneTrust:DataDomainId",
+      "label": null,
+      "value": "",
+      "content_type": null,
+      "tags": {}
+    },
+    {
+      "key": "OneTrust:IsTestScript",
+      "label": null,
+      "value": "true",
+      "content_type": null,
+      "tags": {}
+    },
+    {
+      "key": "SurveyJsLicence",
+      "label": null,
+      "value": "",
+      "content_type": null,
+      "tags": {}
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+﻿@model string
+
+<div class="row search-box">
+    <div class="col-sm-12 col-lg-3">
+        <span class="side-heading">Keyword <span>Search</span></span>
+    </div>
+    <div class="col-sm-12 col-lg-9">
+        <form class="search-form" method="get" action="/search">
+            <fieldset>
+                <div class="input-group d-flex align-items-center">
+                    <div class="input-icon-wrapper">
+                        <i class="fa fa-search" aria-hidden="true"></i>
+                        <input class="keyword-field form-control" placeholder="Keyword search" type="text" name="query" value="@Model" spellcheck="false">
+                    </div>
+                    <button type="submit" class="btn btn-square search-btn" id="submit">Search</button>
+                </div>
+            </fieldset>
+        </form>
+    </div>
+</div>

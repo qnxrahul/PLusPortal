@@ -1,0 +1,10 @@
+﻿{
+  "applications": {
+    "Steer73.RockIT.Web": {
+      "type": "dotnet-project",
+      "launchUrl": "https://localhost:44380",
+      "path": "../../../src/Steer73.RockIT.Web/Steer73.RockIT.Web.csproj",
+      "kubernetesService": ".*-web$"
+    }
+  }
+}

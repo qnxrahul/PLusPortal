@@ -1,0 +1,69 @@
+@page
+@using Microsoft.AspNetCore.Mvc.Localization
+@using Steer73.RockIT.Localization
+@using Steer73.RockIT.Web.Pages.FormDefinitions
+@using Volo.Abp.AspNetCore.Mvc.UI.Bootstrap.TagHelpers.Modal
+@using Steer73.RockIT.FormDefinitions;
+@using System.Globalization
+@inject IHtmlLocalizer<RockITResource> L
+@model EditModalModel
+@{
+    Layout = null;
+}
+
+<form data-ajaxForm="true" asp-page="/FormDefinitions/EditModal" autocomplete="off">
+    <abp-modal id="FormDefinitionEditModal">
+        <abp-modal-header title="@L["Update"].Value"></abp-modal-header>
+
+        <abp-modal-body>
+@*//<suite-custom-code-block-1>*@
+@*//</suite-custom-code-block-1>*@
+
+            <abp-input asp-for="Id" />
+
+                
+                    
+                    <abp-input asp-for="FormDefinition.ConcurrencyStamp" hidden="true" suppress-label="true"/>
+                    
+
+            <abp-input asp-for="FormDefinition.ReferenceId"    />
+
+
+            <abp-input asp-for="FormDefinition.Name"    />
+
+
+            <abp-input asp-for="FormDefinition.FormDetails" suppress-label="true" hidden="true" add-margin-bottom-class="false" />
+
+
+            <abp-select asp-for="FormDefinition.FormType"    />
+
+            <div class="mb-3">
+                <label class="form-label" asp-for="FormDefinition.CompanyId"></label><span> *</span>
+                <select asp-for="FormDefinition.CompanyId"
+                        class="auto-complete-select"
+                        data-autocomplete-api-url="/api/app/companies/for-auto-complete"
+                        data-autocomplete-display-property="name"
+                        data-autocomplete-value-property="id"
+                        data-autocomplete-items-property="items"
+                        data-autocomplete-filter-param-name="filter">
+                    @if (Model.SelectedCompany is not null)
+                    {
+                        <option selected value="@Model.SelectedCompany.Id">@Model.SelectedCompany.Name</option>
+                    }
+                </select>
+                <span asp-validation-for="FormDefinition.CompanyId" class="text-danger"></span>
+            </div>
+                    
+                
+@*//<suite-custom-code-block-2>*@
+@*//</suite-custom-code-block-2>*@
+@*//<suite-custom-code-block-3>*@
+@*//</suite-custom-code-block-3>*@
+        </abp-modal-body>
+
+        <abp-modal-footer buttons="@(AbpModalButtons.Cancel|AbpModalButtons.Save)">
+@*//<suite-custom-code-block-4>*@
+@*//</suite-custom-code-block-4>*@
+        </abp-modal-footer>
+    </abp-modal>
+</form>

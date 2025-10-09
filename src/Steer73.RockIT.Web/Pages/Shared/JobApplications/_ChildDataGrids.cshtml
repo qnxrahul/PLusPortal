@@ -1,0 +1,115 @@
+@using Steer73.RockIT.Localization
+@using Steer73.RockIT.Permissions
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IHtmlLocalizer<RockITResource> L
+@inject IAuthorizationService Authorization
+@model Guid
+
+<div class="rounded p-3 pb-0 pt-1">
+    <ul class="nav nav-tabs" role="tablist">
+        @if (await Authorization.IsGrantedAsync(RockITSharedPermissions.DiversityDatas.Default))
+    {
+        <li class="nav-item" role="presentation">
+            <a class="nav-link active" id="DiversityDatas-tab-@Model" data-bs-toggle="tab" data-bs-target="#DiversityData-@Model" type="button" role="tab" aria-controls="DiversityData" aria-selected="true">@L["DiversityDatas"]</a>
+        </li>
+    }
+    @if (await Authorization.IsGrantedAsync(RockITSharedPermissions.JobFormResponses.Default))
+    {
+        <li class="nav-item" role="presentation">
+            <a class="nav-link " id="JobFormResponses-tab-@Model" data-bs-toggle="tab" data-bs-target="#JobFormResponse-@Model" type="button" role="tab" aria-controls="JobFormResponse" aria-selected="true">@L["JobFormResponses"]</a>
+        </li>
+    }
+    @if (await Authorization.IsGrantedAsync(RockITSharedPermissions.DiversityFormResponses.Default))
+    {
+        <li class="nav-item" role="presentation">
+            <a class="nav-link " id="DiversityFormResponses-tab-@Model" data-bs-toggle="tab" data-bs-target="#DiversityFormResponse-@Model" type="button" role="tab" aria-controls="DiversityFormResponse" aria-selected="true">@L["DiversityFormResponses"]</a>
+        </li>
+    }
+    </ul>
+    
+    <div class="tab-content pt-0">
+        @if (await Authorization.IsGrantedAsync(RockITSharedPermissions.DiversityDatas.Default))
+    {
+        <div class="tab-pane fade show active" id="DiversityData-@Model" role="tabpanel" aria-labelledby="DiversityData-tab-@Model">
+            @if (await Authorization.IsGrantedAsync(RockITSharedPermissions.DiversityDatas.Create))
+            {
+                <button data-jobApplication-id="@Model" class="btn btn-primary btn-sm float-end mb-3 NewDiversityDataButton" type="button" data-busy-text="@L["Processing"]">
+                    <i class="fa fa-plus"></i> <span>@L["NewDiversityData"]</span>
+                </button>
+            }
+        
+            <table class="table table-striped dataTable no-footer" striped-rows="true" id="DiversityDatasTable-@Model">
+                <thead>
+                <tr>
+                    <th>@L["Actions"]</th>
+                    					<th>@L["HappyToCompleteForm"]</th>
+					<th>@L["AgeRange"]</th>
+					<th>@L["Gender"]</th>
+					<th>@L["OtherGender"]</th>
+					<th>@L["GenderIdentitySameAsBirth"]</th>
+					<th>@L["Sex"]</th>
+					<th>@L["OtherSex"]</th>
+					<th>@L["SexualOrientation"]</th>
+					<th>@L["OtherSexualOrientation"]</th>
+					<th>@L["Ethnicity"]</th>
+					<th>@L["OtherEthnicity"]</th>
+					<th>@L["ReligionOrBelief"]</th>
+					<th>@L["OtherReligionOrBelief"]</th>
+					<th>@L["Disability"]</th>
+					<th>@L["EducationLevel"]</th>
+					<th>@L["TypeOfSecondarySchool"]</th>
+					<th>@L["OtherTypeOfSecondarySchool"]</th>
+					<th>@L["HigherEducationQualifications"]</th>
+
+                </tr>
+                </thead>
+            </table>
+        </div>
+    }
+    @if (await Authorization.IsGrantedAsync(RockITSharedPermissions.JobFormResponses.Default))
+    {
+        <div class="tab-pane fade " id="JobFormResponse-@Model" role="tabpanel" aria-labelledby="JobFormResponse-tab-@Model">
+            @if (await Authorization.IsGrantedAsync(RockITSharedPermissions.JobFormResponses.Create))
+            {
+                <button data-jobApplication-id="@Model" class="btn btn-primary btn-sm float-end mb-3 NewJobFormResponseButton" type="button" data-busy-text="@L["Processing"]">
+                    <i class="fa fa-plus"></i> <span>@L["NewJobFormResponse"]</span>
+                </button>
+            }
+        
+            <table class="table table-striped dataTable no-footer" striped-rows="true" id="JobFormResponsesTable-@Model">
+                <thead>
+                <tr>
+                    <th>@L["Actions"]</th>
+                    					<th>@L["FormStructureJson"]</th>
+					<th>@L["FormResponseJson"]</th>
+
+                </tr>
+                </thead>
+            </table>
+        </div>
+    }
+    @if (await Authorization.IsGrantedAsync(RockITSharedPermissions.DiversityFormResponses.Default))
+    {
+        <div class="tab-pane fade " id="DiversityFormResponse-@Model" role="tabpanel" aria-labelledby="DiversityFormResponse-tab-@Model">
+            @if (await Authorization.IsGrantedAsync(RockITSharedPermissions.DiversityFormResponses.Create))
+            {
+                <button data-jobApplication-id="@Model" class="btn btn-primary btn-sm float-end mb-3 NewDiversityFormResponseButton" type="button" data-busy-text="@L["Processing"]">
+                    <i class="fa fa-plus"></i> <span>@L["NewDiversityFormResponse"]</span>
+                </button>
+            }
+        
+            <table class="table table-striped dataTable no-footer" striped-rows="true" id="DiversityFormResponsesTable-@Model">
+                <thead>
+                <tr>
+                    <th>@L["Actions"]</th>
+                    					<th>@L["FormStructureJson"]</th>
+					<th>@L["FormResponseJson"]</th>
+
+                </tr>
+                </thead>
+            </table>
+        </div>
+    }
+    </div>
+</div>

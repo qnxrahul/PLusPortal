@@ -1,0 +1,158 @@
+@page
+@using Microsoft.AspNetCore.Mvc.Localization
+@using Steer73.RockIT.Localization
+@using Steer73.RockIT.Web.Pages.Vacancies
+@using Volo.Abp.AspNetCore.Mvc.UI.Bootstrap.TagHelpers.Modal
+@using Steer73.RockIT.Vacancies;
+@using System.Globalization
+@using Volo.Abp.AspNetCore.Mvc.UI.Layout
+@using Microsoft.Extensions.Configuration
+@inject IConfiguration Configuration
+
+@inject IHtmlLocalizer<RockITResource> L
+@model VacancyApplicationsModel
+@inject IPageLayout PageLayout
+@{
+	PageLayout.Content.Title = L["VacancyApplications"].Value;
+}
+
+@section styles
+{
+	<link href="https://cdn.datatables.net/select/2.2.2/css/select.dataTables.min.css" type="text/css" rel="stylesheet" />
+	<link href="https://cdn.datatables.net/buttons/3.2.2/css/buttons.dataTables.min.css" type="text/css" rel="stylesheet" />
+	<style>
+		.card--applicant .card-body > div, .card--applicant .card-body > .row > div {
+			font-weight: bold;
+		}
+
+		.card--applicant .card-body > div > span, .card--applicant .card-body > .row > div > span {
+			display: block;
+			font-weight: normal;
+			color: var(--bs-gray-500);
+		}
+	</style>
+}
+
+@section scripts
+{
+	<abp-script src="/Pages/Vacancies/Applications/Index.js" />
+	<abp-script src="https://cdn.datatables.net/select/3.0.0/js/dataTables.select.js" />
+	<abp-script src="https://cdn.datatables.net/select/3.0.0/js/select.dataTables.js" />
+	<abp-script src="https://cdn.datatables.net/buttons/3.2.2/js/dataTables.buttons.js" />
+	<abp-script src="https://cdn.datatables.net/buttons/3.2.2/js/buttons.dataTables.js" />
+
+
+	<script>
+			function copyVacancyUrl() {
+			const input = document.getElementById("vacancyUrlInput");
+
+			if (!input || !input.value) {
+				abp.notify.error("No vacancy URL available to copy.");
+				return;
+			}
+
+			navigator.clipboard.writeText(input.value)
+				.then(() => abp.notify.success("URL copied to clipboard!"))
+				.catch(() => abp.notify.error("Failed to copy URL"));
+		}
+	</script>
+}
+
+<div class="card card--applicant">
+	<div class="card-body d-flex flex-wrap gap-4">
+		<input type="hidden" id="VacancyId" value="@Model.Vacancy.Id" />
+
+		<div>
+			<span>@L["Title"]</span>
+			@Model.Vacancy.Title
+		</div>
+		<div>
+			<span>@L["Reference"]</span>
+			@Model.Vacancy.Reference
+		</div>
+		<div>
+			<span>@L["Region"]</span>
+			@string.Join(", ", Model.Vacancy.Regions)
+		</div>
+		<div>
+			<span>@L["Location"]</span>
+			@Model.Vacancy.Location
+		</div>
+		<div>
+			<span>@L["DateAdded"]</span>
+			@DateOnly.FromDateTime(Model.Vacancy.CreationTime)
+		</div>
+		<div>
+			<span>@L["ClosingDate"]</span>
+			@Model.Vacancy.ClosingDate
+		</div>
+		<div>
+			<span>@L["ExpiringDate"]</span>
+			@Model.Vacancy.ExpiringDate
+		</div>
+		<div>
+			<span>@L["CopyUrl"]</span>
+			<div class="d-flex align-items-center gap-2">
+				<input id="vacancyUrlInput"
+					   type="text"
+					   value="@Model.VacancyDetailUrl"
+					   readonly
+					   class="form-control flex-grow-1" />
+
+				<abp-button button-type="Secondary"
+							size="Small"
+							icon="copy"
+							onclick="copyVacancyUrl()">
+					@L["Copy"]
+				</abp-button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="row">
+	<div class="col">
+		<h5><strong>@L["Candidates"]</strong></h5>
+	</div>
+</div>
+
+<abp-card>
+    <abp-card-body>
+		<abp-row class="mb-3">
+            <abp-column size-md="_12">
+                <form id="SearchForm" autocomplete="off">
+                    <div class="input-group">
+                        <input class="form-control page-search-filter-text" id="FilterText" placeholder="@L["Search"]"/>
+                        <abp-button button-type="Primary" type="submit" icon="search"/>
+                    </div>
+                </form>
+            </abp-column>
+            <abp-column size-md="_12" class="mt-3">
+            </abp-column>
+        </abp-row>
+
+		<abp-table striped-rows="true" id="JobApplicationsTable">
+			<thead>
+				<tr>
+					<th>@L["Actions"]</th>
+					<th></th>
+					<th>@L["FirstName"]</th>
+					<th>@L["LastName"]</th>
+					<th>@L["EmailAddress"]</th>
+					<th>@L["Title"]</th>
+					<th>@L["PhoneNumber"]</th>
+					<th>@L["Landline"]</th>
+					<th>@L["CurrentRole"]</th>
+					<th>@L["CurrentCompany"]</th>
+					<th>@L["CurrentPositionType"]</th>
+					<th>@L["Status"]</th>
+					<th>@L["CV"]</th>
+					<th>@L["CoverLetter"]</th>
+					<th>@L["AdditionalDocument"]</th>
+					<th>@L["Vacancy"]</th>
+					<th>@L["ApplicationDateAndTime"]</th>
+				</tr>
+			</thead>
+		</abp-table>
+	</abp-card-body>
+</abp-card>

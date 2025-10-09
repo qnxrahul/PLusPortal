@@ -1,0 +1,295 @@
+//       SUMMARY TABLE     
+// =========================
+// 1. Global
+// =========================
+
+
+// 1. Global
+// =========================
+
+.footer {
+	background-color: #363A42;
+	padding: 10rem 0 0 0;
+
+	@include breakpoint(991px) {
+		padding-top: 4rem;
+
+		&__logo {
+			margin-bottom: 5rem;
+		}
+	}
+
+	hr {
+		border-color: $midgrey2;
+		opacity: 1;
+
+		@include breakpoint(991px) {
+			border-color: #fff;
+			opacity: 0.4;
+		}
+	}
+
+	&__menu {
+		padding-top: 3rem;
+		padding-bottom: 3rem;
+
+		&__item {
+			margin-bottom: 2rem;
+
+			&__link {
+				font-family: 'Merriweather';
+				font-size: 4.2rem;
+				font-weight: 300;
+				line-height: 5.2rem;
+				color: #fff;
+				@include transition(color 0.6s $smooth);
+
+				@include breakpoint(991px) {
+					font-size: 2.8rem;
+					line-height: 3.5rem;
+				}
+
+				@media screen and (min-width: 992px) {
+					&:hover {
+						color: $lightpink;
+					}
+				}
+			}
+		}
+	}
+
+	&__secondarymenu {
+		padding-top: 6.2rem;
+
+		&__item {
+			margin-bottom: 1.8rem;
+
+			&__link {
+				font-weight: 700;
+				font-size: 1.4rem;
+				line-height: 1.8rem;
+				color: #fff;
+				@include transition(color 0.6s $smooth);
+
+				@media screen and (min-width: 992px) {
+					&:hover {
+						color: $lightpink;
+					}
+				}
+			}
+		}
+
+		@include breakpoint(991px) {
+			padding-top: 0;
+			column-count: 2;
+		}
+	}
+
+	.social-roles {
+		align-items: center;
+		padding-top: 2rem;
+		padding-bottom: 2rem;
+
+		h6 {
+			color: #fff;
+		}
+
+		@include breakpoint(991px) {
+			padding-top: 4rem;
+			padding-bottom: 1rem;
+
+			& > div {
+				&:first-child {
+					order: 3;
+				}
+			}
+		}
+	}
+
+	&__social {
+		display: flex;
+		align-items: center;
+
+		a {
+			display: block;
+			margin-right: 7rem;
+
+			svg {
+				display: block;
+
+				path {
+					@include transition(fill 0.6s $smooth);
+				}
+			}
+
+
+			@media screen and (min-width: 992px) {
+				&:hover {
+					svg {
+						path {
+							fill: #fff;
+						}
+					}
+				}
+			}
+		}
+
+		@include breakpoint(991px) {
+			border-top: 1px solid rgba(255, 255, 255, 0.4); 
+			padding-top: 2rem;
+		}
+	}
+
+	&__positions {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		border-radius: 40px;
+		background-color: #fff;
+		appearance: none;
+		padding: 0;
+		height: 4rem;
+		color: $pink;
+		font-weight: 700;
+		font-size: 1.4rem;
+		padding: 0 3rem;
+		@include transition(all 0.6s $smooth);
+
+		&:before {
+			content: '';
+			display: block;
+			height: 8px;
+			width: 8px;
+			border-radius: 50%;
+			background-color: $pink;
+			margin-right: 1rem;
+			@include transition(all 0.6s $smooth);
+		}
+
+		@include breakpoint(1200px) {
+			padding: 0 2rem;
+		}
+
+		@include breakpoint(991px) {
+			display: flex;
+			margin: 2rem auto 4rem auto;
+			position: relative;
+
+			&:before {
+				position: absolute;
+				left: 1.6rem;
+			}
+		}
+
+		@media screen and (min-width: 992px) {
+			&:hover {
+				color: #fff;
+				background-color: $pink;
+
+				&:before {
+					background-color: #fff;
+				}
+			}
+		}
+	}
+
+	&__about {
+		padding: 1rem 0 4rem 0;
+		color: #fff;
+
+		h6:first-child {
+			margin-bottom: 2rem;
+		}
+
+		@include breakpoint(991px) {
+			padding-top: 3rem;
+			padding-bottom: 3rem;
+		}
+	}
+
+	&__bottom {
+		color: #fff;
+		padding: 1.8rem 0 2.4rem 0;
+
+		@include breakpoint(991px) {
+			padding-top: 1rem;
+
+			h6 {
+				text-align: center;
+			}
+		}
+
+		.row {
+			align-items: center;
+
+			@include breakpoint(991px) {
+				& > div {
+					&:first-child {
+						order: 3;
+					}
+
+					&:nth-child(2) {
+						order: 2;
+					}
+
+					&:last-child {
+						order: 1;
+					}
+				}
+			}
+		}
+
+		svg {
+			display: table;
+			margin: 0 auto;
+
+			@include breakpoint(991px) {
+				height: 37px;
+				width: 37px;
+				margin: 4rem auto;
+			}
+		}
+
+		&__menu {
+			display: flex;
+			justify-content: flex-end;
+
+			@include breakpoint(991px) {
+				justify-content: space-between;
+			}
+
+			&__item {
+				margin-right: 4rem;
+
+				@include breakpoint(1400px) {
+					margin-right: 2rem;
+				}
+
+				@include breakpoint(1200px) {
+					margin-right: 3.4rem;
+
+					&:last-child {
+						margin-right: 1rem;
+					}
+				}
+
+				@include breakpoint(991px) {
+					margin-right: 0;
+				}
+
+				&__link {
+					color: #fff;
+					font-weight: 600;
+					font-size: 1.4rem;
+					@include transition(color 0.6s $smooth);
+
+					@media screen and (min-width: 992px) {
+						&:hover {
+							color: $lightpink;
+						}
+					}
+				}
+			}
+		}
+	}
+}

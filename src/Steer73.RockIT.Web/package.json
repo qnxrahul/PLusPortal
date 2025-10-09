@@ -1,0 +1,28 @@
+{
+  "version": "1.0.0",
+  "name": "my-app",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "gulp:build-dev": "gulp build-dev",
+    "gulp:watch": "gulp watch"
+  },
+  "dependencies": {
+    "@volo/abp.aspnetcore.mvc.ui.theme.leptonx": "~3.3.0",
+    "@volo/saas": "~8.3.0",
+    "@volo/audit-logging": "~8.3.0",
+    "@volo/identity": "~8.3.0",
+    "@volo/account": "~8.3.0",
+    "@volo/language-management": "~8.3.0",
+    "bootstrap": "^5.3.3"
+  },
+  "devDependencies": {
+    "del": "^7.1.0",
+    "gulp": "^5.0.0",
+    "gulp-autoprefixer": "^9.0.0",
+    "gulp-clean-css": "^4.3.0",
+    "gulp-rename": "^2.0.0",
+    "gulp-sass": "^5.1.0",
+    "sass": "^1.77.8"
+  }
+}

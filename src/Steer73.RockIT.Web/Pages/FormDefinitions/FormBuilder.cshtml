@@ -1,0 +1,95 @@
+﻿@page
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.Extensions.Configuration
+@using Volo.Abp.AspNetCore.Mvc.UI.Layout
+@using Steer73.RockIT.Permissions
+@using Steer73.RockIT.Web.Pages.FormDefinitions
+@using Steer73.RockIT.Web.Menus
+@using Microsoft.AspNetCore.Mvc.Localization
+@using Steer73.RockIT.Localization
+@inject IHtmlLocalizer<RockITResource> L
+@inject IAuthorizationService Authorization
+@model Steer73.RockIT.Web.Pages.FormDefinitions.FormBuilderModel
+@inject IPageLayout PageLayout
+@inject IConfiguration Configuration
+@{
+    PageLayout.Content.Title = L["FormDefinitions"].Value;
+    PageLayout.Content.MenuItemName = RockITMenus.FormDefinitions;
+
+    var surveyJsLicenceKey = Configuration["SurveyJsLicence"] ?? string.Empty;
+}
+
+@* TODO: Wrap with script section *@
+<!-- ... -->
+<!-- SurveyJS Form Library resources -->
+<link href="https://unpkg.com/survey-core@1.12.23/defaultV2.min.css" type="text/css" rel="stylesheet">
+<script src="https://unpkg.com/survey-core@1.12.23/survey.core.min.js"></script>
+<script src="https://unpkg.com/survey-js-ui@1.12.23/survey-js-ui.min.js"></script>
+
+@* <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+<link href="https://unpkg.com/survey-jquery/defaultV2.min.css" type="text/css" rel="stylesheet">
+<script type="text/javascript" src="https://unpkg.com/survey-jquery/survey.jquery.min.js"></script> *@
+
+<!-- Survey Creator resources -->
+<link href="https://unpkg.com/survey-creator-core@1.12.23/survey-creator-core.min.css" type="text/css" rel="stylesheet">
+<script src="https://unpkg.com/survey-creator-core@1.12.23/survey-creator-core.min.js"></script>
+<script src="https://unpkg.com/survey-creator-js@1.12.23/survey-creator-js.min.js"></script>
+<!-- ... -->
+
+<link href="/css/creator.css" rel="stylesheet">
+<script src="/scripts/survey-creator-config.js"></script>
+
+@* TODO: Move to js file and configure abp-script tage helper for this area *@
+<script>
+    const creatorOptions = {
+        showLogicTab: true,
+        isAutoSave: false,
+        questionTypes: ["text", "checkbox", "radiogroup", "dropdown"],
+    };
+    Survey
+        .Serializer
+        .removeProperty("survey", "logo");
+
+    @if (!string.IsNullOrEmpty(surveyJsLicenceKey))
+    {
+        <text>Survey.slk("@surveyJsLicenceKey");</text>
+    }
+
+    @if((Model.FormDefinition.ActiveVacanciesCount > 0 || Model.FormDefinition.ClosedVacanciesCount > 0 || Model.FormDefinition.PendingVacanciesCount > 0))
+    {
+        <text>creatorOptions.readOnly = true;</text>
+    }
+
+    const creator = new SurveyCreator.SurveyCreator(creatorOptions);
+    const blackList = ["logo", "logoWidth", "logoHeight", "logoFit", "logoPosition"];
+    let concurrencyStamp = '@Model.FormDefinition.ConcurrencyStamp';
+
+    document.addEventListener("DOMContentLoaded", function () {
+        creator.JSON = @Html.Raw(Model.FormDefinition.FormDetails ?? "{}");
+        creator.render(document.getElementById("surveyCreator"));
+    });
+
+    creator.onShowingProperty.add((_, options) => {
+        if (options.obj.getType() === "survey") {
+            options.canShow = blackList.indexOf(options.property.name) === -1;
+        }
+    });
+
+    creator.saveSurveyFunc = (saveNo, callback) => {
+        steer73.rockIT.formDefinitions.formDefinitions.update('@Model.Id', {
+            ReferenceId: '@Model.FormDefinition.ReferenceId',
+            Name: '@Model.FormDefinition.Name',
+            FormDetails: creator.text,
+            FormType: '@Model.FormDefinition.FormType',
+            CompanyId: '@Model.FormDefinition.CompanyId',
+            ConcurrencyStamp: concurrencyStamp
+        }).then((res) => {
+            concurrencyStamp = res.concurrencyStamp;
+        });
+    };
+</script>
+
+<div class="d-flex flex-column">
+    <div id="surveyCreator" style="height: 84vh;"></div>
+</div>

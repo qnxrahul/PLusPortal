@@ -1,0 +1,97 @@
+/* Your Global Styles */
+:root .lpx-theme-dim,
+:root .lpx-theme-dark {
+  --lpx-logo: url('/images/logo/PlusPortalLogo.svg');
+  --lpx-logo-icon: url('/images/logo/leptonx/PlusPortalLogo.svg');
+}
+
+:root .lpx-theme-light {
+  --lpx-logo: url('/images/logo/PlusPortalLogo.svg');
+  --lpx-logo-icon: url('/images/logo/PlusPortalLogo.svg');
+}
+
+:root {
+  --lpx-theme-light-bg: url('/LeptonX/images/login-pages/login-bg-img-light.svg');
+  --lpx-theme-dim-bg: url('/LeptonX/images/login-pages/login-bg-img-dim.svg');
+  --lpx-theme-dark-bg: url('/LeptonX/images/login-pages/login-bg-img-dark.svg');
+
+  --lpx-logo: url('/images/logo/PlusPortalLogo.svg');
+  --lpx-logo-icon: url('/images/logo/PlusPortalLogo.svg');
+
+  --bs-btn-bg: #212B49 !important;
+}
+
+.lpx-settings {
+    display: none;
+}
+
+table.table.dataTable.table-striped > tbody > tr:nth-of-type(2n+1) > * {
+    background-color: rgba(232, 238, 243, 0.35);
+    box-shadow: none;
+}
+.table.table-striped > tbody > tr:nth-of-type(even) > td, .table.table-bordered > tbody > tr:nth-of-type(even) > td {
+    box-shadow: inset 0 0 0 9999px rgba(255, 255, 255, 1);
+}
+
+#MenuItem_Account_LinkedAccounts, #MenuItem_Account_AuthorityDelegation, #MenuItem_Account_SecurityLogs, #MenuItem_Account_Sessions, #MenuItem_AbpGdpr_PersonalData {
+    display: none;
+}
+
+#VerifyEmailButton, #EmailNotVerified, #EmailVerified {
+    visibility: hidden;
+}
+
+#VerifyPhoneButton, #PhoneVerified, #PhoneNotVerified {
+    visibility: hidden;
+}
+
+/* Logo/branding section styles */
+
+.lpx-brand-name {
+    display: none;
+}
+
+.lpx-brand-logo {
+    background-size: auto 30px;
+    height: 36px;
+}
+
+.lpx-nav {
+    padding-top: 76px;
+}
+
+@media only screen and (min-width: 768px) and (max-width: 1199px) {
+    .lpx-sidebar-container:not(:hover) .lpx-logo-container {
+        padding: 4px;
+        background-size: auto 30px;
+        overflow: auto;
+        width: 53px;
+        margin: 21px 0 0 10px;
+    }
+}
+
+.lpx-mobile-menu .lpx-brand-logo {
+    background-size: auto 70px;
+    background-position: 0px 0px;
+}
+
+.lpx-login-brand-text .lpx-brand-logo.lpx-login-logo {
+    width: 100%;
+    text-align: center;
+    background-position: center;
+    background-size: 100% auto;
+    max-width: 400px;
+    min-width: 220px;
+}
+
+/* 
+    Fix for datatables until patched in ABP
+    Sorts out issues with double icons and width issues
+*/
+table.dataTable thead > tr > th.dt-orderable-asc span.dt-column-order, table.dataTable thead > tr > th.dt-orderable-desc span.dt-column-order, table.dataTable thead > tr > th.dt-ordering-asc span.dt-column-order, table.dataTable thead > tr > th.dt-ordering-desc span.dt-column-order, table.dataTable thead > tr > td.dt-orderable-asc span.dt-column-order, table.dataTable thead > tr > td.dt-orderable-desc span.dt-column-order, table.dataTable thead > tr > td.dt-ordering-asc span.dt-column-order, table.dataTable thead > tr > td.dt-ordering-desc span.dt-column-order {
+    right: 0px !important
+}
+
+table.dataTable thead .dt-orderable-desc:after {
+    display: table-column !important;
+}

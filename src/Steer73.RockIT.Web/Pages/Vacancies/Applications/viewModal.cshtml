@@ -1,0 +1,145 @@
+@page
+@using Microsoft.AspNetCore.Mvc.Localization
+@using Steer73.RockIT.Localization
+@using Volo.Abp.AspNetCore.Mvc.UI.Bootstrap.TagHelpers.Modal
+@using Steer73.RockIT.Web.Pages.Vacancies
+@using Steer73.RockIT.Vacancies;
+@using System.Globalization
+@inject IHtmlLocalizer<RockITResource> L
+@model ViewModalModel
+@{
+	Layout = null;
+}
+
+<div class="abp-view-modal">
+    <abp-modal id="VacancyCreateModal">
+		<abp-modal-header title="@L["CandidateInformation"].Value"></abp-modal-header>
+
+        <abp-modal-body>
+			<div class="card">
+				<div class="card-body">
+					<div class="row gap-2">
+						<div class="col">
+							<span>@L["Title"]</span>
+							@Model.JobApplication.JobApplication.Title
+						</div>
+						<div class="col">
+							<span>@L["FirstName"]</span>
+							@Model.JobApplication.JobApplication.FirstName
+						</div>
+						<div class="w-100 d-none d-md-block"></div>
+						<div class="col">
+							<span>@L["LastName"]</span>
+							@Model.JobApplication.JobApplication.LastName
+						</div>
+						<div class="col">
+							<span>@L["CurrentCompany"]</span>
+							@Model.JobApplication.JobApplication.CurrentCompany
+						</div>
+						<div class="w-100 d-none d-md-block"></div>
+						<div class="col">
+							<span>@L["CurrentPositionType"]</span>
+							@Model.JobApplication.JobApplication.CurrentPositionType
+						</div>
+						<div class="col">
+							<span>@L["CurrentRole"]</span>
+							@Model.JobApplication.JobApplication.CurrentRole
+						</div>
+						<div class="w-100 d-none d-md-block"></div>
+						<div class="col">
+							<span>@L["EmailAddress"]</span>
+							@Model.JobApplication.JobApplication.EmailAddress
+						</div>
+						<div class="col">
+							<span>@L["CVUrl"]</span>
+							@if (!string.IsNullOrWhiteSpace(Model.JobApplication.JobApplication.CVUrl))
+							{
+								<div class="btn-group" role="group">
+									<button type="button" class="btn btn-primary download-selected-file-btn" data-job-application-id="@Model.JobApplication.JobApplication.Id" data-file-id="@Model.JobApplication.JobApplication.CVUrl" data-file-type="CV" data-bs-toggle="tooltip" data-bs-placement="top" title="@L["DownloadSelectedFile"].Value"><i class="fa fa-file-alt"></i></button>
+								</div>
+							}
+							else
+							{
+							<span>@L["Na"]</span>
+							}
+						</div>
+						<div class="w-100 d-none d-md-block"></div>
+						<div class="col">
+							<span>@L["CoverLetterUrl"]</span>
+							@if (!string.IsNullOrWhiteSpace(Model.JobApplication.JobApplication.CoverLetterUrl))
+							{
+								<div class="btn-group" role="group">
+									<button type="button" class="btn btn-primary download-selected-file-btn" data-job-application-id="@Model.JobApplication.JobApplication.Id" data-file-id="@Model.JobApplication.JobApplication.CoverLetterUrl" data-file-type="CoverLetter" data-bs-toggle="tooltip" data-bs-placement="top" title="@L["DownloadSelectedFile"].Value"><i class="fa fa-file-alt"></i></button>
+								</div>
+							}
+							else
+							{
+							<span>@L["Na"]</span>
+							}
+						</div>
+						<div class="col">
+							<span>@L["AdditionalDocumentUrl"]</span>
+							@if (!string.IsNullOrWhiteSpace(Model.JobApplication.JobApplication.AdditionalDocumentUrl))
+							{
+								<div class="btn-group" role="group">
+									<button type="button" class="btn btn-primary download-selected-file-btn" data-job-application-id="@Model.JobApplication.JobApplication.Id" data-file-id="@Model.JobApplication.JobApplication.AdditionalDocumentUrl" data-file-type="AdditionalDocument" data-bs-toggle="tooltip" data-bs-placement="top" title="@L["DownloadSelectedFile"].Value"><i class="fa fa-file-alt"></i></button>
+								</div>
+							}
+							else
+							{
+							<span>@L["Na"]</span>
+							}
+						</div>
+						<div class="w-100 d-none d-md-block"></div>
+						<div class="col">
+							<span>@L["Response"]</span>
+							@if (!string.IsNullOrWhiteSpace(Model.JobApplication.JobApplication.ResponseUrl))
+							{
+								<div class="btn-group" role="group">
+									<button type="button" class="btn btn-primary download-selected-file-btn" data-job-application-id="@Model.JobApplication.JobApplication.Id" data-file-id="@Model.JobApplication.JobApplication.ResponseUrl" data-file-type="Response" data-bs-toggle="tooltip" data-bs-placement="top" title="@L["DownloadSelectedFile"].Value"><i class="fa fa-file-alt"></i></button>
+								</div>
+							}
+							else
+							{
+								<span>@L["Na"]</span>
+							}
+						</div>
+						<div class="col">
+							<span>@L["Landline"]</span>
+							@Model.JobApplication.JobApplication.Landline
+						</div>
+						<div class="w-100 d-none d-md-block"></div>
+						<div class="col">
+							<span>@L["PhoneNumber"]</span>
+							@Model.JobApplication.JobApplication.PhoneNumber
+						</div>
+						<div class="col">
+							<span>@L["Status"]</span>
+							@Model.JobApplication.JobApplication.Status.ToString()
+						</div>
+						<div class="col">
+							<span>@L["ApplicationDateAndTime"]</span>
+							@Model.JobApplication.JobApplication.CreationTime.ToString("dd/MM/yyyy HH:mm")
+						</div>
+					</div>
+				</div>
+			</div>
+        </abp-modal-body>
+
+        <abp-modal-footer>
+			<div class="d-flex justify-content-end">
+				@if (Model.JobApplication.JobApplication.Status == Steer73.RockIT.Enums.JobApplicationStatus.Pending)
+				{
+					<form class="js-confirm-approve" method="post" asp-page-handler="Approve" data-candidate-action="@L["Approve"]">
+						<input type="hidden" name="Id" value="@Model.JobApplication.JobApplication.Id" />
+						<button type="submit" class="btn btn-primary mb-1 me-1">@L["Approve"]</button>
+					</form>
+					<form class="js-confirm-reject" method="post" asp-page-handler="Reject" data-candidate-action="@L["Reject"]">
+						<input type="hidden" name="Id" value="@Model.JobApplication.JobApplication.Id" />
+						<button type="submit" class="btn btn-danger mb-1">@L["Reject"]</button>
+					</form>
+				}
+            </div>
+        </abp-modal-footer>
+    </abp-modal>
+</div>

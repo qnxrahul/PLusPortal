@@ -1,0 +1,36 @@
+﻿@page
+@model Steer73.RockIT.Web.Pages.SearchModel
+
+@{
+    Layout = "_CandidatePortalLayout.cshtml";
+}
+
+<div class="container main">
+    <partial name="_MainTitle" />
+
+    <div>
+        @await Component.InvokeAsync("Search", Model.SearchQuery)
+    </div>
+
+    <div class="row">
+        <div class="vacancy-list col-12 search-results">
+            @if (Model.Vacancies.Count > 0)
+            {
+                <div class="card d-flex flex-row flex-wrap gap-3">
+                    <div class="list flex-grow-1">
+                        @foreach (var vacancy in Model.Vacancies)
+                        {
+                            <partial name="Vacancy/_VacancyCard" model="vacancy" />
+                        }
+                    </div>
+                </div>
+            }
+            else
+            {
+                <div class="card text-center">
+                    <h1>Sorry, there are no vacancies that match your search criteria at the moment</h1>
+                </div>
+            }
+        </div>
+    </div>
+</div>
