@@ -122,7 +122,7 @@ public class RockITWebModule : AbpModule
         Configure<AbpBundlingOptions>(options =>
         {
             options.UseCdn = true;
-            options.Mode = BundlingMode.None;
+            options.Mode = BundlingMode.Bundle;
         });
         // Theme-specific bundling removed
         ConfigureUrls(configuration);
