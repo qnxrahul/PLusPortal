@@ -1,4 +1,4 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection;
 using Volo.Abp.Account;
 using Volo.Abp.AuditLogging;
 using Volo.Abp.FeatureManagement;
@@ -9,7 +9,7 @@ using Volo.Abp.Modularity;
 using Volo.Abp.PermissionManagement;
 using Volo.Abp.TextTemplateManagement;
 using Volo.Abp.SettingManagement;
-using Volo.Saas.Host;
+// using Volo.Saas.Host; // removed for OSS
 using Volo.Abp.VirtualFileSystem;
 using Volo.Abp.Gdpr;
 
@@ -21,11 +21,9 @@ namespace Steer73.RockIT;
     typeof(AbpPermissionManagementHttpApiClientModule),
     typeof(AbpFeatureManagementHttpApiClientModule),
     typeof(AbpSettingManagementHttpApiClientModule),
-    typeof(SaasHostHttpApiClientModule),
+    // Remove SaaS client module for OSS
     typeof(AbpAuditLoggingHttpApiClientModule),
-    typeof(AbpOpenIddictProHttpApiClientModule),
-    typeof(AbpAccountAdminHttpApiClientModule),
-    typeof(AbpAccountPublicHttpApiClientModule),
+    // Remove Pro OpenIddict & Account clients for OSS/no-auth
     typeof(LanguageManagementHttpApiClientModule),
     typeof(AbpGdprHttpApiClientModule),
     typeof(TextTemplateManagementHttpApiClientModule)

@@ -23,7 +23,7 @@ using Volo.Abp.OpenIddict.EntityFrameworkCore;
 using Volo.Abp.PermissionManagement.EntityFrameworkCore;
 using Volo.Abp.SettingManagement.EntityFrameworkCore;
 using Volo.Abp.TextTemplateManagement.EntityFrameworkCore;
-using Volo.Saas.EntityFrameworkCore;
+// using Volo.Saas.EntityFrameworkCore; // removed for OSS
 using Steer73.RockIT.BrochureSubscriptions;
 
 namespace Steer73.RockIT.EntityFrameworkCore;
