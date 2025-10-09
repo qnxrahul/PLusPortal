@@ -293,10 +293,7 @@ public class RockITWebModule : AbpModule
             options.Contributors.Add(new RockITToolbarContributor());
         });
 
-        Configure<ProfileManagementPageOptions>(options =>
-        {
-            options.Contributors.Add(new RockITProfileManagementPageContributor());
-        });
+        // Remove profile management page contributor (no account pages)
     }
 
     private void ConfigureAutoApiControllers()
