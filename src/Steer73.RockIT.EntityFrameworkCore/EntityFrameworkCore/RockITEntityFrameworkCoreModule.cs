@@ -19,7 +19,7 @@ using Volo.Abp.Gdpr;
 using Volo.Abp.Identity.EntityFrameworkCore;
 using Volo.Abp.LanguageManagement.EntityFrameworkCore;
 using Volo.Abp.Modularity;
-using Volo.Abp.OpenIddict.EntityFrameworkCore;
+// using Volo.Abp.OpenIddict.EntityFrameworkCore; // removed for OSS/no-auth
 using Volo.Abp.PermissionManagement.EntityFrameworkCore;
 using Volo.Abp.SettingManagement.EntityFrameworkCore;
 using Volo.Abp.TextTemplateManagement.EntityFrameworkCore;

@@ -3,7 +3,7 @@ using DinkToPdf;
 using Microsoft.CodeAnalysis;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Volo.Abp.Account;
+// using Volo.Abp.Account; // removed for OSS/no-auth
 using Volo.Abp.AuditLogging;
 using Volo.Abp.AutoMapper;
 using Volo.Abp.BlobStoring;
@@ -13,7 +13,7 @@ using Volo.Abp.Gdpr;
 using Volo.Abp.Identity;
 using Volo.Abp.LanguageManagement;
 using Volo.Abp.Modularity;
-using Volo.Abp.OpenIddict;
+// using Volo.Abp.OpenIddict; // removed for OSS/no-auth
 using Volo.Abp.PermissionManagement;
 using Volo.Abp.SettingManagement;
 using Volo.Abp.TextTemplateManagement;

@@ -11,7 +11,7 @@ using Volo.Abp.Application.Services;
 using Volo.Abp.Domain.Repositories;
 using Steer73.RockIT.Permissions;
 using Steer73.RockIT.Companies;
-using MiniExcelLibs;
+// using MiniExcelLibs; // removed for OSS build
 using Volo.Abp.Content;
 using Volo.Abp.Authorization;
 using Volo.Abp.Caching;
