@@ -1,7 +1,7 @@
 using Localization.Resources.AbpUi;
 using Steer73.RockIT.Localization;
 // using Volo.Abp.Account; // removed for OSS/no-auth
-using Volo.Abp.AuditLogging;
+// using Volo.Abp.AuditLogging; // removed for OSS
 using Volo.Abp.FeatureManagement;
 using Volo.Abp.Identity;
 // using Volo.Abp.LanguageManagement; // removed for OSS
@@ -21,8 +21,7 @@ namespace Steer73.RockIT;
     typeof(AbpIdentityHttpApiModule),
     typeof(AbpPermissionManagementHttpApiModule),
     typeof(AbpFeatureManagementHttpApiModule),
-    typeof(AbpSettingManagementHttpApiModule),
-    typeof(AbpAuditLoggingHttpApiModule)
+    typeof(AbpSettingManagementHttpApiModule)
     // Remove Pro OpenIddict & Account Admin for OSS/no-auth runtime
     )]
 public class RockITHttpApiModule : AbpModule
