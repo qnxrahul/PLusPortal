@@ -64,7 +64,7 @@ using Volo.Abp.VirtualFileSystem;
 namespace Steer73.RockIT.Web;
 
 [DependsOn(
-    typeof(RockITHttpApiModule),
+    //typeof(RockITHttpApiModule),
     typeof(RockITApplicationModule),
     typeof(RockITEntityFrameworkCoreModule),
     typeof(AbpAutofacModule),
@@ -233,7 +233,7 @@ public class RockITWebModule : AbpModule
                 options.FileSets.ReplaceEmbeddedByPhysical<RockITDomainModule>(Path.Combine(hostingEnvironment.ContentRootPath, string.Format("..{0}Steer73.RockIT.Domain", Path.DirectorySeparatorChar)));
                 options.FileSets.ReplaceEmbeddedByPhysical<RockITApplicationContractsModule>(Path.Combine(hostingEnvironment.ContentRootPath, string.Format("..{0}Steer73.RockIT.Application.Contracts", Path.DirectorySeparatorChar)));
                 options.FileSets.ReplaceEmbeddedByPhysical<RockITApplicationModule>(Path.Combine(hostingEnvironment.ContentRootPath, string.Format("..{0}Steer73.RockIT.Application", Path.DirectorySeparatorChar)));
-                options.FileSets.ReplaceEmbeddedByPhysical<RockITHttpApiModule>(Path.Combine(hostingEnvironment.ContentRootPath, string.Format("..{0}..{0}src{0}Steer73.RockIT.HttpApi", Path.DirectorySeparatorChar)));
+               // options.FileSets.ReplaceEmbeddedByPhysical<RockITHttpApiModule>(Path.Combine(hostingEnvironment.ContentRootPath, string.Format("..{0}..{0}src{0}Steer73.RockIT.HttpApi", Path.DirectorySeparatorChar)));
                 options.FileSets.ReplaceEmbeddedByPhysical<RockITWebModule>(hostingEnvironment.ContentRootPath);
             }
         });

@@ -7,7 +7,7 @@ using Volo.Abp.BackgroundJobs;
 using Volo.Abp.Emailing;
 using Volo.Abp.FeatureManagement;
 using Volo.Abp.Identity;
-using Volo.Abp.LanguageManagement;
+//using Volo.Abp.LanguageManagement;
 using Volo.Abp.Localization;
 using Volo.Abp.Modularity;
 using Volo.Abp.MultiTenancy;
@@ -18,7 +18,6 @@ using Volo.Abp.TextTemplateManagement;
 using Volo.Abp.BlobStoring.Database;
 using Volo.Abp.Caching;
 // using Volo.Abp.Commercial.SuiteTemplates; // removed for OSS
-using Volo.Abp.Gdpr;
 using Volo.Abp.OpenIddict;
 using Volo.Abp.PermissionManagement.OpenIddict;
 
@@ -37,10 +36,10 @@ namespace Steer73.RockIT;
     typeof(AbpSettingManagementDomainModule),
     // Remove SaaS domain module for OSS
     typeof(TextTemplateManagementDomainModule),
-    typeof(LanguageManagementDomainModule),
+   // typeof(LanguageManagementDomainModule),
     // Remove Commercial Suite Templates module for OSS
     typeof(AbpEmailingModule),
-    typeof(AbpGdprDomainModule),
+    //typeof(AbpGdprDomainModule),
     typeof(BlobStoringDatabaseDomainModule)
     )]
 public class RockITDomainModule : AbpModule

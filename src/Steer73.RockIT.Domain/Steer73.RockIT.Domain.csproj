@@ -26,11 +26,11 @@
     <PackageReference Include="Volo.Abp.BlobStoring.Database.Domain" Version="8.3.0" />
     <!-- Switch to OSS Identity domain -->
     <PackageReference Include="Volo.Abp.Identity.Domain" Version="8.3.0" />
-    <PackageReference Include="Volo.Abp.LanguageManagement.Domain" Version="8.3.0" />
+    <!--<PackageReference Include="Volo.Abp.LanguageManagement.Domain" Version="8.3.0" />-->
     <!-- Remove SaaS domain for OSS migration -->
     <PackageReference Include="Volo.Abp.TextTemplateManagement.Domain" Version="8.3.0" />
     <!-- Remove ABP Commercial templates -->
-    <PackageReference Include="Volo.Abp.Gdpr.Domain" Version="8.3.0" />
+    <!--<PackageReference Include="Volo.Abp.Gdpr.Domain" Version="8.3.0" />-->
   </ItemGroup>
 
 </Project>
