@@ -1,0 +1,37 @@
+@using System.Globalization
+@using Microsoft.Extensions.Configuration
+@using Volo.Abp.AspNetCore.Mvc.AntiForgery
+@using Volo.Abp.AspNetCore.Mvc.UI.Theme.Basic
+@using Volo.Abp.AspNetCore.Mvc.UI.Theme.Basic.Bundling
+@using Volo.Abp.Localization
+
+@inject IAbpAntiForgeryManager AbpAntiForgeryManager
+@inject IConfiguration Configuration
+
+@{
+    AbpAntiForgeryManager.SetCookie();
+    var langDir = CultureHelper.IsRtl ? "rtl" : string.Empty;
+    var title = ViewBag.Title == null ? "Admin" : ViewBag.Title;
+}
+
+<!DOCTYPE html>
+<html lang="@CultureInfo.CurrentCulture.Name" dir="@langDir">
+<head>
+    <title>@title</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <meta charset="UTF-8" />
+
+    <abp-style-bundle name="@BasicThemeBundles.Styles.Global" />
+
+    @await RenderSectionAsync("styles", false)
+</head>
+<body>
+    @await RenderSectionAsync("content_toolbar", false)
+
+    @RenderBody()
+
+    <abp-script-bundle name="@BasicThemeBundles.Scripts.Global" />
+
+    @await RenderSectionAsync("scripts", false)
+</body>
+</html>
