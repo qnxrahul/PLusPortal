@@ -18,11 +18,7 @@
     <PackageReference Include="Volo.Abp.FeatureManagement.Application.Contracts" Version="8.3.0" />
     <PackageReference Include="Volo.Abp.SettingManagement.Application.Contracts" Version="8.3.0" />
     <!-- Remove SaaS App Contracts for OSS migration -->
-    <PackageReference Include="Volo.Abp.AuditLogging.Application.Contracts" Version="8.3.0" />
     <PackageReference Include="Volo.Abp.Identity.Application.Contracts" Version="8.3.0" />
-    <PackageReference Include="Volo.Abp.LanguageManagement.Application.Contracts" Version="8.3.0" />
-    <PackageReference Include="Volo.Abp.TextTemplateManagement.Application.Contracts" Version="8.3.0" />
-    <PackageReference Include="Volo.Abp.Gdpr.Application.Contracts" Version="8.3.0" />
   </ItemGroup>
 
 </Project>

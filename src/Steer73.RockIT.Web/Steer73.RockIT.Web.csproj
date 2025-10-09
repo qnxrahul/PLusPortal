@@ -79,8 +79,6 @@
     <PackageReference Include="Volo.Abp.AspNetCore.Serilog" Version="8.3.0" />
     <PackageReference Include="Volo.Abp.Swashbuckle" Version="8.3.0" />
     <PackageReference Include="Volo.Abp.FeatureManagement.Web" Version="8.3.0" />
-    <PackageReference Include="Volo.Abp.LanguageManagement.Web" Version="8.3.0" />
-    <PackageReference Include="Volo.Abp.TextTemplateManagement.Web" Version="8.3.0" />
   </ItemGroup>
 
   <ItemGroup>
