@@ -35,17 +35,17 @@ using Volo.Abp.AspNetCore.Mvc.UI.Theme.Shared;
 using Volo.Abp.AspNetCore.Mvc.UI.Theme.Shared.Toolbars;
 using Volo.Abp.AspNetCore.Serilog;
 using Volo.Abp.AspNetCore.VirtualFileSystem;
-using Volo.Abp.AuditLogging.Web;
+// using Volo.Abp.AuditLogging.Web; // removed for OSS
 using Volo.Abp.Autofac;
 using Volo.Abp.AutoMapper;
 using Volo.Abp.BackgroundJobs;
 using Volo.Abp.BackgroundWorkers;
 using Volo.Abp.Emailing;
-using Volo.Abp.Gdpr.Web;
-using Volo.Abp.Gdpr.Web.Extensions;
+// using Volo.Abp.Gdpr.Web; // removed for OSS
+// using Volo.Abp.Gdpr.Web.Extensions; // removed for OSS
 // using Volo.Abp.Identity;
 // using Volo.Abp.Identity.Web;
-using Volo.Abp.LanguageManagement;
+// using Volo.Abp.LanguageManagement; // removed for OSS
 // using Volo.Abp.LeptonX.Shared; // removed
 using Volo.Abp.Localization;
 using Volo.Abp.Modularity;
@@ -54,7 +54,7 @@ using Volo.Abp.PermissionManagement;
 using Volo.Abp.Security.Claims;
 using Volo.Abp.SettingManagement;
 using Volo.Abp.Swashbuckle;
-using Volo.Abp.TextTemplateManagement.Web;
+// using Volo.Abp.TextTemplateManagement.Web; // removed for OSS
 using Volo.Abp.Timing;
 using Volo.Abp.UI.Navigation;
 using Volo.Abp.UI.Navigation.Urls;
@@ -68,11 +68,11 @@ namespace Steer73.RockIT.Web;
     typeof(RockITApplicationModule),
     typeof(RockITEntityFrameworkCoreModule),
     typeof(AbpAutofacModule),
-    typeof(AbpAuditLoggingWebModule),
-    typeof(LanguageManagementWebModule),
+    // typeof(AbpAuditLoggingWebModule),
+    // typeof(LanguageManagementWebModule),
     typeof(AbpAspNetCoreMvcUiBasicThemeModule),
-    typeof(TextTemplateManagementWebModule),
-    typeof(AbpGdprWebModule),
+    // typeof(TextTemplateManagementWebModule),
+    // typeof(AbpGdprWebModule),
     typeof(AbpSwashbuckleModule),
     typeof(AbpAspNetCoreSerilogModule),
     typeof(AbpBackgroundJobsModule),
