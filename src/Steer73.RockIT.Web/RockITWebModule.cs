@@ -118,13 +118,7 @@ public class RockITWebModule : AbpModule
         // No OpenIddict server when authentication is removed
 
         // Authentication removed
-        // Force CDN usage and disable local bundling to avoid wwwroot/libs requirement
-        Configure<AbpBundlingOptions>(options =>
-        {
-            options.UseCdn = true;
-            options.Mode = BundlingMode.Bundle;
-        });
-        // Theme-specific bundling removed
+        // Theme-specific bundling removed (using layout-level CDN includes instead)
         ConfigureUrls(configuration);
         ConfigurePages(configuration);
         // Impersonation removed (no auth)
