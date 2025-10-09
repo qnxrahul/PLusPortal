@@ -66,6 +66,8 @@
 <body>
     @(await Html.PartialAsync("~/Views/_Header.cshtml"))
 
+    @await RenderSectionAsync("content_toolbar", false)
+
     @RenderBody()
 
     @(await Html.PartialAsync("~/Views/_Footer.cshtml"))
