@@ -13,7 +13,7 @@ using Volo.Abp.SettingManagement;
 using Volo.Abp.TextTemplateManagement;
 using Volo.Abp.VirtualFileSystem;
 // using Volo.Saas; // removed for OSS
-using Volo.Abp.OpenIddict;
+// using Volo.Abp.OpenIddict; // removed for OSS
 using Volo.Abp.BlobStoring.Database;
 using Volo.Abp.Gdpr;
 using Volo.Abp.GlobalFeatures;

@@ -179,15 +179,7 @@ public class RockITWebModule : AbpModule
         return new X509Certificate2(file, passPhrase);
     }
 
-    private void ConfigureCookieConsent(ServiceConfigurationContext context)
-    {
-        context.Services.AddAbpCookieConsent(options =>
-        {
-            options.IsEnabled = false;
-            options.CookiePolicyUrl = "/CookiePolicy";
-            options.PrivacyPolicyUrl = "/PrivacyPolicy";
-        });
-    }
+    private void ConfigureCookieConsent(ServiceConfigurationContext context) { }
 
     // Removed ConfigureTheme (LeptonX-specific)
 
@@ -310,7 +302,7 @@ public class RockITWebModule : AbpModule
             app.UseHsts();
         }
 
-        app.UseAbpCookieConsent();
+        // Cookie consent removed
         app.UseCorrelationId();
         app.UseAbpSecurityHeaders();
         app.UseStaticFiles();

@@ -1,4 +1,4 @@
-using Volo.Abp.Account;
+// using Volo.Abp.Account; // removed for OSS/no-auth
 using Volo.Abp.AuditLogging;
 using Volo.Abp.FeatureManagement;
 using Volo.Abp.Identity;
@@ -9,7 +9,7 @@ using Volo.Abp.SettingManagement;
 using Volo.Abp.TextTemplateManagement;
 // using Volo.Saas.Host; // removed for OSS
 using Volo.Abp.Gdpr;
-using Volo.Abp.OpenIddict;
+// using Volo.Abp.OpenIddict; // removed for OSS
 
 namespace Steer73.RockIT;
 

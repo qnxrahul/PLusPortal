@@ -26,7 +26,6 @@ public class CustomIdentityUserAppService : IdentityUserAppService
         IIdentityRoleRepository roleRepository,
         IOrganizationUnitRepository organizationUnitRepository,
         IIdentityClaimTypeRepository identityClaimTypeRepository,
-        IdentityProTwoFactorManager identityProTwoFactorManager,
         IOptions<IdentityOptions> identityOptions,
         IDistributedEventBus distributedEventBus,
         IOptions<AbpIdentityOptions> abpIdentityOptions,
@@ -39,14 +38,14 @@ public class CustomIdentityUserAppService : IdentityUserAppService
             roleRepository,
             organizationUnitRepository,
             identityClaimTypeRepository,
-            identityProTwoFactorManager,
+            null,
             identityOptions,
             distributedEventBus,
             abpIdentityOptions,
             permissionChecker,
-            downloadTokenCache,
-            importInvalidUsersCache,
-            identitySessionManager)
+            null,
+            null,
+            null)
     { }
 
 
