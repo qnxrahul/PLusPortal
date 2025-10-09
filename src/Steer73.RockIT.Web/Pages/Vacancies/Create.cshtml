@@ -48,10 +48,27 @@
         let quill = null;
 
         window.addEventListener("DOMContentLoaded", (event) => {
+            // Allow mailto: and tel: links in Quill's link sanitizer
+            try {
+                const Link = Quill.import('formats/link');
+                const originalSanitize = Link.sanitize;
+                Link.sanitize = function (url) {
+                    const val = originalSanitize.call(this, url);
+                    if (!val) return val;
+                    if (val.startsWith('mailto:') || val.startsWith('tel:')) {
+                        return val;
+                    }
+                    return val;
+                };
+                Quill.register(Link, true);
+            } catch { /* ignore if not available */ }
+
             quill = new Quill('#editor', {
                 theme: 'snow',
                 modules: {
                     toolbar: [
+                        ['bold', 'italic', 'underline'],
+                        [{ list: 'ordered' }, { list: 'bullet' }],
                         ['link']
                     ]
                 }
@@ -192,6 +209,10 @@
 
                 <abp-input asp-for="Vacancy.Description" hidden="true" add-margin-bottom-class="false" />
                 <div id="editor" class="mb-3"></div>
+                <div class="form-text mb-3">
+                    Tip: Select the text you want to make a link, click the link icon in the toolbar, and paste the address.<br />
+                    For email links, use the format <code>mailto:someone@example.com</code>.
+                </div>
                 <input type="hidden" name="Content" id="quillContent">
 
                 <abp-input asp-for="Vacancy.BrochureFileId" type="hidden" />
