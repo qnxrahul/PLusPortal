@@ -27,15 +27,15 @@ public class CustomProfileAppService
     {
         var validationResults = new List<ValidationResult>();
 
-        if (string.IsNullOrWhiteSpace(input.Name))
-        {
-            validationResults.Add(new($"The {nameof(input.Name)} field is required", [nameof(input.Name)]));
-        }
+        //if (string.IsNullOrWhiteSpace(input.Name))
+        //{
+        //    validationResults.Add(new($"The {nameof(input.Name)} field is required", [nameof(input.Name)]));
+        //}
 
-        if (string.IsNullOrWhiteSpace(input.Surname))
-        {
-            validationResults.Add(new($"The {nameof(input.Surname)} field is required", [nameof(input.Surname)]));
-        }
+        //if (string.IsNullOrWhiteSpace(input.Surname))
+        //{
+        //    validationResults.Add(new($"The {nameof(input.Surname)} field is required", [nameof(input.Surname)]));
+        //}
 
         if (validationResults.Count > 0)
         {

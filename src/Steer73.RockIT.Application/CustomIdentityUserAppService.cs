@@ -29,23 +29,17 @@ public class CustomIdentityUserAppService : IdentityUserAppService
         IOptions<IdentityOptions> identityOptions,
         IDistributedEventBus distributedEventBus,
         IOptions<AbpIdentityOptions> abpIdentityOptions,
-        IPermissionChecker permissionChecker,
-        IDistributedCache<IdentityUserDownloadTokenCacheItem, string> downloadTokenCache,
-        IDistributedCache<ImportInvalidUsersCacheItem, string> importInvalidUsersCache,
-        IdentitySessionManager identitySessionManager) : base(
+        IPermissionChecker permissionChecker
+        //IDistributedCache<IdentityUserDownloadTokenCacheItem, string> downloadTokenCache,
+        //IDistributedCache<ImportInvalidUsersCacheItem, string> importInvalidUsersCache,
+        //IdentitySessionManager identitySessionManager
+        ) : base(
             userManager,
             userRepository,
             roleRepository,
-            organizationUnitRepository,
-            identityClaimTypeRepository,
-            null,
             identityOptions,
-            distributedEventBus,
-            abpIdentityOptions,
-            permissionChecker,
-            null,
-            null,
-            null)
+            permissionChecker
+            )
     { }
 
 

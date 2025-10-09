@@ -1,5 +1,4 @@
 using EzekiaCRM;
-using IdentityModel;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;

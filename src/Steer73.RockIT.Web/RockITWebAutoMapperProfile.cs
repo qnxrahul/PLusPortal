@@ -88,14 +88,14 @@ public class RockITWebAutoMapperProfile : Profile
 		CreateMap<BrochureSubscription, BrochureSubscriptionDto>();
 		CreateMap<BrochureSubscriptionViewModel, BrochureSubscriptionCreateDto>();
 
-        CreateMap<Pages.Identity.Users.CustomCreateModalModel.CustomUserInfoViewModel, IdentityUserCreateDto>()
-            .MapExtraProperties();
+        //CreateMap<Pages.Identity.Users.CustomCreateModalModel.CustomUserInfoViewModel, IdentityUserCreateDto>()
+        //    .MapExtraProperties();
 
-        CreateMap<IdentityUserDto, Pages.Identity.Users.CustomEditModalModel.CustomUserInfoViewModel>()
-            .MapExtraProperties();
+        //CreateMap<IdentityUserDto, Pages.Identity.Users.CustomEditModalModel.CustomUserInfoViewModel>()
+        //    .MapExtraProperties();
 
-        CreateMap<Pages.Identity.Users.CustomEditModalModel.CustomUserInfoViewModel, IdentityUserUpdateDto>()
-            .MapExtraProperties();
+        //CreateMap<Pages.Identity.Users.CustomEditModalModel.CustomUserInfoViewModel, IdentityUserUpdateDto>()
+        //    .MapExtraProperties();
 
         // removed account profile mappings for no-auth
 

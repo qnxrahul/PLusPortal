@@ -22,7 +22,7 @@ namespace Steer73.RockIT;
     typeof(AbpPermissionManagementHttpApiModule),
     typeof(AbpFeatureManagementHttpApiModule),
     typeof(AbpSettingManagementHttpApiModule),
-    typeof(AbpAuditLoggingHttpApiModule),
+    typeof(AbpAuditLoggingHttpApiModule)
     // Remove Pro OpenIddict & Account Admin for OSS/no-auth runtime
     )]
 public class RockITHttpApiModule : AbpModule

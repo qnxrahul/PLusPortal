@@ -62,8 +62,8 @@ public class RockITDbMigrationService : ITransientDependency
 
     private async Task MigrateDatabaseSchemaAsync(object? tenant = null)
     {
-        Logger.LogInformation(
-            $"Migrating schema for {(tenant == null ? "host" : tenant.Name + " tenant")} database...");
+        //Logger.LogInformation(
+        //    $"Migrating schema for {(tenant == null ? "host" : tenant.Name + " tenant")} database...");
 
         foreach (var migrator in _dbSchemaMigrators)
         {
@@ -73,14 +73,14 @@ public class RockITDbMigrationService : ITransientDependency
 
     private async Task SeedDataAsync(object? tenant = null)
     {
-        Logger.LogInformation($"Executing {(tenant == null ? "host" : tenant.Name + " tenant")} database seed...");
+        //Logger.LogInformation($"Executing {(tenant == null ? "host" : tenant.Name + " tenant")} database seed...");
 
-        await _dataSeeder.SeedAsync(new DataSeedContext(tenant?.Id)
-            .WithProperty(IdentityDataSeedContributor.AdminEmailPropertyName,
-                RockITConsts.AdminEmailDefaultValue)
-            .WithProperty(IdentityDataSeedContributor.AdminPasswordPropertyName,
-                RockITConsts.AdminPasswordDefaultValue)
-        );
+        //await _dataSeeder.SeedAsync(new DataSeedContext(tenant?.Id)
+        //    .WithProperty(IdentityDataSeedContributor.AdminEmailPropertyName,
+        //        RockITConsts.AdminEmailDefaultValue)
+        //    .WithProperty(IdentityDataSeedContributor.AdminPasswordPropertyName,
+        //        RockITConsts.AdminPasswordDefaultValue)
+        //);
     }
 
     private bool AddInitialMigrationIfNotExist()

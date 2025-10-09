@@ -94,7 +94,7 @@ namespace Steer73.RockIT.Companies
             var items = await _companyRepository.GetListAsync(input.FilterText, input.Name, input.Phone, input.Address, input.Postcode, input.PrimaryContact);
 
             var memoryStream = new MemoryStream();
-            await memoryStream.SaveAsAsync(ObjectMapper.Map<List<Company>, List<CompanyExcelDto>>(items));
+            //await memoryStream.SaveAsAsync(ObjectMapper.Map<List<Company>, List<CompanyExcelDto>>(items));
             memoryStream.Seek(0, SeekOrigin.Begin);
 
             return new RemoteStreamContent(memoryStream, "Companies.xlsx", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
