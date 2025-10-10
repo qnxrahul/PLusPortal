@@ -65,13 +65,19 @@
 
             quill = new Quill('#editor', {
                 theme: 'snow',
+                placeholder: 'Write the vacancy description here. Use the Headings dropdown for Title/Header/Paragraph...',
                 modules: {
                     toolbar: [
+                        [{ header: [false, 1, 2, 3] }],
                         ['bold', 'italic', 'underline'],
                         [{ list: 'ordered' }, { list: 'bullet' }],
-                        ['link']
+                        ['link', 'clean']
                     ]
-                }
+                },
+                formats: [
+                    'header', 'bold', 'italic', 'underline',
+                    'list', 'bullet', 'link'
+                ]
             });
 
             quill.clipboard.dangerouslyPasteHTML('@Html.Raw(Model.Vacancy.Description)');
@@ -210,8 +216,11 @@
                 <abp-input asp-for="Vacancy.Description" hidden="true" add-margin-bottom-class="false" />
                 <div id="editor" class="mb-3"></div>
                 <div class="form-text mb-3">
-                    Tip: Select the text you want to make a link, click the link icon in the toolbar, and paste the address.<br />
-                    For email links, use the format <code>mailto:someone@example.com</code>.
+                    Tips:
+                    <ul class="mb-0">
+                        <li>Use the Headings dropdown to set <strong>Paragraph</strong>, <strong>Heading 1</strong> (Title), <strong>Heading 2</strong> (Header), or <strong>Heading 3</strong>.</li>
+                        <li>Select text, click the link icon, and paste the address. For email links, use <code>mailto:someone@example.com</code>.</li>
+                    </ul>
                 </div>
                 <input type="hidden" name="Content" id="quillContent">
 
