@@ -71,12 +71,13 @@
                         [{ header: [false, 1, 2, 3] }],
                         ['bold', 'italic', 'underline'],
                         [{ list: 'ordered' }, { list: 'bullet' }],
+                        [{ indent: '-1' }, { indent: '+1' }],
                         ['link', 'clean']
                     ]
                 },
                 formats: [
                     'header', 'bold', 'italic', 'underline',
-                    'list', 'bullet', 'link'
+                    'list', 'bullet', 'indent', 'link'
                 ]
             });
 
@@ -88,6 +89,18 @@
                 const quillContent = document.querySelector('input#Vacancy_Description');
                 quillContent.value = !isQuillEmpty(quill) ? quill.root.innerHTML : ''; // This sends the Quill content as HTML
             });
+
+            // Add keyboard shortcuts for indent/outdent (Tab / Shift+Tab)
+            try {
+                quill.keyboard.addBinding({ key: 9, shiftKey: false }, function () {
+                    quill.format('indent', '+1');
+                    return false; // prevent focus change
+                });
+                quill.keyboard.addBinding({ key: 9, shiftKey: true }, function () {
+                    quill.format('indent', '-1');
+                    return false;
+                });
+            } catch { /* ignore if not available */ }
 
         });
 
@@ -219,6 +232,7 @@
                     Tips:
                     <ul class="mb-0">
                         <li>Use the Headings dropdown to set <strong>Paragraph</strong>, <strong>Heading 1</strong> (Title), <strong>Heading 2</strong> (Header), or <strong>Heading 3</strong>.</li>
+                        <li>Increase/decrease indentation using the indent buttons on the toolbar or with <strong>Tab</strong> / <strong>Shift+Tab</strong>.</li>
                         <li>Select text, click the link icon, and paste the address. For email links, use <code>mailto:someone@example.com</code>.</li>
                     </ul>
                 </div>
