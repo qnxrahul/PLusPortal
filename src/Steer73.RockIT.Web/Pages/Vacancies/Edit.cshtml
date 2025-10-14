@@ -50,13 +50,34 @@
 
 
         window.addEventListener("DOMContentLoaded", (event) => {
+            // Allow mailto: and tel: links in Quill's link sanitizer
+            try {
+                const Link = Quill.import('formats/link');
+                const originalSanitize = Link.sanitize;
+                Link.sanitize = function (url) {
+                    const val = originalSanitize.call(this, url);
+                    if (!val) return val;
+                    if (val.startsWith('mailto:') || val.startsWith('tel:')) {
+                        return val;
+                    }
+                    return val;
+                };
+                Quill.register(Link, true);
+            } catch { /* ignore if not available */ }
+
             quill = new Quill('#editor', {
                 theme: 'snow',
+                placeholder: 'Edit the vacancy description. Use Headings, Indent, and Links as needed...',
                 modules: {
                     toolbar: [
-                        ['link']
+                        [{ header: [false, 1, 2, 3] }],
+                        ['bold', 'italic', 'underline'],
+                        [{ list: 'ordered' }, { list: 'bullet' }],
+                        [{ indent: '-1' }, { indent: '+1' }],
+                        ['link', 'clean']
                     ]
-                }                                
+                },
+                formats: ['header','bold','italic','underline','list','bullet','indent','link']
             });
 
             const content = @Html.Raw(Json.Serialize(Model.Input.Description));
@@ -68,6 +89,18 @@
                 const quillContent = document.querySelector('input#Input_Description');
                 quillContent.value = !isQuillEmpty(quill) ? quill.root.innerHTML : ''; // This sends the Quill content as HTML
             });
+
+            // Keyboard shortcuts for indent/outdent
+            try {
+                quill.keyboard.addBinding({ key: 9, shiftKey: false }, function () {
+                    quill.format('indent', '+1');
+                    return false;
+                });
+                quill.keyboard.addBinding({ key: 9, shiftKey: true }, function () {
+                    quill.format('indent', '-1');
+                    return false;
+                });
+            } catch { }
         });
 
         function isQuillEmpty(quillInstance) {
