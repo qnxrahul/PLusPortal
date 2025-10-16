@@ -12,7 +12,7 @@ using Steer73.RockIT.Web;
 using Steer73.RockIT.Web.Menus;
 using Volo.Abp.AspNetCore.TestBase;
 using Volo.Abp.Modularity;
-using Volo.Abp.OpenIddict;
+// using Volo.Abp.OpenIddict; // removed for OSS/no-auth
 using Volo.Abp.UI.Navigation;
 
 namespace Steer73.RockIT;
@@ -37,11 +37,7 @@ public class RockITWebTestModule : AbpModule
             builder.PartManager.ApplicationParts.Add(new CompiledRazorAssemblyPart(typeof(RockITWebModule).Assembly));
         });
 
-        context.Services.GetPreConfigureActions<OpenIddictServerBuilder>().Clear();
-        PreConfigure<AbpOpenIddictAspNetCoreOptions>(options =>
-        {
-            options.AddDevelopmentEncryptionAndSigningCertificate = true;
-        });
+        // OpenIddict preconfigure removed for no-auth
     }
 
     public override void ConfigureServices(ServiceConfigurationContext context)

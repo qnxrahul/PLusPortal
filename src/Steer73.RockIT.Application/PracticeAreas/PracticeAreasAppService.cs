@@ -15,7 +15,7 @@ using Steer73.RockIT.PracticeAreas;
 namespace Steer73.RockIT.PracticeAreas
 {
 
-    [Authorize(RockITSharedPermissions.PracticeAreas.Default)]
+    [AllowAnonymous]
     public abstract class PracticeAreasAppServiceBase : RockITAppService
     {
 
@@ -62,13 +62,13 @@ namespace Steer73.RockIT.PracticeAreas
             return ObjectMapper.Map<PracticeArea, PracticeAreaDto>(await _practiceAreaRepository.GetAsync(id));
         }
 
-        [Authorize(RockITSharedPermissions.PracticeAreas.Delete)]
+        [AllowAnonymous]
         public virtual async Task DeleteAsync(Guid id)
         {
             await _practiceAreaRepository.DeleteAsync(id);
         }
 
-        [Authorize(RockITSharedPermissions.PracticeAreas.Create)]
+        [AllowAnonymous]
         public virtual async Task<PracticeAreaDto> CreateAsync(PracticeAreaCreateDto input)
         {
 
@@ -79,7 +79,7 @@ namespace Steer73.RockIT.PracticeAreas
             return ObjectMapper.Map<PracticeArea, PracticeAreaDto>(practiceArea);
         }
 
-        [Authorize(RockITSharedPermissions.PracticeAreas.Edit)]
+        [AllowAnonymous]
         public virtual async Task<PracticeAreaDto> UpdateAsync(Guid id, PracticeAreaUpdateDto input)
         {
 

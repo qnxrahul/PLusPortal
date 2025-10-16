@@ -22,7 +22,7 @@ namespace Steer73.RockIT.PracticeGroups
 
         }
 
-        [Authorize(RockITSharedPermissions.PracticeGroups.Default)]
+        [AllowAnonymous]
         public virtual async Task<PagedResultDto<PracticeGroupDto>> GetListAsync(GetPracticeGroupsInput input)
         {
             var totalCount = await _practiceGroupRepository.GetCountAsync(input.FilterText, input.Name, input.IsActive);
@@ -35,19 +35,19 @@ namespace Steer73.RockIT.PracticeGroups
             };
         }
 
-        [Authorize(RockITSharedPermissions.PracticeGroups.Default)]
+        [AllowAnonymous]
         public virtual async Task<PracticeGroupDto> GetAsync(Guid id)
         {
             return ObjectMapper.Map<PracticeGroup, PracticeGroupDto>(await _practiceGroupRepository.GetAsync(id));
         }
 
-        [Authorize(RockITSharedPermissions.PracticeGroups.Delete)]
+        [AllowAnonymous]
         public virtual async Task DeleteAsync(Guid id)
         {
             await _practiceGroupRepository.DeleteAsync(id);
         }
 
-        [Authorize(RockITSharedPermissions.PracticeGroups.Create)]
+        [AllowAnonymous]
         public virtual async Task<PracticeGroupDto> CreateAsync(PracticeGroupCreateDto input)
         {
 
@@ -58,7 +58,7 @@ namespace Steer73.RockIT.PracticeGroups
             return ObjectMapper.Map<PracticeGroup, PracticeGroupDto>(practiceGroup);
         }
 
-        [Authorize(RockITSharedPermissions.PracticeGroups.Edit)]
+        [AllowAnonymous]
         public virtual async Task<PracticeGroupDto> UpdateAsync(Guid id, PracticeGroupUpdateDto input)
         {
 

@@ -10,7 +10,6 @@ using Steer73.RockIT.PracticeGroups;
 using Steer73.RockIT.Vacancies;
 using Steer73.RockIT.BrochureSubscriptions;
 using Steer73.RockIT.MediaSources;
-using Volo.Abp.AuditLogging.EntityFrameworkCore;
 using Volo.Abp.BackgroundJobs.EntityFrameworkCore;
 using Volo.Abp.BlobStoring.Database.EntityFrameworkCore;
 using Volo.Abp.Data;
@@ -18,30 +17,23 @@ using Volo.Abp.DependencyInjection;
 using Volo.Abp.EntityFrameworkCore;
 using Volo.Abp.EntityFrameworkCore.Modeling;
 using Volo.Abp.FeatureManagement.EntityFrameworkCore;
-using Volo.Abp.Gdpr;
 using Volo.Abp.Identity;
 using Volo.Abp.Identity.EntityFrameworkCore;
-using Volo.Abp.LanguageManagement.EntityFrameworkCore;
-using Volo.Abp.OpenIddict.EntityFrameworkCore;
+// using Volo.Abp.OpenIddict.EntityFrameworkCore; // removed for OSS/no-auth
 using Volo.Abp.PermissionManagement.EntityFrameworkCore;
 using Volo.Abp.SettingManagement.EntityFrameworkCore;
-using Volo.Abp.TextTemplateManagement.EntityFrameworkCore;
-using Volo.Saas.Editions;
-using Volo.Saas.EntityFrameworkCore;
-using Volo.Saas.Tenants;
+// using Volo.Saas.*; // removed for OSS
 using Steer73.RockIT.Enums;
 using System;
 using Steer73.RockIT.RoleTypes;
 
 namespace Steer73.RockIT.EntityFrameworkCore;
 
-[ReplaceDbContext(typeof(IIdentityProDbContext))]
-[ReplaceDbContext(typeof(ISaasDbContext))]
+[ReplaceDbContext(typeof(IIdentityDbContext))]
 [ConnectionStringName("Default")]
 public class RockITDbContext :
     AbpDbContext<RockITDbContext>,
-    IIdentityProDbContext,
-    ISaasDbContext
+    IIdentityDbContext
 {
     public DbSet<DiversityFormResponse> DiversityFormResponses { get; set; } = null!;
     public DbSet<JobFormResponse> JobFormResponses { get; set; } = null!;
@@ -73,7 +65,7 @@ public class RockITDbContext :
      * uses this DbContext on runtime. Otherwise, it will use its own DbContext class.
      */
 
-    // Identity
+    // Identity (OSS)
     public DbSet<IdentityUser> Users { get; set; }
     public DbSet<IdentityRole> Roles { get; set; }
     public DbSet<IdentityClaimType> ClaimTypes { get; set; }
@@ -82,11 +74,6 @@ public class RockITDbContext :
     public DbSet<IdentityLinkUser> LinkUsers { get; set; }
     public DbSet<IdentityUserDelegation> UserDelegations { get; set; }
     public DbSet<IdentitySession> Sessions { get; set; }
-
-    // SaaS
-    public DbSet<Tenant> Tenants { get; set; }
-    public DbSet<Edition> Editions { get; set; }
-    public DbSet<TenantConnectionString> TenantConnectionStrings { get; set; }
 
     #endregion
 
@@ -105,15 +92,15 @@ public class RockITDbContext :
         builder.ConfigurePermissionManagement();
         builder.ConfigureSettingManagement();
         builder.ConfigureBackgroundJobs();
-        builder.ConfigureAuditLogging();
-        builder.ConfigureIdentityPro();
-        builder.ConfigureOpenIddictPro();
+       // builder.ConfigureAuditLogging();
+        builder.ConfigureIdentity();
+        // OpenIddict removed
         builder.ConfigureFeatureManagement();
-        builder.ConfigureLanguageManagement();
-        builder.ConfigureSaas();
-        builder.ConfigureTextTemplateManagement();
+        //builder.ConfigureLanguageManagement();
+        // SaaS removed
+       // builder.ConfigureTextTemplateManagement();
         builder.ConfigureBlobStoring();
-        builder.ConfigureGdpr();
+        //builder.ConfigureGdpr();
 
         /* Configure your own tables/entities inside here */
 

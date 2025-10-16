@@ -1,0 +1,43 @@
+@using System.Globalization
+@using Microsoft.Extensions.Configuration
+@using Volo.Abp.AspNetCore.Mvc.AntiForgery
+@using Volo.Abp.AspNetCore.Mvc.UI.Theme.Basic
+@using Volo.Abp.AspNetCore.Mvc.UI.Theme.Basic.Bundling
+@using Volo.Abp.Localization
+
+@inject IAbpAntiForgeryManager AbpAntiForgeryManager
+@inject IConfiguration Configuration
+
+@{
+    AbpAntiForgeryManager.SetCookie();
+    var langDir = CultureHelper.IsRtl ? "rtl" : string.Empty;
+    var title = ViewBag.Title == null ? "Admin" : ViewBag.Title;
+}
+
+<!DOCTYPE html>
+<html lang="@CultureInfo.CurrentCulture.Name" dir="@langDir">
+<head>
+    <title>@title</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <meta charset="UTF-8" />
+
+    <abp-style-bundle name="@BasicThemeBundles.Styles.Global" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/datatables.net-bs5@1.13.10/css/dataTables.bootstrap5.min.css" />
+
+    @await RenderSectionAsync("styles", false)
+</head>
+<body>
+    @await RenderSectionAsync("content_toolbar", false)
+
+    @RenderBody()
+
+    <abp-script-bundle name="@BasicThemeBundles.Scripts.Global" />
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/datatables.net@1.13.10/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/datatables.net-bs5@1.13.10/js/dataTables.bootstrap5.min.js"></script>
+
+    @await RenderSectionAsync("scripts", false)
+</body>
+</html>

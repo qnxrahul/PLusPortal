@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
 using System;
@@ -15,7 +15,7 @@ using Volo.Abp.Validation;
 
 namespace Steer73.RockIT;
 
-[Authorize(IdentityPermissions.Users.Default)]
+[AllowAnonymous]
 [Dependency(ReplaceServices = true)]
 [RemoteService(IsEnabled = false)]
 public class CustomIdentityUserAppService : IdentityUserAppService
@@ -26,31 +26,24 @@ public class CustomIdentityUserAppService : IdentityUserAppService
         IIdentityRoleRepository roleRepository,
         IOrganizationUnitRepository organizationUnitRepository,
         IIdentityClaimTypeRepository identityClaimTypeRepository,
-        IdentityProTwoFactorManager identityProTwoFactorManager,
         IOptions<IdentityOptions> identityOptions,
         IDistributedEventBus distributedEventBus,
         IOptions<AbpIdentityOptions> abpIdentityOptions,
-        IPermissionChecker permissionChecker,
-        IDistributedCache<IdentityUserDownloadTokenCacheItem, string> downloadTokenCache,
-        IDistributedCache<ImportInvalidUsersCacheItem, string> importInvalidUsersCache,
-        IdentitySessionManager identitySessionManager) : base(
+        IPermissionChecker permissionChecker
+        //IDistributedCache<IdentityUserDownloadTokenCacheItem, string> downloadTokenCache,
+        //IDistributedCache<ImportInvalidUsersCacheItem, string> importInvalidUsersCache,
+        //IdentitySessionManager identitySessionManager
+        ) : base(
             userManager,
             userRepository,
             roleRepository,
-            organizationUnitRepository,
-            identityClaimTypeRepository,
-            identityProTwoFactorManager,
             identityOptions,
-            distributedEventBus,
-            abpIdentityOptions,
-            permissionChecker,
-            downloadTokenCache,
-            importInvalidUsersCache,
-            identitySessionManager)
+            permissionChecker
+            )
     { }
 
 
-    [Authorize(IdentityPermissions.Users.Create)]
+    [AllowAnonymous]
     public override async Task<IdentityUserDto> CreateAsync(IdentityUserCreateDto input)
     {
         Validate(input);
@@ -58,7 +51,7 @@ public class CustomIdentityUserAppService : IdentityUserAppService
         return await base.CreateAsync(input);
     }
 
-    [Authorize(IdentityPermissions.Users.Update)]
+    [AllowAnonymous]
     public override async Task<IdentityUserDto> UpdateAsync(Guid id, IdentityUserUpdateDto input)
     {
         Validate(input);

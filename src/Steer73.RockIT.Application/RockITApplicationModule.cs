@@ -1,25 +1,22 @@
-﻿using DinkToPdf.Contracts;
+using DinkToPdf.Contracts;
 using DinkToPdf;
 using Microsoft.CodeAnalysis;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Volo.Abp.Account;
-using Volo.Abp.AuditLogging;
+// using Volo.Abp.Account; // removed for OSS/no-auth
 using Volo.Abp.AutoMapper;
 using Volo.Abp.BlobStoring;
 using Volo.Abp.BlobStoring.Azure;
 using Volo.Abp.FeatureManagement;
-using Volo.Abp.Gdpr;
 using Volo.Abp.Identity;
-using Volo.Abp.LanguageManagement;
 using Volo.Abp.Modularity;
-using Volo.Abp.OpenIddict;
+// using Volo.Abp.OpenIddict; // removed for OSS/no-auth
 using Volo.Abp.PermissionManagement;
 using Volo.Abp.SettingManagement;
 using Volo.Abp.TextTemplateManagement;
 using Volo.Abp.TextTemplating.Razor;
 using Volo.Abp.VirtualFileSystem;
-using Volo.Saas.Host;
+// using Volo.Saas.Host; // removed for OSS
 using System.Collections.Generic;
 using System.Reflection;
 using System.Linq;
@@ -32,14 +29,12 @@ typeof(RockITDomainModule),
     typeof(AbpPermissionManagementApplicationModule),
     typeof(AbpFeatureManagementApplicationModule),
     typeof(AbpSettingManagementApplicationModule),
-    typeof(SaasHostApplicationModule),
-    typeof(AbpAuditLoggingApplicationModule),
-    typeof(AbpOpenIddictProApplicationModule),
-    typeof(AbpAccountPublicApplicationModule),
-    typeof(AbpAccountAdminApplicationModule),
-    typeof(LanguageManagementApplicationModule),
-    typeof(AbpGdprApplicationModule),
-    typeof(TextTemplateManagementApplicationModule),
+    // Remove SaaS Host Application for OSS
+    //typeof(AbpAuditLoggingApplicationModule),
+    // Remove Pro OpenIddict & Account modules for OSS/no-auth
+   // typeof(LanguageManagementApplicationModule),
+    //typeof(AbpGdprApplicationModule),
+    //typeof(TextTemplateManagementApplicationModule),
 	typeof(AbpTextTemplatingRazorModule)
 	)]
 [DependsOn(typeof(AbpBlobStoringAzureModule))]

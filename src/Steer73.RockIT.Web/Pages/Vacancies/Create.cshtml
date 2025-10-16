@@ -9,6 +9,7 @@
 @inject IHtmlLocalizer<RockITResource> L
 @model CreateModel
 
+
 @section styles {
     <link href="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.core.css" rel="stylesheet" />
     <link href="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.snow.css" rel="stylesheet" />
@@ -47,13 +48,37 @@
         let quill = null;
 
         window.addEventListener("DOMContentLoaded", (event) => {
+            // Allow mailto: and tel: links in Quill's link sanitizer
+            try {
+                const Link = Quill.import('formats/link');
+                const originalSanitize = Link.sanitize;
+                Link.sanitize = function (url) {
+                    const val = originalSanitize.call(this, url);
+                    if (!val) return val;
+                    if (val.startsWith('mailto:') || val.startsWith('tel:')) {
+                        return val;
+                    }
+                    return val;
+                };
+                Quill.register(Link, true);
+            } catch { /* ignore if not available */ }
+
             quill = new Quill('#editor', {
                 theme: 'snow',
+                placeholder: 'Write the vacancy description here. Use the Headings dropdown for Title/Header/Paragraph...',
                 modules: {
                     toolbar: [
-                        ['link']
+                        [{ header: [false, 1, 2, 3] }],
+                        ['bold', 'italic', 'underline'],
+                        [{ list: 'ordered' }, { list: 'bullet' }],
+                        [{ indent: '-1' }, { indent: '+1' }],
+                        ['link', 'clean']
                     ]
-                }
+                },
+                formats: [
+                    'header', 'bold', 'italic', 'underline',
+                    'list', 'bullet', 'indent', 'link'
+                ]
             });
 
             quill.clipboard.dangerouslyPasteHTML('@Html.Raw(Model.Vacancy.Description)');
@@ -64,6 +89,18 @@
                 const quillContent = document.querySelector('input#Vacancy_Description');
                 quillContent.value = !isQuillEmpty(quill) ? quill.root.innerHTML : ''; // This sends the Quill content as HTML
             });
+
+            // Add keyboard shortcuts for indent/outdent (Tab / Shift+Tab)
+            try {
+                quill.keyboard.addBinding({ key: 9, shiftKey: false }, function () {
+                    quill.format('indent', '+1');
+                    return false; // prevent focus change
+                });
+                quill.keyboard.addBinding({ key: 9, shiftKey: true }, function () {
+                    quill.format('indent', '-1');
+                    return false;
+                });
+            } catch { /* ignore if not available */ }
 
         });
 
@@ -191,6 +228,14 @@
 
                 <abp-input asp-for="Vacancy.Description" hidden="true" add-margin-bottom-class="false" />
                 <div id="editor" class="mb-3"></div>
+                <div class="form-text mb-3">
+                    Tips:
+                    <ul class="mb-0">
+                        <li>Use the Headings dropdown to set <strong>Paragraph</strong>, <strong>Heading 1</strong> (Title), <strong>Heading 2</strong> (Header), or <strong>Heading 3</strong>.</li>
+                        <li>Increase/decrease indentation using the indent buttons on the toolbar or with <strong>Tab</strong> / <strong>Shift+Tab</strong>.</li>
+                        <li>Select text, click the link icon, and paste the address. For email links, use <code>mailto:someone@example.com</code>.</li>
+                    </ul>
+                </div>
                 <input type="hidden" name="Content" id="quillContent">
 
                 <abp-input asp-for="Vacancy.BrochureFileId" type="hidden" />

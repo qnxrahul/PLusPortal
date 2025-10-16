@@ -84,26 +84,26 @@ public class Program
             int appConfigExpirationMinutes = builder.Configuration.GetValue<int>("AppConfig:ExpirationMinutes");
             string buildConfiguration = builder.Configuration.GetValue<string>("AppConfig:BuildConfiguration");
 
-            if (!string.IsNullOrEmpty(appConfigUrl))
-            {
-                builder.Configuration.AddAzureAppConfiguration(options =>
-                {
-                    var credentials = new DefaultAzureCredential();
+            //if (!string.IsNullOrEmpty(appConfigUrl))
+            //{
+            //    builder.Configuration.AddAzureAppConfiguration(options =>
+            //    {
+            //        var credentials = new DefaultAzureCredential();
 
-                    options.Connect(
-                        new Uri(appConfigUrl),
-                        credentials)
-                        .Select(KeyFilter.Any, LabelFilter.Null)
-                        .Select(KeyFilter.Any, buildConfiguration)
-                        .ConfigureRefresh(refreshOptions =>
-                            refreshOptions.Register("RockITATS:Settings:Sentinel", refreshAll: true)
-                                .SetCacheExpiration(TimeSpan.FromMinutes(appConfigExpirationMinutes))
-                        );
+            //        options.Connect(
+            //            new Uri(appConfigUrl),
+            //            credentials)
+            //            .Select(KeyFilter.Any, LabelFilter.Null)
+            //            .Select(KeyFilter.Any, buildConfiguration)
+            //            .ConfigureRefresh(refreshOptions =>
+            //                refreshOptions.Register("RockITATS:Settings:Sentinel", refreshAll: true)
+            //                    .SetCacheExpiration(TimeSpan.FromMinutes(appConfigExpirationMinutes))
+            //            );
 
-                    options.ConfigureKeyVault(kv => kv.SetCredential(credentials));
+            //        options.ConfigureKeyVault(kv => kv.SetCredential(credentials));
 
-                });
-            }
+            //    });
+            //}
 
             await builder.AddApplicationAsync<RockITWebModule>();
             var app = builder.Build();

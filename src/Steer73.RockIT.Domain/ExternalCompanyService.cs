@@ -1,8 +1,6 @@
-﻿using EzekiaCRM;
+using EzekiaCRM;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using Org.BouncyCastle.Asn1.Ocsp;
 using Steer73.RockIT.AppFileDescriptors;
 using Steer73.RockIT.Companies;
 using Steer73.RockIT.JobApplications;
@@ -940,19 +938,27 @@ namespace Steer73.RockIT.Domain.External
         {
             _logger.LogInformation("Starting UpdatePerson for JobApplicationId: {JobApplicationId}, PersonId: {PersonId}", jobApplication.Id, person.Id);
 
-            var tasks = new List<Task>
-            {
-                _ezekiaClient.V3PeoplePutAsync(
-            null,
-            person.Id,
-            new store6Extended
+            var updatePersonRequest = new store6Extended
             {
                 Honorific = jobApplication.Title,
                 FirstName = jobApplication.FirstName,
                 LastName = jobApplication.LastName
-            },
-            cancellationToken)
-    };
+            };
+
+            // Ensure preferred name (aka) is updated for existing Ezekia person
+            if (!string.IsNullOrWhiteSpace(jobApplication.Aka))
+            {
+                updatePersonRequest.Aliases = new[] { jobApplication.Aka };
+            }
+
+            var tasks = new List<Task>
+            {
+                _ezekiaClient.V3PeoplePutAsync(
+                    null,
+                    person.Id,
+                    updatePersonRequest,
+                    cancellationToken)
+            };
             _logger.LogInformation("Queued V3PeoplePutAsync for PersonId: {PersonId}", person.Id);
 
             if (vacancy.ExternalRefId.HasValue)

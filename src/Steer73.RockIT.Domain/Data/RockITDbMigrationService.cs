@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -11,7 +11,7 @@ using Volo.Abp.Data;
 using Volo.Abp.DependencyInjection;
 using Volo.Abp.Identity;
 using Volo.Abp.MultiTenancy;
-using Volo.Saas.Tenants;
+// using Volo.Saas.Tenants; // removed for OSS
 
 namespace Steer73.RockIT.Data;
 
@@ -21,17 +21,17 @@ public class RockITDbMigrationService : ITransientDependency
 
     private readonly IDataSeeder _dataSeeder;
     private readonly IEnumerable<IRockITDbSchemaMigrator> _dbSchemaMigrators;
-    private readonly ITenantRepository _tenantRepository;
+    // private readonly ITenantRepository _tenantRepository; // removed for OSS (no SaaS)
     private readonly ICurrentTenant _currentTenant;
 
     public RockITDbMigrationService(
         IDataSeeder dataSeeder,
-        ITenantRepository tenantRepository,
+        // ITenantRepository tenantRepository,
         ICurrentTenant currentTenant,
         IEnumerable<IRockITDbSchemaMigrator> dbSchemaMigrators)
     {
         _dataSeeder = dataSeeder;
-        _tenantRepository = tenantRepository;
+        // _tenantRepository = tenantRepository;
         _currentTenant = currentTenant;
         _dbSchemaMigrators = dbSchemaMigrators;
 
@@ -54,41 +54,16 @@ public class RockITDbMigrationService : ITransientDependency
 
         Logger.LogInformation($"Successfully completed host database migrations.");
 
-        var tenants = await _tenantRepository.GetListAsync(includeDetails: true);
-
-        var migratedDatabaseSchemas = new HashSet<string>();
-        foreach (var tenant in tenants)
-        {
-            using (_currentTenant.Change(tenant.Id))
-            {
-                if (tenant.ConnectionStrings.Any())
-                {
-                    var tenantConnectionStrings = tenant.ConnectionStrings
-                        .Select(x => x.Value)
-                        .ToList();
-
-                    if (!migratedDatabaseSchemas.IsSupersetOf(tenantConnectionStrings))
-                    {
-                        await MigrateDatabaseSchemaAsync(tenant);
-
-                        migratedDatabaseSchemas.AddIfNotContains(tenantConnectionStrings);
-                    }
-                }
-
-                await SeedDataAsync(tenant);
-            }
-
-            Logger.LogInformation($"Successfully completed {tenant.Name} tenant database migrations.");
-        }
+        // SaaS tenants removed in OSS mode
 
         Logger.LogInformation("Successfully completed all database migrations.");
         Logger.LogInformation("You can safely end this process...");
     }
 
-    private async Task MigrateDatabaseSchemaAsync(Tenant? tenant = null)
+    private async Task MigrateDatabaseSchemaAsync(object? tenant = null)
     {
-        Logger.LogInformation(
-            $"Migrating schema for {(tenant == null ? "host" : tenant.Name + " tenant")} database...");
+        //Logger.LogInformation(
+        //    $"Migrating schema for {(tenant == null ? "host" : tenant.Name + " tenant")} database...");
 
         foreach (var migrator in _dbSchemaMigrators)
         {
@@ -96,16 +71,16 @@ public class RockITDbMigrationService : ITransientDependency
         }
     }
 
-    private async Task SeedDataAsync(Tenant? tenant = null)
+    private async Task SeedDataAsync(object? tenant = null)
     {
-        Logger.LogInformation($"Executing {(tenant == null ? "host" : tenant.Name + " tenant")} database seed...");
+        //Logger.LogInformation($"Executing {(tenant == null ? "host" : tenant.Name + " tenant")} database seed...");
 
-        await _dataSeeder.SeedAsync(new DataSeedContext(tenant?.Id)
-            .WithProperty(IdentityDataSeedContributor.AdminEmailPropertyName,
-                RockITConsts.AdminEmailDefaultValue)
-            .WithProperty(IdentityDataSeedContributor.AdminPasswordPropertyName,
-                RockITConsts.AdminPasswordDefaultValue)
-        );
+        //await _dataSeeder.SeedAsync(new DataSeedContext(tenant?.Id)
+        //    .WithProperty(IdentityDataSeedContributor.AdminEmailPropertyName,
+        //        RockITConsts.AdminEmailDefaultValue)
+        //    .WithProperty(IdentityDataSeedContributor.AdminPasswordPropertyName,
+        //        RockITConsts.AdminPasswordDefaultValue)
+        //);
     }
 
     private bool AddInitialMigrationIfNotExist()

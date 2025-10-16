@@ -75,7 +75,7 @@ namespace Steer73.RockIT.FormDefinitions
             return formDefinitionDto;
         }
 
-        [Authorize(RockITSharedPermissions.FormDefinitions.Delete)]
+        [AllowAnonymous]
         public override async Task DeleteAsync(Guid id)
         {
             var statisticsData = await GetFormDefinitionStatisticsDataAsync(DateTime.UtcNow, [id]);
@@ -91,7 +91,7 @@ namespace Steer73.RockIT.FormDefinitions
             await base.DeleteAsync(id);
         }
 
-        [Authorize(RockITSharedPermissions.FormDefinitions.Edit)]
+        [AllowAnonymous]
         public override async Task<FormDefinitionDto> UpdateAsync(Guid id, FormDefinitionUpdateDto input)
         {
             // TODO: temporary added until front end controls hided.

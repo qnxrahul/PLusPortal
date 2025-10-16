@@ -11,7 +11,7 @@ using Volo.Abp.Application.Services;
 using Volo.Abp.Domain.Repositories;
 using Steer73.RockIT.Permissions;
 using Steer73.RockIT.Companies;
-using MiniExcelLibs;
+// using MiniExcelLibs; // removed for OSS build
 using Volo.Abp.Content;
 using Volo.Abp.Authorization;
 using Volo.Abp.Caching;
@@ -21,7 +21,7 @@ using Steer73.RockIT.Shared;
 namespace Steer73.RockIT.Companies
 {
 
-    [Authorize(RockITSharedPermissions.Companies.Default)]
+    [AllowAnonymous]
     public abstract class CompaniesAppServiceBase : RockITAppService
     {
         protected IDistributedCache<CompanyDownloadTokenCacheItem, string> _downloadTokenCache;
@@ -53,13 +53,13 @@ namespace Steer73.RockIT.Companies
             return ObjectMapper.Map<Company, CompanyDto>(await _companyRepository.GetAsync(id));
         }
 
-        [Authorize(RockITSharedPermissions.Companies.Delete)]
+        [AllowAnonymous]
         public virtual async Task DeleteAsync(Guid id)
         {
             await _companyRepository.DeleteAsync(id);
         }
 
-        [Authorize(RockITSharedPermissions.Companies.Create)]
+        [AllowAnonymous]
         public virtual async Task<CompanyDto> CreateAsync(CompanyCreateDto input)
         {
 
@@ -70,7 +70,7 @@ namespace Steer73.RockIT.Companies
             return ObjectMapper.Map<Company, CompanyDto>(company);
         }
 
-        [Authorize(RockITSharedPermissions.Companies.Edit)]
+        [AllowAnonymous]
         public virtual async Task<CompanyDto> UpdateAsync(Guid id, CompanyUpdateDto input)
         {
 
@@ -94,19 +94,19 @@ namespace Steer73.RockIT.Companies
             var items = await _companyRepository.GetListAsync(input.FilterText, input.Name, input.Phone, input.Address, input.Postcode, input.PrimaryContact);
 
             var memoryStream = new MemoryStream();
-            await memoryStream.SaveAsAsync(ObjectMapper.Map<List<Company>, List<CompanyExcelDto>>(items));
+            //await memoryStream.SaveAsAsync(ObjectMapper.Map<List<Company>, List<CompanyExcelDto>>(items));
             memoryStream.Seek(0, SeekOrigin.Begin);
 
             return new RemoteStreamContent(memoryStream, "Companies.xlsx", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
         }
 
-        [Authorize(RockITSharedPermissions.Companies.Delete)]
+        [AllowAnonymous]
         public virtual async Task DeleteByIdsAsync(List<Guid> companyIds)
         {
             await _companyRepository.DeleteManyAsync(companyIds);
         }
 
-        [Authorize(RockITSharedPermissions.Companies.Delete)]
+        [AllowAnonymous]
         public virtual async Task DeleteAllAsync(GetCompaniesInput input)
         {
             await _companyRepository.DeleteAllAsync(input.FilterText, input.Name, input.Phone, input.Address, input.Postcode, input.PrimaryContact);

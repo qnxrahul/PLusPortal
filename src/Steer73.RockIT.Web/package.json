@@ -8,12 +8,6 @@
     "gulp:watch": "gulp watch"
   },
   "dependencies": {
-    "@volo/abp.aspnetcore.mvc.ui.theme.leptonx": "~3.3.0",
-    "@volo/saas": "~8.3.0",
-    "@volo/audit-logging": "~8.3.0",
-    "@volo/identity": "~8.3.0",
-    "@volo/account": "~8.3.0",
-    "@volo/language-management": "~8.3.0",
     "bootstrap": "^5.3.3"
   },
   "devDependencies": {
