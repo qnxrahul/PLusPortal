@@ -81,7 +81,8 @@
                 ]
             });
 
-            quill.clipboard.dangerouslyPasteHTML('@Html.Raw(Model.Vacancy.Description)');
+            const content = @Html.Raw(Json.Serialize(Model.Vacancy.Description));
+            quill.clipboard.dangerouslyPasteHTML(content);
 
             let $form = $('#createForm');
 
