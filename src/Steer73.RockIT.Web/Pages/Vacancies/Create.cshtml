@@ -68,16 +68,15 @@
                 placeholder: 'Write the vacancy description here. Use the Headings dropdown for Title/Header/Paragraph...',
                 modules: {
                     toolbar: [
-                        [{ header: [false, 1, 2, 3] }],
+                        // Hide headers and lists in create view
                         ['bold', 'italic', 'underline'],
-                        [{ list: 'ordered' }, { list: 'bullet' }],
                         [{ indent: '-1' }, { indent: '+1' }],
                         ['link', 'clean']
                     ]
                 },
                 formats: [
-                    'header', 'bold', 'italic', 'underline',
-                    'list', 'bullet', 'indent', 'link'
+                    'bold', 'italic', 'underline',
+                    'indent', 'link'
                 ]
             });
 
