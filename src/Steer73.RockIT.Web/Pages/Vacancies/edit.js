@@ -163,6 +163,14 @@ $(function () {
             .catch(function(){ abp.notify.error(abp.localization.getResource("RockIT")("CopyFailed")); });
     });
 
+    // Hide all form controls except the vacancy details link section
+    try {
+        var $formBody = $("#VacancyEditModal .modal-body, #VacancyEditModal .abp-modal-body");
+        if ($formBody.length) {
+            $formBody.children().not('#VacancyDetailLinkSection').hide();
+        }
+    } catch {}
+
     $("#Input_CompanyId").change(async function () {
 
         $("#Input_VacancyFormDefinitionId").val('');
