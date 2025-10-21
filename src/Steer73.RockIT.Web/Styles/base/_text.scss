@@ -126,9 +126,8 @@ h6 {
 }
 
 .rich-text {
-    /* Ensure default list styles are visible in candidate view */
-    ul { list-style: disc; padding-left: 2.2rem; }
-    ol { list-style: decimal; padding-left: 2.2rem; }
+    /* Hide bullet and numbered lists */
+    ul, ol { display: none !important; }
 	h5 {
 		margin: 2rem 0;
 	}
@@ -172,28 +171,9 @@ h6 {
 		}
 	}
 
-    /* Remove custom pseudo bullets so native list markers show */
-    ul {
-        margin: 2rem 0;
-        li {
-            padding-left: 0;
-            margin-bottom: .8rem;
-            position: static;
-            &:before { content: none; }
-            &:last-child { margin-bottom: 0; }
-        }
-    }
+    ul { margin: 0; }
 
-    ol {
-        margin: 2rem 0;
-        counter-reset: none;
-        li {
-            margin-bottom: .8rem;
-            position: static;
-            &:before { content: none; }
-            &:last-child { margin-bottom: 0; }
-        }
-    }
+    ol { margin: 0; }
 }
 
 .dark {
