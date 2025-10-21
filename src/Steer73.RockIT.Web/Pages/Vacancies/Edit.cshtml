@@ -70,13 +70,14 @@
                 placeholder: 'Edit the vacancy description. Use Headings, Indent, and Links as needed...',
                 modules: {
                     toolbar: [
-                        // Hide headers and lists in edit view
+                        // Headers hidden; allow ordered list only
                         ['bold', 'italic', 'underline'],
+                        [{ list: 'ordered' }],
                         [{ indent: '-1' }, { indent: '+1' }],
                         ['link', 'clean']
                     ]
                 },
-                formats: ['bold','italic','underline','indent','link']
+                formats: ['bold','italic','underline','list','indent','link']
             });
 
             const content = @Html.Raw(Json.Serialize(Model.Input.Description));
