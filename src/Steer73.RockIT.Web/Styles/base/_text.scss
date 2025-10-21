@@ -34,50 +34,29 @@ a {
 	color: $lightpink;
 }
 
+/* Normalize heading sizes in candidate view to proper hierarchy */
 h1 {
-	font-size: 2.4rem;
-	font-family: 'Merriweather';
-	font-weight: 300;
-	line-height: 3.4rem;
-	max-width: 83rem;
-	margin: 0 auto;
-
-	@include breakpoint(991px) {
-		font-size: 4.2rem;
-		line-height: 5rem;
-	}
+    font-size: 4.2rem;
+    font-family: 'Merriweather';
+    font-weight: 700;
+    line-height: 5rem;
+    margin: 2rem 0 1.2rem;
 }
 
 h2 {
-	font-size: 4.4rem;
-	font-family: 'Merriweather';
-	font-weight: 300;
-	line-height: 6rem;
-
-	&.bold {
-		font-weight: 700;
-	}
-
-	@include breakpoint(991px) {
-		font-size: 3rem;
-		line-height: 3.9rem;
-	}
+    font-size: 3.6rem;
+    font-family: 'Merriweather';
+    font-weight: 600;
+    line-height: 4.2rem;
+    margin: 1.8rem 0 1rem;
 }
 
 h3 {
-	font-size: 4.2rem;
-	font-family: 'Merriweather';
-	font-weight: 300;
-	line-height: 5.2rem;
-
-	&.bold {
-		font-weight: 700;
-	}
-
-	@include breakpoint(991px) {
-		font-size: 2.8rem;
-		line-height: 3.5rem;
-	}
+    font-size: 3rem;
+    font-family: 'Merriweather';
+    font-weight: 600;
+    line-height: 3.6rem;
+    margin: 1.6rem 0 .8rem;
 }
 
 h4 {
@@ -168,6 +147,9 @@ h6 {
 }
 
 .rich-text {
+    /* Ensure default list styles are visible in candidate view */
+    ul { list-style: disc; padding-left: 2.2rem; }
+    ol { list-style: decimal; padding-left: 2.2rem; }
 	h5 {
 		margin: 2rem 0;
 	}
@@ -211,53 +193,28 @@ h6 {
 		}
 	}
 
-	ul {
-		margin: 4rem 0;
+    /* Remove custom pseudo bullets so native list markers show */
+    ul {
+        margin: 2rem 0;
+        li {
+            padding-left: 0;
+            margin-bottom: .8rem;
+            position: static;
+            &:before { content: none; }
+            &:last-child { margin-bottom: 0; }
+        }
+    }
 
-		li {
-			padding-left: 2rem;
-			margin-bottom: 1rem;
-			position: relative;
-
-			&:before {
-				content: '';
-				display: block;
-				position: absolute;
-				top: 8.5px;
-				left: 0;
-				height: 8px;
-				width: 8px;
-				border-radius: 50%;
-				background-color: $pink;
-			}
-
-			&:last-child {
-				margin-bottom: 0;
-			}
-		}
-	}
-
-	ol {
-		margin: 4rem 0;
-		counter-reset: item;
-
-		li {
-			margin-bottom: 1rem;
-			position: relative;
-
-			&:before {
-				content: counter(item) ". ";
-				counter-increment: item;
-				color: $pink;
-				margin-right: .4rem;
-				font-weight: 600;
-			}
-
-			&:last-child {
-				margin-bottom: 0;
-			}
-		}
-	}
+    ol {
+        margin: 2rem 0;
+        counter-reset: none;
+        li {
+            margin-bottom: .8rem;
+            position: static;
+            &:before { content: none; }
+            &:last-child { margin-bottom: 0; }
+        }
+    }
 }
 
 .dark {

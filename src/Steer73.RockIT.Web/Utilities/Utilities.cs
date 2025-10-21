@@ -21,8 +21,8 @@ namespace Steer73.RockIT.Web.Utilities
                 sanitizer.AllowedTags.Add(tag);
             }
 
-            // Allow attributes needed for links and Quill classes
-            var attributesToAllow = new[] { "href", "target", "rel", "class" };
+            // Allow attributes needed for links and Quill classes/metadata
+            var attributesToAllow = new[] { "href", "target", "rel", "class", "data-list", "data-indent", "data-checked", "dir" };
             foreach (var attr in attributesToAllow)
             {
                 sanitizer.AllowedAttributes.Add(attr);

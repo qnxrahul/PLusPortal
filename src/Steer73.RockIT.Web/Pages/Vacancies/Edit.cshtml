@@ -81,13 +81,21 @@
             });
 
             const content = @Html.Raw(Json.Serialize(Model.Input.Description));
-            quill.clipboard.dangerouslyPasteHTML(content);
+            try {
+                const delta = content && content.trim().startsWith('{') ? JSON.parse(content) : null;
+                if (delta && delta.ops) {
+                    quill.setContents(delta);
+                } else {
+                    quill.clipboard.dangerouslyPasteHTML(content || '');
+                }
+            } catch { quill.clipboard.dangerouslyPasteHTML(content || ''); }
 
             let $form = $('#editForm');
 
             $form.on('submit', function (e) {
                 const quillContent = document.querySelector('input#Input_Description');
-                quillContent.value = !isQuillEmpty(quill) ? quill.root.innerHTML : ''; // This sends the Quill content as HTML
+                // Save HTML (sanitized server-side) for compatibility with existing DB schema
+                quillContent.value = !isQuillEmpty(quill) ? quill.root.innerHTML : '';
             });
 
             // Keyboard shortcuts for indent/outdent
