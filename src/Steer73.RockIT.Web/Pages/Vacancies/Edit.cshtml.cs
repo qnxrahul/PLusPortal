@@ -15,6 +15,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Volo.Abp.Application.Dtos;
 using Volo.Abp.Domain.Entities;
+using Microsoft.Extensions.Configuration;
 
 namespace Steer73.RockIT.Web.Pages.Vacancies;
 
@@ -39,17 +40,17 @@ public class EditModel : RockITPageModel
 
     public List<SelectListItem> VacancyFormDefinitionLookupList { get; set; } = new List<SelectListItem>    
     {
-        new SelectListItem(" — ", "")
+        new SelectListItem(" ï¿½ ", "")
     };
 
     public List<SelectListItem> DiversityFormDefinitionLookupList { get; set; } = new List<SelectListItem>    
     {    
-        new SelectListItem(" — ", "")    
+        new SelectListItem(" ï¿½ ", "")    
     };
 
     public List<SelectListItem> RegionLookupListRequired { get; set; } = new List<SelectListItem>    
     {    
-        new SelectListItem(" — ", "")    
+        new SelectListItem(" ï¿½ ", "")    
     };
 
     public List<SelectListItem> SelectedRoleTypes { get; set; } = new List<SelectListItem>();
@@ -61,13 +62,18 @@ public class EditModel : RockITPageModel
 
     protected IVacanciesAppService _vacanciesAppService;
     protected IFormDefinitionsAppService _formDefinitionsAppService;
+    private readonly IConfiguration _configuration;
+
+    public string VacancyDetailUrl { get; set; } = string.Empty;
 
     public EditModel(
         IVacanciesAppService vacanciesAppService,
-        IFormDefinitionsAppService formDefinitionsAppService)
+        IFormDefinitionsAppService formDefinitionsAppService,
+        IConfiguration configuration)
     {
         _vacanciesAppService = vacanciesAppService;
         _formDefinitionsAppService = formDefinitionsAppService;
+        _configuration = configuration;
     }
 
     public virtual async Task OnGetAsync()
@@ -94,6 +100,12 @@ public class EditModel : RockITPageModel
         var vacancyWithNavigationPropertiesDto = await _vacanciesAppService.GetWithNavigationPropertiesAsync(Id);
         Input = ObjectMapper.Map<VacancyDto, VacancyUpdateInputModel>(vacancyWithNavigationPropertiesDto.Vacancy);
         BrochureLastUpdatedAt = vacancyWithNavigationPropertiesDto.Vacancy.BrochureLastUpdatedAt;
+
+        // Build public vacancy detail URL for display and copy
+        var baseUrl = _configuration["App1:PortalBaseUrl"]?.TrimEnd('/');
+        VacancyDetailUrl = string.IsNullOrWhiteSpace(baseUrl) 
+            ? $"/VacancyDetail/{Id}"
+            : $"{baseUrl}/VacancyDetail/{Id}";
 
 		var vacancyFormDefinitions = await _formDefinitionsAppService.GetListAsync(new GetFormDefinitionsInput { CompanyId = vacancyWithNavigationPropertiesDto.Company.Id });
         var allowedFromDefinitions = vacancyFormDefinitions.Items.Select(x => x.FormDefinition.Id).ToArray();

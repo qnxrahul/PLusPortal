@@ -154,6 +154,15 @@ $(function () {
         $('#' + lastNpDisplayNameId).val(modal.find('#CurrentLookupDisplayName').val());
     });
 
+    // Copy vacancy detail URL button
+    $(document).on('click', '.js-copy-vacancy-detail-url', function () {
+        var url = $(this).data('url');
+        if (!url) return;
+        navigator.clipboard.writeText(url)
+            .then(function(){ abp.notify.success(abp.localization.getResource("RockIT")("UrlCopied")); })
+            .catch(function(){ abp.notify.error(abp.localization.getResource("RockIT")("CopyFailed")); });
+    });
+
     $("#Input_CompanyId").change(async function () {
 
         $("#Input_VacancyFormDefinitionId").val('');
