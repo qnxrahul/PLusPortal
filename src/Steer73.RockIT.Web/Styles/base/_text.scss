@@ -321,3 +321,14 @@ h6 {
 		font-size: 5.4rem;
 	}
 }
+
+/* Quill rich text indentation and alignment support */
+.ql-indent-1 { margin-left: 1.5rem; }
+.ql-indent-2 { margin-left: 3rem; }
+.ql-indent-3 { margin-left: 4.5rem; }
+.ql-indent-4 { margin-left: 6rem; }
+.ql-indent-5 { margin-left: 7.5rem; }
+.ql-indent-6 { margin-left: 9rem; }
+.ql-align-center { text-align: center; }
+.ql-align-right { text-align: right; }
+.ql-align-justify { text-align: justify; }
