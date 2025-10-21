@@ -35,29 +35,8 @@ a {
 }
 
 /* Normalize heading sizes in candidate view to proper hierarchy */
-h1 {
-    font-size: 4.2rem;
-    font-family: 'Merriweather';
-    font-weight: 700;
-    line-height: 5rem;
-    margin: 2rem 0 1.2rem;
-}
-
-h2 {
-    font-size: 3.6rem;
-    font-family: 'Merriweather';
-    font-weight: 600;
-    line-height: 4.2rem;
-    margin: 1.8rem 0 1rem;
-}
-
-h3 {
-    font-size: 3rem;
-    font-family: 'Merriweather';
-    font-weight: 600;
-    line-height: 3.6rem;
-    margin: 1.6rem 0 .8rem;
-}
+/* Hide headers and bullet/numbered lists on candidate view per request */
+h1, h2, h3 { display: none !important; }
 
 h4 {
 	font-size: 3rem;
