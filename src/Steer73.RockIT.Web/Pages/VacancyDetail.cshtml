@@ -1,4 +1,4 @@
-﻿@page "{vacancyId}"
+@page "{vacancyId}"
 @model Steer73.RockIT.Web.Pages.VacancyDetailModel
 @using Steer73.RockIT.Enums
 
@@ -97,8 +97,8 @@
                 </div>
             </div>
         } else {
-            <div class="col-12">
-                @Html.Raw(Steer73.RockIT.Web.Utilities.Helpers.SanitizeDescription(Model.VacancyDto.Vacancy.Description))
+            <div class="col-12 rich-text">
+                @Html.Raw(Model.VacancyDto.Vacancy.Description)
             </div>
             <div class="vacancy__action col-12 ">
                 <a class="btn btn-secondary" href="/VacancyMoreInfo/@Model.VacancyId">Request More Information</a>
