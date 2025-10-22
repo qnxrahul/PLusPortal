@@ -195,10 +195,10 @@ h6 {
 
     /* Remove custom pseudo bullets so native list markers show */
     ul {
-        margin: 2rem 0;
+        margin: 0;
         li {
             padding-left: 0;
-            margin-bottom: .8rem;
+            margin-bottom: 0;
             position: static;
             &:before { content: none; }
             &:last-child { margin-bottom: 0; }
@@ -206,10 +206,10 @@ h6 {
     }
 
     ol {
-        margin: 2rem 0;
+        margin: 0;
         counter-reset: none;
         li {
-            margin-bottom: .8rem;
+            margin-bottom: 0;
             position: static;
             &:before { content: none; }
             &:last-child { margin-bottom: 0; }
