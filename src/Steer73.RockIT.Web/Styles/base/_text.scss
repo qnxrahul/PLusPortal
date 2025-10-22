@@ -293,6 +293,4 @@ h6 {
 .ql-align-justify { text-align: justify; }
 
 /* Normalize line-height inside rich text to match editor */
-.rich-text, .rich-text p, .rich-text li {
-    line-height: 1.5;
-}
+.rich-text, .rich-text p, .rich-text li { line-height: 1.3; }
