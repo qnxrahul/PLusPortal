@@ -198,7 +198,7 @@ h6 {
         margin: 0;
         li {
             line-height: 1;
-            padding-left: 0;
+            /* allow ql-indent-* padding to take effect */
             margin-bottom: 0;
             position: static;
             &:before { content: none; }
@@ -211,6 +211,7 @@ h6 {
         counter-reset: none;
         li {
             line-height: 1;
+            /* allow ql-indent-* padding to take effect */
             margin-bottom: 0;
             position: static;
             &:before { content: none; }
@@ -282,16 +283,16 @@ h6 {
 }
 
 /* Quill rich text indentation and alignment support */
-.ql-indent-1 { margin-left: 1.5rem; }
-.ql-indent-2 { margin-left: 3rem; }
-.ql-indent-3 { margin-left: 4.5rem; }
-.ql-indent-4 { margin-left: 6rem; }
-.ql-indent-5 { margin-left: 7.5rem; }
-.ql-indent-6 { margin-left: 9rem; }
-.ql-indent-7 { margin-left: 10.5rem; }
-.ql-indent-8 { margin-left: 12rem; }
-.ql-indent-9 { margin-left: 13.5rem; }
-.ql-indent-10 { margin-left: 15rem; }
+.ql-indent-1 { padding-left: 1.5rem; }
+.ql-indent-2 { padding-left: 3rem; }
+.ql-indent-3 { padding-left: 4.5rem; }
+.ql-indent-4 { padding-left: 6rem; }
+.ql-indent-5 { padding-left: 7.5rem; }
+.ql-indent-6 { padding-left: 9rem; }
+.ql-indent-7 { padding-left: 10.5rem; }
+.ql-indent-8 { padding-left: 12rem; }
+.ql-indent-9 { padding-left: 13.5rem; }
+.ql-indent-10 { padding-left: 15rem; }
 .ql-align-center { text-align: center; }
 .ql-align-right { text-align: right; }
 .ql-align-justify { text-align: justify; }
