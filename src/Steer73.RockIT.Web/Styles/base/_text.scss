@@ -169,7 +169,7 @@ h6 {
 
     p {
         /* single-line spacing and no extra gap between lines */
-        line-height: 1.3;
+        line-height: 1;
         margin-top: 0;
         margin-bottom: 0;
         &:last-child { margin-bottom: 0; }
@@ -197,7 +197,7 @@ h6 {
     ul {
         margin: 0;
         li {
-            line-height: 1.3;
+            line-height: 1;
             padding-left: 0;
             margin-bottom: 0;
             position: static;
@@ -210,7 +210,7 @@ h6 {
         margin: 0;
         counter-reset: none;
         li {
-            line-height: 1.3;
+            line-height: 1;
             margin-bottom: 0;
             position: static;
             &:before { content: none; }
@@ -297,4 +297,4 @@ h6 {
 .ql-align-justify { text-align: justify; }
 
 /* Normalize line-height inside rich text to match editor */
-.rich-text, .rich-text p, .rich-text li { line-height: 1.3; }
+.rich-text, .rich-text p, .rich-text li { line-height: 1; }
