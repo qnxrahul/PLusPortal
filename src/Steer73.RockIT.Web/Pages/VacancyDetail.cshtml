@@ -6,6 +6,22 @@
     Layout = "_CandidatePortalLayout.cshtml";
 }
 
+@section styles {
+    <link href="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.core.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.snow.css" rel="stylesheet" />
+    <style>
+        /* Match editor spacing and reset margins */
+        #vacancy-viewer .ql-editor {
+            line-height: 1;
+        }
+        #vacancy-viewer .ql-editor p,
+        #vacancy-viewer .ql-editor li {
+            line-height: 1;
+            margin: 0;
+        }
+    </style>
+}
+
 <div class="container main">
     <div class="row">
         <div class="col-sm-12 col-md-8 col-lg-9">
@@ -97,8 +113,8 @@
                 </div>
             </div>
         } else {
-            <div class="col-12 rich-text">
-                @Html.Raw(Model.VacancyDto.Vacancy.Description)
+            <div class="col-12">
+                <div id="vacancy-viewer"></div>
             </div>
             <div class="vacancy__action col-12 ">
                 <a class="btn btn-secondary" href="/VacancyMoreInfo/@Model.VacancyId">Request More Information</a>
@@ -107,3 +123,32 @@
         }
     </div>
 </div>
+
+@section scripts {
+    <script src="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var container = document.getElementById('vacancy-viewer');
+            if (!container) return;
+
+            var quill = new Quill('#vacancy-viewer', {
+                readOnly: true,
+                theme: 'snow',
+                modules: { toolbar: false }
+            });
+
+            // Prefer Delta if present; fallback to HTML
+            var content = @Html.Raw(Json.Serialize(Model.VacancyDto.Vacancy.Description));
+            try {
+                var delta = content && content.trim().startsWith('{') ? JSON.parse(content) : null;
+                if (delta && delta.ops) {
+                    quill.setContents(delta);
+                } else {
+                    quill.clipboard.dangerouslyPasteHTML(content || '');
+                }
+            } catch (e) {
+                quill.clipboard.dangerouslyPasteHTML(content || '');
+            }
+        });
+    </script>
+}
