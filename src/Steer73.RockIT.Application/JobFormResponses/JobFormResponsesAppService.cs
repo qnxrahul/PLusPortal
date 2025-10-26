@@ -15,7 +15,7 @@ using Steer73.RockIT.JobFormResponses;
 namespace Steer73.RockIT.JobFormResponses
 {
 
-    [AllowAnonymous]
+    [Authorize(RockITSharedPermissions.JobFormResponses.Default)]
     public abstract class JobFormResponsesAppServiceBase : RockITAppService
     {
 
@@ -62,13 +62,13 @@ namespace Steer73.RockIT.JobFormResponses
             return ObjectMapper.Map<JobFormResponse, JobFormResponseDto>(await _jobFormResponseRepository.GetAsync(id));
         }
 
-        [AllowAnonymous]
+        [Authorize(RockITSharedPermissions.JobFormResponses.Delete)]
         public virtual async Task DeleteAsync(Guid id)
         {
             await _jobFormResponseRepository.DeleteAsync(id);
         }
 
-        [AllowAnonymous]
+        [Authorize(RockITSharedPermissions.JobFormResponses.Create)]
         public virtual async Task<JobFormResponseDto> CreateAsync(JobFormResponseCreateDto input)
         {
 
@@ -79,7 +79,7 @@ namespace Steer73.RockIT.JobFormResponses
             return ObjectMapper.Map<JobFormResponse, JobFormResponseDto>(jobFormResponse);
         }
 
-        [AllowAnonymous]
+        [Authorize(RockITSharedPermissions.JobFormResponses.Edit)]
         public virtual async Task<JobFormResponseDto> UpdateAsync(Guid id, JobFormResponseUpdateDto input)
         {
 

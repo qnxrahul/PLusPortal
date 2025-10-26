@@ -6,7 +6,7 @@ using Steer73.RockIT.Permissions;
 using Steer73.RockIT.MultiTenancy;
 using Volo.Abp.SettingManagement.Web.Navigation;
 using Volo.Abp.Authorization.Permissions;
-// using Volo.Abp.Identity.Web.Navigation; // removed for no-auth/OSS
+using Volo.Abp.Identity.Web.Navigation;
 using Volo.Abp.UI.Navigation;
 
 namespace Steer73.RockIT.Web.Menus;
@@ -50,7 +50,8 @@ public class RockITMenuContributor : IMenuContributor
         var administration = context.Menu.GetAdministration();
         administration.Order = 5;
 
-        //Administration->Identity removed
+        //Administration->Identity
+        administration.SetSubItemOrder(IdentityMenuNames.GroupName, 1);
 
         //Administration->Settings
         administration.SetSubItemOrder(SettingManagementMenuNames.GroupName, 7);

@@ -35,6 +35,16 @@ namespace EzekiaCRM
 
     public partial class Client : IClient
     {
+        /// <summary>
+        /// Partial method implementation to configure custom JSON serializer settings.
+        /// This method is called by the generated client code and survives Swagger regeneration.
+        /// </summary>
+        static partial void UpdateJsonSerializerSettings(Newtonsoft.Json.JsonSerializerSettings settings)
+        {
+            // Use custom contract resolver to override property-level StringEnumConverter attributes
+            settings.ContractResolver = new PositionTypeContractResolver();
+        }
+
         public virtual async Task<T> GetNextPageAsync<T>(string nextPageUrl, CancellationToken cancellationToken) where T : class
         {
             var client_ = _httpClient;
@@ -310,6 +320,32 @@ namespace EzekiaCRM
         }
     }
 
+    /// <summary>
+    /// Contract resolver that replaces StringEnumConverter with PositionTypeConverter for PositionType properties.
+    /// This is necessary because property-level [JsonConverter] attributes override global converters.
+    /// </summary>
+    public class PositionTypeContractResolver : Newtonsoft.Json.Serialization.DefaultContractResolver
+    {
+        protected override Newtonsoft.Json.Serialization.JsonProperty CreateProperty(
+            System.Reflection.MemberInfo member,
+            Newtonsoft.Json.MemberSerialization memberSerialization)
+        {
+            var property = base.CreateProperty(member, memberSerialization);
+
+            // Check if this property is a PositionType or EzekiaPositionType
+            var propertyType = property.PropertyType;
+            var underlyingType = System.Nullable.GetUnderlyingType(propertyType) ?? propertyType;
+
+            if (underlyingType == typeof(PositionType) || underlyingType == typeof(EzekiaPositionType))
+            {
+                // Replace any existing converter with our custom one
+                property.Converter = new PositionTypeConverter();
+            }
+
+            return property;
+        }
+    }
+
     public class DocumentDto
     {
         public string ContentType { get; set; } = null!;
@@ -328,5 +364,179 @@ namespace EzekiaCRM
         [Newtonsoft.Json.JsonProperty("data", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public phones Data { get; set; } = null!;
     }
-}
 
+    /// <summary>
+    /// Canonical list of Ezekia position types we care about, including values
+    /// that may be missing from the generated swagger enum.
+    /// </summary>
+    public enum EzekiaPositionType
+    {
+        Permanent = 0,
+        Interim = 1,
+        Parttime = 2,
+        Contract = 3,
+        Temporary = 4,
+        Ned = 5,
+        Other = 6
+    }
+
+    /// <summary>
+    /// Custom converter for PositionType enum to handle unknown values from the API.
+    /// If an unknown value is encountered (e.g., Swagger regeneration misses "other"),
+    /// we map it to EzekiaPositionType.Other while emitting a synthetic PositionType value.
+    /// </summary>
+    public class PositionTypeConverter : Newtonsoft.Json.JsonConverter
+    {
+        public override bool CanConvert(System.Type objectType)
+        {
+            var targetType = System.Nullable.GetUnderlyingType(objectType) ?? objectType;
+            return targetType == typeof(PositionType) || targetType == typeof(EzekiaPositionType);
+        }
+
+        public override object? ReadJson(Newtonsoft.Json.JsonReader reader, System.Type objectType, object? existingValue, Newtonsoft.Json.JsonSerializer serializer)
+        {
+            if (reader.TokenType == Newtonsoft.Json.JsonToken.Null)
+            {
+                if (AllowsNull(objectType))
+                {
+                    return null;
+                }
+
+                throw new Newtonsoft.Json.JsonSerializationException($"Cannot convert null value to {objectType}.");
+            }
+
+            if (reader.TokenType != Newtonsoft.Json.JsonToken.String && reader.TokenType != Newtonsoft.Json.JsonToken.Integer)
+            {
+                throw new Newtonsoft.Json.JsonSerializationException($"Unexpected token {reader.TokenType} when parsing Ezekia position type.");
+            }
+
+            var rawValue = reader.Value?.ToString();
+            if (string.IsNullOrWhiteSpace(rawValue))
+            {
+                if (AllowsNull(objectType))
+                {
+                    return null;
+                }
+
+                throw new Newtonsoft.Json.JsonSerializationException("Position type value cannot be empty.");
+            }
+
+            var ezekiaValue = ParseEzekiaPositionType(rawValue);
+            var targetType = System.Nullable.GetUnderlyingType(objectType) ?? objectType;
+
+            if (targetType == typeof(PositionType))
+            {
+                return MapToGeneratedEnum(ezekiaValue);
+            }
+
+            if (targetType == typeof(EzekiaPositionType))
+            {
+                return ezekiaValue;
+            }
+
+            throw new Newtonsoft.Json.JsonSerializationException($"Unsupported target type {objectType} for PositionTypeConverter.");
+        }
+
+        public override void WriteJson(Newtonsoft.Json.JsonWriter writer, object? value, Newtonsoft.Json.JsonSerializer serializer)
+        {
+            if (value == null)
+            {
+                writer.WriteNull();
+                return;
+            }
+
+            var actualType = value.GetType();
+
+            if (actualType == typeof(PositionType))
+            {
+                var stringValue = SerializeEzekiaPositionType(MapToCanonicalEnum((PositionType)value));
+                writer.WriteValue(stringValue);
+                return;
+            }
+
+            if (actualType == typeof(EzekiaPositionType))
+            {
+                writer.WriteValue(SerializeEzekiaPositionType((EzekiaPositionType)value));
+                return;
+            }
+
+            throw new Newtonsoft.Json.JsonSerializationException($"Unsupported value type {actualType} for PositionTypeConverter.");
+        }
+
+        private static bool AllowsNull(System.Type type)
+        {
+            return !type.IsValueType || System.Nullable.GetUnderlyingType(type) != null;
+        }
+
+        private static EzekiaPositionType ParseEzekiaPositionType(string rawValue)
+        {
+            switch (rawValue.Trim().ToLowerInvariant())
+            {
+                case "permanent":
+                    return EzekiaPositionType.Permanent;
+                case "interim":
+                    return EzekiaPositionType.Interim;
+                case "parttime":
+                    return EzekiaPositionType.Parttime;
+                case "contract":
+                    return EzekiaPositionType.Contract;
+                case "temporary":
+                    return EzekiaPositionType.Temporary;
+                case "ned":
+                    return EzekiaPositionType.Ned;
+                case "other":
+                    return EzekiaPositionType.Other;
+                default:
+                    return EzekiaPositionType.Other;
+            }
+        }
+
+        private static string SerializeEzekiaPositionType(EzekiaPositionType positionType)
+        {
+            return positionType switch
+            {
+                EzekiaPositionType.Permanent => "permanent",
+                EzekiaPositionType.Interim => "interim",
+                EzekiaPositionType.Parttime => "parttime",
+                EzekiaPositionType.Contract => "contract",
+                EzekiaPositionType.Temporary => "temporary",
+                EzekiaPositionType.Ned => "ned",
+                EzekiaPositionType.Other => "other",
+                _ => "other"
+            };
+        }
+
+        private static PositionType MapToGeneratedEnum(EzekiaPositionType positionType)
+        {
+            switch (positionType)
+            {
+                case EzekiaPositionType.Permanent:
+                    return PositionType.Permanent;
+                case EzekiaPositionType.Interim:
+                    return PositionType.Interim;
+                case EzekiaPositionType.Parttime:
+                    return PositionType.Parttime;
+                case EzekiaPositionType.Contract:
+                    return PositionType.Contract;
+                case EzekiaPositionType.Temporary:
+                    return PositionType.Temporary;
+                case EzekiaPositionType.Ned:
+                    return PositionType.Ned;
+                case EzekiaPositionType.Other:
+                default:
+                    return (PositionType)(int)EzekiaPositionType.Other;
+            }
+        }
+
+        private static EzekiaPositionType MapToCanonicalEnum(PositionType positionType)
+        {
+            var numericValue = System.Convert.ToInt32(positionType);
+            if (System.Enum.IsDefined(typeof(EzekiaPositionType), numericValue))
+            {
+                return (EzekiaPositionType)numericValue;
+            }
+
+            return EzekiaPositionType.Other;
+        }
+    }
+}

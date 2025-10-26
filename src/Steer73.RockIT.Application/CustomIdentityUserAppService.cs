@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
 using System;
@@ -26,20 +26,27 @@ public class CustomIdentityUserAppService : IdentityUserAppService
         IIdentityRoleRepository roleRepository,
         IOrganizationUnitRepository organizationUnitRepository,
         IIdentityClaimTypeRepository identityClaimTypeRepository,
+        IdentityProTwoFactorManager identityProTwoFactorManager,
         IOptions<IdentityOptions> identityOptions,
         IDistributedEventBus distributedEventBus,
         IOptions<AbpIdentityOptions> abpIdentityOptions,
-        IPermissionChecker permissionChecker
-        //IDistributedCache<IdentityUserDownloadTokenCacheItem, string> downloadTokenCache,
-        //IDistributedCache<ImportInvalidUsersCacheItem, string> importInvalidUsersCache,
-        //IdentitySessionManager identitySessionManager
-        ) : base(
+        IPermissionChecker permissionChecker,
+        IDistributedCache<IdentityUserDownloadTokenCacheItem, string> downloadTokenCache,
+        IDistributedCache<ImportInvalidUsersCacheItem, string> importInvalidUsersCache,
+        IdentitySessionManager identitySessionManager) : base(
             userManager,
             userRepository,
             roleRepository,
+            organizationUnitRepository,
+            identityClaimTypeRepository,
+            identityProTwoFactorManager,
             identityOptions,
-            permissionChecker
-            )
+            distributedEventBus,
+            abpIdentityOptions,
+            permissionChecker,
+            downloadTokenCache,
+            importInvalidUsersCache,
+            identitySessionManager)
     { }
 
 

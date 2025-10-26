@@ -1,8 +1,9 @@
 using Steer73.RockIT.Localization;
+using Volo.Abp.AuditLogging;
 using Volo.Abp.BackgroundJobs;
 using Volo.Abp.FeatureManagement;
 using Volo.Abp.Identity;
-//using Volo.Abp.LanguageManagement;
+using Volo.Abp.LanguageManagement;
 using Volo.Abp.Localization;
 using Volo.Abp.Localization.ExceptionHandling;
 using Volo.Abp.Validation.Localization;
@@ -11,27 +12,27 @@ using Volo.Abp.PermissionManagement;
 using Volo.Abp.SettingManagement;
 using Volo.Abp.TextTemplateManagement;
 using Volo.Abp.VirtualFileSystem;
-// using Volo.Saas; // removed for OSS
-// using Volo.Abp.OpenIddict; // removed for OSS
+using Volo.Saas;
+using Volo.Abp.OpenIddict;
 using Volo.Abp.BlobStoring.Database;
-//using Volo.Abp.Gdpr;
+using Volo.Abp.Gdpr;
 using Volo.Abp.GlobalFeatures;
 using Volo.Abp.Identity.Localization;
 
 namespace Steer73.RockIT;
 
 [DependsOn(
-    //typeof(AbpAuditLoggingDomainSharedModule),
+    typeof(AbpAuditLoggingDomainSharedModule),
     typeof(AbpBackgroundJobsDomainSharedModule),
     typeof(AbpFeatureManagementDomainSharedModule),
-    typeof(AbpIdentityDomainSharedModule),
-    // Remove Pro OpenIddict shared module for OSS
+    typeof(AbpIdentityProDomainSharedModule),
+    typeof(AbpOpenIddictProDomainSharedModule),
     typeof(AbpPermissionManagementDomainSharedModule),
     typeof(AbpSettingManagementDomainSharedModule),
-    //typeof(LanguageManagementDomainSharedModule),
-    // Remove SaaS shared module for OSS
+    typeof(LanguageManagementDomainSharedModule),
+    typeof(SaasDomainSharedModule),
     typeof(TextTemplateManagementDomainSharedModule),
-    //typeof(AbpGdprDomainSharedModule),
+    typeof(AbpGdprDomainSharedModule),
     typeof(AbpGlobalFeaturesModule),
     typeof(BlobStoringDatabaseDomainSharedModule)
     )]

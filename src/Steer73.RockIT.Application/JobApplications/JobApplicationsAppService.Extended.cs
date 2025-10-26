@@ -119,7 +119,7 @@ namespace Steer73.RockIT.JobApplications
             return ObjectMapper.Map<JobApplication, JobApplicationDto>(newJobApplication);
         }
 
-        [AllowAnonymous]
+        [Authorize(RockITSharedPermissions.JobApplications.Edit)]
         public virtual async Task ApproveAsync(Guid id, CancellationToken cancellationToken = default)
 		{
 			var jobApplication = await _jobApplicationRepository.GetAsync(id: id, cancellationToken: cancellationToken);
@@ -132,7 +132,7 @@ namespace Steer73.RockIT.JobApplications
 			await Approve(jobApplication);
 		}
 
-		[AllowAnonymous]
+		[Authorize(RockITSharedPermissions.JobApplications.Edit)]
 		public virtual async Task ApproveManyAsync(
 			List<SelectedJobApplicationDto> jobApplicationDtos,
 			CancellationToken cancellationToken = default)
@@ -162,7 +162,7 @@ namespace Steer73.RockIT.JobApplications
 			}
 		}
 
-		[AllowAnonymous]
+		[Authorize(RockITSharedPermissions.JobApplications.Edit)]
         public virtual async Task RejectAsync(Guid id, CancellationToken cancellationToken = default)
         {
             var jobApplication = await _jobApplicationRepository.GetAsync(id: id, cancellationToken: cancellationToken);           
@@ -182,7 +182,7 @@ namespace Steer73.RockIT.JobApplications
             _logger.LogInformation("Set job application:{0} status as rejected", id);
         }
 
-		[AllowAnonymous]
+		[Authorize]
 		public virtual async Task<IRemoteStreamContent> GetFileByTypeAsync(GetJobApplicationFileInput input)
 		{
 			var jobApplication = await _jobApplicationRepository.GetAsync(input.JobApplicationId);

@@ -1,7 +1,10 @@
 using Steer73.RockIT.Localization;
+using Steer73.RockIT.Web.Pages.Identity.Users;
+using System.ComponentModel.DataAnnotations;
 using Volo.Abp.Localization;
 using Volo.Abp.ObjectExtending;
 using Volo.Abp.Threading;
+using static Steer73.RockIT.Web.Pages.Identity.Users.CustomCreateModalModel;
 
 namespace Steer73.RockIT.Web;
 
@@ -26,6 +29,16 @@ public static class RockITViewModelExtensions
                  */
         });
 
-        // Identity UI removed; no extension properties to wire
+        ObjectExtensionManager.Instance.AddOrUpdateProperty<string>(
+            [
+                typeof(CustomCreateModalModel.CustomUserInfoViewModel),
+                typeof(CustomEditModalModel.CustomUserInfoViewModel),
+            ],
+            CustomIdentityUserPropertyNames.CompanyRole,
+            options =>
+            {
+                options.Attributes.Add(new StringLengthAttribute(255));
+                options.DisplayName = LocalizableString.Create<RockITResource>(CustomIdentityUserPropertyNames.CompanyRole);
+            });
     }
 }

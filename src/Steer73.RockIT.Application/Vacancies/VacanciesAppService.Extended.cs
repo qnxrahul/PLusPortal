@@ -1,5 +1,5 @@
 using EzekiaCRM;
-using Microsoft.AspNetCore.Authorization;
+using IdentityModel;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Steer73.RockIT.JobApplications;
@@ -154,7 +154,7 @@ namespace Steer73.RockIT.Vacancies
             return ObjectMapper.Map<List<VacancyRoleType>, List<VacancyRoleTypeDto>>(await _vacancyRoleTypeRepository.GetListOfVacancyRoleTypesAsync(vacancyId, cancellationToken));
         }
 
-        [AllowAnonymous]
+        //[Authorize(RockITSharedPermissions.Vacancies.Create)]
         public override async Task<VacancyDto> CreateAsync(VacancyCreateDto input)
         {
             var result = await base.CreateAsync(input);
@@ -187,7 +187,7 @@ namespace Steer73.RockIT.Vacancies
             return result;
         }
 
-        [AllowAnonymous]
+       // [Authorize(RockITSharedPermissions.Vacancies.Edit)]
         public override async Task<VacancyDto> UpdateAsync(Guid id, VacancyUpdateDto input)
         {
             var vacancy = await _vacancyRepository.GetAsync(id);
@@ -210,7 +210,7 @@ namespace Steer73.RockIT.Vacancies
             return result;
         }
 
-        [AllowAnonymous]
+        //[Authorize(RockITSharedPermissions.Vacancies.Create)]
         public virtual async Task<ProjectLookUpDto> GetProjectByIdAsync(string projectId, CancellationToken cancellationToken = default)
         {
             try

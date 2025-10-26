@@ -1,4 +1,4 @@
-@page "/Dashboard"
+﻿@page "/Dashboard"
 @using System.Globalization
 @using Microsoft.AspNetCore.Mvc.Localization
 @using Microsoft.AspNetCore.Mvc.Rendering
@@ -6,7 +6,8 @@
 @using Steer73.RockIT.Web.Menus
 @using Volo.Abp.AspNetCore.Mvc.UI.Layout
 @using Volo.Abp.AspNetCore.Mvc.UI.Widgets
-@* Audit logging widgets removed in OSS/no-auth *@
+@using Volo.Abp.AuditLogging.Web.Pages.Shared.Components.AverageExecutionDurationPerDayWidget
+@using Volo.Abp.AuditLogging.Web.Pages.Shared.Components.ErrorRateWidget
 @inject IHtmlLocalizer<RockITResource> L
 @inject IWidgetManager WidgetManager
 @model Steer73.RockIT.Web.Pages.TenantDashboardModel
@@ -54,5 +55,18 @@
 </abp-card>
 
 <div id="TenantDashboardWidgetsArea" data-widget-filter="#DashboardFilterForm">
-    @* Widgets removed *@
+    <abp-row class="mt-5">
+        @if (await WidgetManager.IsGrantedAsync(typeof(AuditLoggingErrorRateWidgetViewComponent)))
+        {
+            <abp-column size="_4">
+                @await Component.InvokeAsync(typeof(AuditLoggingErrorRateWidgetViewComponent))
+            </abp-column>
+        }
+        @if (await WidgetManager.IsGrantedAsync(typeof(AuditLoggingAverageExecutionDurationPerDayWidgetViewComponent)))
+        {
+            <abp-column size="_4">
+                @await Component.InvokeAsync(typeof(AuditLoggingAverageExecutionDurationPerDayWidgetViewComponent))
+            </abp-column>
+        }
+    </abp-row>
 </div>

@@ -1,45 +1,49 @@
-//using Microsoft.Extensions.DependencyInjection;
-//using Volo.Abp.AuditLogging;
-//using Volo.Abp.FeatureManagement;
-//using Volo.Abp.Identity;
-//using Volo.Abp.LanguageManagement;
-//using Volo.Abp.Modularity;
-//using Volo.Abp.PermissionManagement;
-//using Volo.Abp.TextTemplateManagement;
-//using Volo.Abp.SettingManagement;
-//// using Volo.Saas.Host; // removed for OSS
-//using Volo.Abp.VirtualFileSystem;
-//using Volo.Abp.Gdpr;
+﻿using Microsoft.Extensions.DependencyInjection;
+using Volo.Abp.Account;
+using Volo.Abp.AuditLogging;
+using Volo.Abp.FeatureManagement;
+using Volo.Abp.Identity;
+using Volo.Abp.OpenIddict;
+using Volo.Abp.LanguageManagement;
+using Volo.Abp.Modularity;
+using Volo.Abp.PermissionManagement;
+using Volo.Abp.TextTemplateManagement;
+using Volo.Abp.SettingManagement;
+using Volo.Saas.Host;
+using Volo.Abp.VirtualFileSystem;
+using Volo.Abp.Gdpr;
 
-//namespace Steer73.RockIT;
+namespace Steer73.RockIT;
 
-//[DependsOn(
-//    typeof(RockITApplicationContractsModule),
-//    typeof(AbpIdentityHttpApiClientModule),
-//    typeof(AbpPermissionManagementHttpApiClientModule),
-//    typeof(AbpFeatureManagementHttpApiClientModule),
-//    typeof(AbpSettingManagementHttpApiClientModule),
-//    // Remove SaaS client module for OSS
-//    typeof(AbpAuditLoggingHttpApiClientModule),
-//    // Remove Pro OpenIddict & Account clients for OSS/no-auth
-//    typeof(LanguageManagementHttpApiClientModule),
-//    typeof(AbpGdprHttpApiClientModule),
-//    typeof(TextTemplateManagementHttpApiClientModule)
-//)]
-//public class RockITHttpApiClientModule : AbpModule
-//{
-//    public const string RemoteServiceName = "Default";
+[DependsOn(
+    typeof(RockITApplicationContractsModule),
+    typeof(AbpIdentityHttpApiClientModule),
+    typeof(AbpPermissionManagementHttpApiClientModule),
+    typeof(AbpFeatureManagementHttpApiClientModule),
+    typeof(AbpSettingManagementHttpApiClientModule),
+    typeof(SaasHostHttpApiClientModule),
+    typeof(AbpAuditLoggingHttpApiClientModule),
+    typeof(AbpOpenIddictProHttpApiClientModule),
+    typeof(AbpAccountAdminHttpApiClientModule),
+    typeof(AbpAccountPublicHttpApiClientModule),
+    typeof(LanguageManagementHttpApiClientModule),
+    typeof(AbpGdprHttpApiClientModule),
+    typeof(TextTemplateManagementHttpApiClientModule)
+)]
+public class RockITHttpApiClientModule : AbpModule
+{
+    public const string RemoteServiceName = "Default";
 
-//    public override void ConfigureServices(ServiceConfigurationContext context)
-//    {
-//        context.Services.AddHttpClientProxies(
-//            typeof(RockITApplicationContractsModule).Assembly,
-//            RemoteServiceName
-//        );
+    public override void ConfigureServices(ServiceConfigurationContext context)
+    {
+        context.Services.AddHttpClientProxies(
+            typeof(RockITApplicationContractsModule).Assembly,
+            RemoteServiceName
+        );
 
-//        Configure<AbpVirtualFileSystemOptions>(options =>
-//        {
-//            options.FileSets.AddEmbedded<RockITHttpApiClientModule>();
-//        });
-//    }
-//}
+        Configure<AbpVirtualFileSystemOptions>(options =>
+        {
+            options.FileSets.AddEmbedded<RockITHttpApiClientModule>();
+        });
+    }
+}
