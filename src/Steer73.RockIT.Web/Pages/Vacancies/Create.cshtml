@@ -39,6 +39,16 @@
             max-height: 12rem;
             overflow: auto;
         }
+
+        /* Match editor line spacing to single-line feel */
+        .ql-editor {
+            line-height: 1;
+        }
+        .ql-editor p,
+        .ql-editor li {
+            line-height: 1;
+            margin: 0;
+        }
     </style>
 }
 @section scripts {
@@ -68,27 +78,35 @@
                 placeholder: 'Write the vacancy description here. Use the Headings dropdown for Title/Header/Paragraph...',
                 modules: {
                     toolbar: [
-                        [{ header: [false, 1, 2, 3] }],
+                        // Headers hidden; allow ordered list only
                         ['bold', 'italic', 'underline'],
-                        [{ list: 'ordered' }, { list: 'bullet' }],
+                        [{ list: 'ordered' }],
                         [{ indent: '-1' }, { indent: '+1' }],
                         ['link', 'clean']
                     ]
                 },
                 formats: [
-                    'header', 'bold', 'italic', 'underline',
-                    'list', 'bullet', 'indent', 'link'
+                    'bold', 'italic', 'underline',
+                    'list', 'indent', 'link'
                 ]
             });
 
             const content = @Html.Raw(Json.Serialize(Model.Vacancy.Description));
-            quill.clipboard.dangerouslyPasteHTML(content);
+            try {
+                const delta = content && content.trim().startsWith('{') ? JSON.parse(content) : null;
+                if (delta && delta.ops) {
+                    quill.setContents(delta);
+                } else {
+                    quill.clipboard.dangerouslyPasteHTML(content || '');
+                }
+            } catch { quill.clipboard.dangerouslyPasteHTML(content || ''); }
 
             let $form = $('#createForm');
 
             $form.on('submit', function (e) {
                 const quillContent = document.querySelector('input#Vacancy_Description');
-                quillContent.value = !isQuillEmpty(quill) ? quill.root.innerHTML : ''; // This sends the Quill content as HTML
+                // Save as HTML so backend sanitization and rendering work as expected
+                quillContent.value = !isQuillEmpty(quill) ? quill.root.innerHTML : '';
             });
 
             // Add keyboard shortcuts for indent/outdent (Tab / Shift+Tab)

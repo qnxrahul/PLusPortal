@@ -13,16 +13,16 @@ namespace Steer73.RockIT.Web.Utilities
             // Allow tags commonly produced by our Quill configuration
             var tagsToAllow = new[]
             {
-                "a", "p", "br", "strong", "em", "u", "ol", "ul", "li",
-                "h1", "h2", "h3", "blockquote", "span"
+                "a", "p", "br", "strong", "em", "u", "s", "code", "pre",
+                "ol", "ul", "li", "h1", "h2", "h3", "blockquote", "span"
             };
             foreach (var tag in tagsToAllow)
             {
                 sanitizer.AllowedTags.Add(tag);
             }
 
-            // Allow attributes needed for links and Quill classes
-            var attributesToAllow = new[] { "href", "target", "rel", "class" };
+            // Allow attributes needed for links and Quill classes/metadata
+            var attributesToAllow = new[] { "href", "target", "rel", "class", "style", "title", "data-list", "data-indent", "data-checked", "dir" };
             foreach (var attr in attributesToAllow)
             {
                 sanitizer.AllowedAttributes.Add(attr);

@@ -40,6 +40,16 @@
             overflow: auto;
         }
 
+        /* Match editor line spacing to single-line feel */
+        .ql-editor {
+            line-height: 1;
+        }
+        .ql-editor p,
+        .ql-editor li {
+            line-height: 1;
+            margin: 0;
+        }
+
     </style>
 }
 @section scripts {
@@ -70,24 +80,32 @@
                 placeholder: 'Edit the vacancy description. Use Headings, Indent, and Links as needed...',
                 modules: {
                     toolbar: [
-                        [{ header: [false, 1, 2, 3] }],
+                        // Headers hidden; allow ordered list only
                         ['bold', 'italic', 'underline'],
-                        [{ list: 'ordered' }, { list: 'bullet' }],
+                        [{ list: 'ordered' }],
                         [{ indent: '-1' }, { indent: '+1' }],
                         ['link', 'clean']
                     ]
                 },
-                formats: ['header','bold','italic','underline','list','bullet','indent','link']
+                formats: ['bold','italic','underline','list','indent','link']
             });
 
             const content = @Html.Raw(Json.Serialize(Model.Input.Description));
-            quill.clipboard.dangerouslyPasteHTML(content);
+            try {
+                const delta = content && content.trim().startsWith('{') ? JSON.parse(content) : null;
+                if (delta && delta.ops) {
+                    quill.setContents(delta);
+                } else {
+                    quill.clipboard.dangerouslyPasteHTML(content || '');
+                }
+            } catch { quill.clipboard.dangerouslyPasteHTML(content || ''); }
 
             let $form = $('#editForm');
 
             $form.on('submit', function (e) {
                 const quillContent = document.querySelector('input#Input_Description');
-                quillContent.value = !isQuillEmpty(quill) ? quill.root.innerHTML : ''; // This sends the Quill content as HTML
+                // Save HTML (sanitized server-side) for compatibility with existing DB schema
+                quillContent.value = !isQuillEmpty(quill) ? quill.root.innerHTML : '';
             });
 
             // Keyboard shortcuts for indent/outdent
@@ -116,6 +134,15 @@
             <abp-modal-header title="@L["Update"].Value"></abp-modal-header>
 
             <abp-modal-body>
+                <div class="mb-3">
+                    <label class="form-label">@L["VacancyDetailsPage"].Value</label>
+                    <div class="d-flex align-items-center gap-2">
+                        <a class="form-control-plaintext" href="@Model.VacancyDetailUrl" target="_blank">@Model.VacancyDetailUrl</a>
+                        <button type="button" class="btn btn-secondary btn-sm js-copy-vacancy-detail-url" data-url="@Model.VacancyDetailUrl">
+                            <i class="fa fa-copy"></i> @L["CopyUrl"].Value
+                        </button>
+                    </div>
+                </div>
                 <abp-input asp-for="Input.Title" />
  
                 <div class="mb-3">
