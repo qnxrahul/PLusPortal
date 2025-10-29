@@ -301,7 +301,7 @@
         "ConfirmApproveReject": "Are you sure you want to {0} this application?",
         "LinkedInUrl": "LinkedIn Url",
         "DateAdded": "Date Added",
-        "EzekiaID": "Ezekia ID",
+        "EzekiaID": "Project ID",
         "ClearFile": "Clear file",
         "CompanyRole": "Company Role",
         "RoleLevel": "Role Level",
@@ -309,7 +309,8 @@
         "JobTitle": "Job Title",
         "ConfirmApplicationsApproval": "Are you sure you want to approve the selected applications?",
         "ApplicationsApproved": "Selected applications have all been successfully approved",
-        "EnterEzekiaId": "Enter Ezekia Project Id",
+        "EnterEzekiaId": "Enter Project Id",
+        "ProjectID": "Project ID",
         "Confirm": "Confirm",
         "OverwriteProjectSelection": "Are you sure to overwrite previous project selection?",
         "ConfirmVacancySelection": "Confirm Vacancy Selection"

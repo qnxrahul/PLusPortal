@@ -169,7 +169,8 @@
                     <span asp-validation-for="Vacancy.CompanyId" class="text-danger"></span>
                 </div>
 
-                <abp-input asp-for="Vacancy.ExternalRefId" readonly="true" />
+                <abp-input asp-for="Vacancy.ProjectId" readonly="true" />
+                <abp-input asp-for="Vacancy.ExternalRefId" type="hidden" />
 
                 <abp-select asp-for="Vacancy.IdentityUserId" asp-items="Model.IdentityUserLookupListRequired" />
 

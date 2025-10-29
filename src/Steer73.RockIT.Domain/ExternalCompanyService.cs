@@ -1,4 +1,4 @@
-﻿using EzekiaCRM;
+using EzekiaCRM;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -1050,6 +1050,9 @@ namespace Steer73.RockIT.Domain.External
             CancellationToken cancellationToken)
         {
             var documents = new List<DocumentDto>();
+            var projectLabel = string.IsNullOrWhiteSpace(vacancy.ProjectId)
+                ? ezekiaVacancyId.ToString()
+                : vacancy.ProjectId;
 
             if (vacancy.BrochureFileId != null
                 && shouldUpdateBrochure)
@@ -1121,7 +1124,7 @@ namespace Steer73.RockIT.Domain.External
                     documents.Add(new DocumentDto
                     {
                         ContentType = FileUtils.GetContentType(extension),
-                        FileName = $"{jobApplication.LastName}.{initial}.CV Original({ezekiaVacancyId}){extension}",
+                        FileName = $"{jobApplication.LastName}.{initial}.CV Original({projectLabel}){extension}",
                         Stream = stream
                     });
                 }
@@ -1136,7 +1139,7 @@ namespace Steer73.RockIT.Domain.External
                     documents.Add(new DocumentDto
                     {
                         ContentType = FileUtils.GetContentType(extension),
-                        FileName = $"{jobApplication.LastName}.{initial}.Letter({ezekiaVacancyId}){extension}",
+                        FileName = $"{jobApplication.LastName}.{initial}.Letter({projectLabel}){extension}",
                         Stream = stream
                     });
                 }
@@ -1151,7 +1154,7 @@ namespace Steer73.RockIT.Domain.External
                     documents.Add(new DocumentDto
                     {
                         ContentType = FileUtils.GetContentType(extension),
-                        FileName = $"{jobApplication.LastName}.{initial}.Supplement({ezekiaVacancyId}){extension}",
+                        FileName = $"{jobApplication.LastName}.{initial}.Supplement({projectLabel}){extension}",
                         Stream = stream
                     });
                 }
