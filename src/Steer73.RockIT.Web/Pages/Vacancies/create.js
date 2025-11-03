@@ -230,6 +230,7 @@ $(function () {
 
     function setProjectDetails() {
         $("#Vacancy_ExternalRefId").val(recentProjectSearched.ezekiaProject?.id);
+        $("#Vacancy_ProjectId").val(recentProjectSearched.ezekiaProject?.projectId);
         $("#Vacancy_Title").val(recentProjectSearched.ezekiaProject?.additionalProperties?.name);
 
         if (recentProjectSearched?.ezekiaProject?.relationships?.company && recentProjectSearched?.companyId) {

@@ -141,7 +141,10 @@ public class VacancyCreateInputModel : VacancyCreateUpdateDto
     [Before(otherProperty: nameof(ClosingDate), otherPropertyDisplayName: "Closing Date")]
     public DateTime? ExpiringDate { get; set; }
 
+    [DisplayName("ProjectID")]
+    public string? ProjectId { get; set; }
+
     [DisplayName("EzekiaID")]
-	[Required]
-	public int? ExternalRefId { get; set; }
+    [Required]
+    public int? ExternalRefId { get; set; }
 }

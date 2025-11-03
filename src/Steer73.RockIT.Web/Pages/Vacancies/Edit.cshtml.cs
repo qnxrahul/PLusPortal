@@ -40,17 +40,17 @@ public class EditModel : RockITPageModel
 
     public List<SelectListItem> VacancyFormDefinitionLookupList { get; set; } = new List<SelectListItem>    
     {
-        new SelectListItem(" — ", "")
+        new SelectListItem(" ï¿½ ", "")
     };
 
     public List<SelectListItem> DiversityFormDefinitionLookupList { get; set; } = new List<SelectListItem>    
     {    
-        new SelectListItem(" — ", "")    
+        new SelectListItem(" ï¿½ ", "")    
     };
 
     public List<SelectListItem> RegionLookupListRequired { get; set; } = new List<SelectListItem>    
     {    
-        new SelectListItem(" — ", "")    
+        new SelectListItem(" ï¿½ ", "")    
     };
 
     public List<SelectListItem> SelectedRoleTypes { get; set; } = new List<SelectListItem>();
@@ -151,7 +151,7 @@ public class EditModel : RockITPageModel
         SelectedPracticeGroups = vacancyWithNavigationPropertiesDto.Vacancy.Groups;
         SelectedContributors = vacancyWithNavigationPropertiesDto.Vacancy.Contributors;
         SelectedCompany = vacancyWithNavigationPropertiesDto.Company;
-        ViewData["EzekiaIDDisplayName"] = vacancyWithNavigationPropertiesDto.Vacancy.ExternalRefId.ToString();
+        ViewData["EzekiaIDDisplayName"] = vacancyWithNavigationPropertiesDto.Vacancy.ProjectId ?? string.Empty;
     }
 }
 
