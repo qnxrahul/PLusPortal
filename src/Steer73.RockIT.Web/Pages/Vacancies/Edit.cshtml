@@ -152,9 +152,12 @@
                     <label class="form-label">@L["VacancyDetailsPage"].Value</label>
                     <div class="d-flex align-items-center gap-2">
                         <a class="form-control-plaintext" href="@Model.VacancyDetailUrl" target="_blank">@Model.VacancyDetailUrl</a>
-                        <button type="button" class="btn btn-secondary btn-sm js-copy-vacancy-detail-url" data-url="@Model.VacancyDetailUrl">
+                        <abp-button size="Small"
+                                    button-type="Primary"
+                                    class="js-copy-vacancy-detail-url"
+                                    data-url="@Model.VacancyDetailUrl">
                             <i class="fa fa-copy"></i> @L["CopyUrl"].Value
-                        </button>
+                        </abp-button>
                     </div>
                 </div>
                 <abp-input asp-for="Input.Title" />
