@@ -853,14 +853,14 @@ namespace Steer73.RockIT.Domain.External
                 FirstName = jobApplication.FirstName,
                 LastName = jobApplication.LastName,
                 Phones = phonesRequest,
-                Emails = 
+                Emails =
                 [
-                     new()       
-                     {       
-                         Address = jobApplication.EmailAddress,
-                         IsDefault = true,
-                         Label = Emails4Label.Direct       
-                     }
+                    new()
+                    {
+                        Address = jobApplication.EmailAddress,
+                        IsDefault = true,
+                        Label = Emails4Label.Work
+                    }
                 ],
                 Title = jobApplication.CurrentRole,
                 Summary = jobApplication.CurrentRole,
