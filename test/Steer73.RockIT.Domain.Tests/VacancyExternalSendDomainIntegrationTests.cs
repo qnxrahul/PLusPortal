@@ -1,4 +1,4 @@
-﻿using EzekiaCRM;
+using EzekiaCRM;
 using Microsoft.Extensions.Logging;
 using NSubstitute;
 using NSubstitute.ExceptionExtensions;
@@ -17,6 +17,7 @@ using Volo.Abp.BlobStoring;
 using Volo.Abp.Domain.Repositories;
 using Volo.Abp.Modularity;
 using Volo.Abp.Uow;
+using Volo.Abp.Identity;
 using Xunit;
 
 namespace Steer73.RockIT
@@ -39,6 +40,7 @@ namespace Steer73.RockIT
         private readonly IRepository<AppFileDescriptor, Guid> _appFileDescriptorRepository;
         private readonly IBlobContainer<JobApplicantContainer> _jobApplicantContainer;
         private readonly IBlobContainer<VacancyFileContainer> _vacancyContainer;
+        private readonly IIdentityUserRepository _identityUserRepository;
 
         private readonly IClient _ezekiaClientFakeOkResult;
         private readonly IClient _ezekiaClientFakeErrorResult;
@@ -55,9 +57,37 @@ namespace Steer73.RockIT
             _appFileDescriptorRepository = GetRequiredService<IRepository<AppFileDescriptor, Guid>>();
             _jobApplicantContainer = GetRequiredService<IBlobContainer<JobApplicantContainer>>();
             _vacancyContainer = GetRequiredService<IBlobContainer<VacancyFileContainer>>();
+            _identityUserRepository = GetRequiredService<IIdentityUserRepository>();
             _logger = Substitute.For<ILogger<ExternalCompanyService>>();
             _ezekiaClientFakeOkResult = Substitute.For<IClient>();
+            var identityUser = _identityUserRepository.GetAsync(Domain.Tests.TestData.UserId).GetAwaiter().GetResult();
+            var ownerLookupResponse = new Response85
+            {
+                Data = new List<Researcher>
+                {
+                    new()
+                    {
+                        Id = 123456,
+                        Email = identityUser.Email,
+                        FirstName = identityUser.Name,
+                        LastName = identityUser.Surname,
+                        FullName = $"{identityUser.Name} {identityUser.Surname}"
+                    }
+                }
+            };
+            _ezekiaClientFakeOkResult.SearchUsersAsync(
+                Arg.Any<string>(),
+                Arg.Any<int?>(),
+                Arg.Any<int?>(),
+                Arg.Any<CancellationToken>())
+                .Returns(System.Threading.Tasks.Task.FromResult(ownerLookupResponse));
             _ezekiaClientFakeErrorResult = Substitute.For<IClient>();          
+            _ezekiaClientFakeErrorResult.SearchUsersAsync(
+                Arg.Any<string>(),
+                Arg.Any<int?>(),
+                Arg.Any<int?>(),
+                Arg.Any<CancellationToken>())
+                .Returns(System.Threading.Tasks.Task.FromResult(ownerLookupResponse));
         }
 
         [Fact(Skip = "Test disabled temporarily")]
@@ -81,7 +111,8 @@ namespace Steer73.RockIT
                 _logger,
                 _appFileDescriptorRepository,
                 _jobApplicantContainer,
-                _vacancyContainer);
+                _vacancyContainer,
+                _identityUserRepository);
             var vacancyInit = await _vacancyRepository.GetAsync(Domain.Tests.TestData.Vacancy1Id);
             ApiException? exception = null;
           
@@ -129,10 +160,11 @@ namespace Steer73.RockIT
                     }
                 }));
 
+            store2? updatePayload = null;
             _ezekiaClientFakeOkResult.ProjectsPutAsync(
                 fields: null,
                 id: Arg.Any<int>(),
-                body: Arg.Any<object>(),
+                body: Arg.Do<object>(o => updatePayload = o as store2),
                 cancellationToken: Arg.Any<CancellationToken>())
                 .Returns(System.Threading.Tasks.Task.FromResult(new Response57
                 {
@@ -151,7 +183,8 @@ namespace Steer73.RockIT
                 _logger,
                 _appFileDescriptorRepository,
                 _jobApplicantContainer,
-                _vacancyContainer);
+                _vacancyContainer,
+                _identityUserRepository);
 
 
             //action
@@ -167,6 +200,8 @@ namespace Steer73.RockIT
             vacancyUpdated1.SyncStatus.ShouldBe(Enums.SyncStatus.Synced);
             vacancyUpdated1.SyncStatusUpdate.ShouldNotBeNull();
             vacancyUpdated1.ExternalRefId.ShouldBe(vacancyInit.ExternalRefId);
+            updatePayload.ShouldNotBeNull();
+            updatePayload!.OwnerId.ShouldBe(123456);
             
             var logEntry = await _auditLogRepository.GetAsync(x => x.UserName == CompanyConsts.BackgroundWorkerLogUserName);
             logEntry.ShouldNotBeNull();

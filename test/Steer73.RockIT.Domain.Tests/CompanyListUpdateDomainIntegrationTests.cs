@@ -1,4 +1,4 @@
-﻿using EzekiaCRM;
+using EzekiaCRM;
 using Microsoft.Extensions.Logging;
 using NSubstitute;
 using Shouldly;
@@ -17,6 +17,7 @@ using Volo.Abp.BlobStoring;
 using Volo.Abp.Domain.Repositories;
 using Volo.Abp.Modularity;
 using Volo.Abp.Uow;
+using Volo.Abp.Identity;
 using Xunit;
 
 namespace Steer73.RockIT
@@ -38,6 +39,7 @@ namespace Steer73.RockIT
         private readonly IRepository<AppFileDescriptor, Guid> _appFileDescriptorRepository;
         private readonly IBlobContainer<JobApplicantContainer> _jobApplicantContainer;
         private readonly IBlobContainer<VacancyFileContainer> _vacancyContainer;
+        private readonly IIdentityUserRepository _identityUserRepository;
 
         private readonly IClient _ezekiaClientFakeAllResults;
         private readonly IClient _ezekiaClientFake1PerPageResult;
@@ -54,6 +56,7 @@ namespace Steer73.RockIT
             _appFileDescriptorRepository = GetRequiredService<IRepository<AppFileDescriptor, Guid>>();
             _jobApplicantContainer = GetRequiredService<IBlobContainer<JobApplicantContainer>>();
             _vacancyContainer = GetRequiredService<IBlobContainer<VacancyFileContainer>>();
+            _identityUserRepository = GetRequiredService<IIdentityUserRepository>();
 
             _logger = Substitute.For<ILogger<ExternalCompanyService>>();
             _ezekiaClientFakeAllResults = Substitute.For<IClient>();
@@ -505,7 +508,8 @@ namespace Steer73.RockIT
                 _logger,
                 _appFileDescriptorRepository,
                 _jobApplicantContainer,
-                _vacancyContainer);
+                _vacancyContainer,
+                _identityUserRepository);
 
             //action
             await WithUnitOfWorkAsync(async () =>
@@ -556,7 +560,8 @@ namespace Steer73.RockIT
                 _logger, 
                 _appFileDescriptorRepository,
                 _jobApplicantContainer,
-                _vacancyContainer);
+                _vacancyContainer,
+                _identityUserRepository);
             var externalCompanyServiceUpdatedData = new ExternalCompanyService(
                 _companyRepository,
                 _ezekiaClientFakeAllResultsUpdated,
@@ -567,7 +572,8 @@ namespace Steer73.RockIT
                 _logger, 
                 _appFileDescriptorRepository,
                 _jobApplicantContainer,
-                _vacancyContainer);
+                _vacancyContainer,
+                _identityUserRepository);
 
             //action
             await WithUnitOfWorkAsync(async () =>
@@ -722,10 +728,11 @@ namespace Steer73.RockIT
                 _jobApplicationRepository,
                 _vacancyRepository,
                 _unitOfWorkManager,
-                _logger, 
-                _appFileDescriptorRepository, 
+                _logger,
+                _appFileDescriptorRepository,
                 _jobApplicantContainer,
-                _vacancyContainer);
+                _vacancyContainer,
+                _identityUserRepository);
             var numberOfPages = 2;
             var resultsPerPage = (Company2Id - Company1Id)/numberOfPages;
 

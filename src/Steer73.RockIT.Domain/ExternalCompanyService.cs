@@ -8,6 +8,7 @@ using Steer73.RockIT.Companies;
 using Steer73.RockIT.JobApplications;
 using Steer73.RockIT.Vacancies;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Data.Common;
 using System.Diagnostics;
@@ -22,6 +23,7 @@ using Volo.Abp.BlobStoring;
 using Volo.Abp.Domain.Repositories;
 using Volo.Abp.Domain.Services;
 using Volo.Abp.Uow;
+using Volo.Abp.Identity;
 using static Steer73.RockIT.Permissions.RockITSharedPermissions;
 using Company = Steer73.RockIT.Companies.Company;
 using Task = System.Threading.Tasks.Task;
@@ -42,6 +44,8 @@ namespace Steer73.RockIT.Domain.External
         private IRepository<AppFileDescriptor, Guid> _appFileDescriptorRepository;
         private IBlobContainer<JobApplicantContainer> _jobApplicantContainer;
         private IBlobContainer<VacancyFileContainer> _vacancyContainer;
+        private readonly IIdentityUserRepository _identityUserRepository;
+        private readonly ConcurrentDictionary<Guid, int?> _ownerIdCache = new();
 
         public ExternalCompanyService(
             ICompanyRepository companyRepository,
@@ -53,7 +57,8 @@ namespace Steer73.RockIT.Domain.External
             ILogger<ExternalCompanyService> logger,
             IRepository<AppFileDescriptor, Guid> appFileDescriptorRepository,
             IBlobContainer<JobApplicantContainer> jobApplicantContainer,
-            IBlobContainer<VacancyFileContainer> vacancyFileContainer)
+            IBlobContainer<VacancyFileContainer> vacancyFileContainer,
+            IIdentityUserRepository identityUserRepository)
         {
             _companyRepository = companyRepository;
             _ezekiaClient = ezekiaClient;
@@ -65,6 +70,7 @@ namespace Steer73.RockIT.Domain.External
             _vacancyRepository = vacancyRepository;
             _appFileDescriptorRepository = appFileDescriptorRepository;
             _vacancyContainer = vacancyFileContainer;
+            _identityUserRepository = identityUserRepository;
         }
 
 
@@ -86,6 +92,8 @@ namespace Steer73.RockIT.Domain.External
 
             var company = await _companyRepository.GetAsync(id: vacancy.CompanyId, cancellationToken: cancellationToken);
             _logger.LogInformation("Fetched Company {CompanyId} from DB", company.Id);
+
+            var ownerId = await ResolveOwnerIdAsync(vacancy.IdentityUserId, cancellationToken);
 
             var auditEntry = new AuditLogActionInfo
             {
@@ -193,7 +201,7 @@ namespace Steer73.RockIT.Domain.External
                     if (person is null)
                     {
                         _logger.LogInformation("Creating person in Ezekia for JobApplicationId: {JobApplicationId}", jobApplicationId);
-                        ezekiaJobApplicationId = await CreatePerson(jobApplication, vacancy, jobApplicationCompanyId, cancellationToken);
+                        ezekiaJobApplicationId = await CreatePerson(jobApplication, vacancy, jobApplicationCompanyId, ownerId, cancellationToken);
 
 
                         if (ezekiaJobApplicationId.HasValue)
@@ -206,7 +214,7 @@ namespace Steer73.RockIT.Domain.External
                             if (createdPerson?.Data != null)
                             {
                                 _logger.LogInformation("Fetched person successfully from Ezekia. Proceeding to UpdatePerson for PersonId: {PersonId}", createdPerson.Data.Id);
-                                await UpdatePerson(createdPerson.Data, jobApplication, vacancy, jobApplicationCompanyId, cancellationToken);
+                                  await UpdatePerson(createdPerson.Data, jobApplication, vacancy, jobApplicationCompanyId, ownerId, cancellationToken);
                                 _logger.LogInformation("Completed UpdatePerson for newly created PersonId: {PersonId}", createdPerson.Data.Id);
                             }
                             else
@@ -225,7 +233,7 @@ namespace Steer73.RockIT.Domain.External
                     {
                         _logger.LogInformation("Person already exists in Ezekia with PersonId: {PersonId} for JobApplicationId: {JobApplicationId}", person.Id, jobApplicationId);
                         ezekiaJobApplicationId = person.Id;
-                        await UpdatePerson(person, jobApplication, vacancy, jobApplicationCompanyId, cancellationToken);
+                          await UpdatePerson(person, jobApplication, vacancy, jobApplicationCompanyId, ownerId, cancellationToken);
                         _logger.LogInformation("Completed UpdatePerson for existing PersonId: {PersonId}", person.Id);
                     }
 
@@ -570,6 +578,7 @@ namespace Steer73.RockIT.Domain.External
                 int? ezekiaVacancyId = null;
                 var vacancy = await _vacancyRepository.GetAsync(vacancyId, cancellationToken: cancellationToken);
                 var company = await _companyRepository.GetAsync(vacancy.CompanyId, cancellationToken: cancellationToken);
+                var ownerId = await ResolveOwnerIdAsync(vacancy.IdentityUserId, cancellationToken);
                 IEnumerable<field4>? fields = null;
 
                 try
@@ -607,7 +616,8 @@ namespace Steer73.RockIT.Domain.External
                             CompanyId = company.ExternalRefId?.ToString(),
                             Description = vacancy.Description,
                             StartDate = vacancy.ExternalPostingDate.ToString(ExternalDateFormat),
-                            EndDate = vacancy.ExpiringDate.ToString(ExternalDateFormat)
+                          EndDate = vacancy.ExpiringDate.ToString(ExternalDateFormat),
+                          OwnerId = ownerId
                         };
 
                         var createResponse = await _ezekiaClient.ProjectsPostAsync(null, createRequest, cancellationToken);
@@ -625,7 +635,8 @@ namespace Steer73.RockIT.Domain.External
                             CompanyId = company.ExternalRefId?.ToString(),
                             Description = vacancy.Description,
                             StartDate = vacancy.ExternalPostingDate.ToString(ExternalDateFormat),
-                            EndDate = vacancy.ExpiringDate.ToString(ExternalDateFormat)
+                          EndDate = vacancy.ExpiringDate.ToString(ExternalDateFormat),
+                          OwnerId = ownerId
                         };
 
                         var updateResponse = await _ezekiaClient.ProjectsPutAsync(fields, vacancy.ExternalRefId!.Value, updateRequest, cancellationToken);
@@ -825,6 +836,7 @@ namespace Steer73.RockIT.Domain.External
             JobApplication jobApplication, 
             Vacancy vacancy,
             int? ezekiaCompanyId, 
+            int? ownerId,
             CancellationToken cancellationToken)
         {
             var phonesRequest = new List<phones4>();
@@ -867,6 +879,8 @@ namespace Steer73.RockIT.Domain.External
                 CompanyRecordId = ezekiaCompanyId is not null ? ezekiaCompanyId.Value : null,
                 CompanyRecordName = ezekiaCompanyId is null ? jobApplication.CurrentCompany : null
             };
+
+            request.OwnerId = ownerId;
 
             if (!string.IsNullOrWhiteSpace(jobApplication.Aka))
             {
@@ -931,11 +945,80 @@ namespace Steer73.RockIT.Domain.External
             return createdPersonId;
 
         }
+
+        private async Task<int?> ResolveOwnerIdAsync(Guid identityUserId, CancellationToken cancellationToken)
+        {
+            if (identityUserId == Guid.Empty)
+            {
+                return null;
+            }
+
+            if (_ownerIdCache.TryGetValue(identityUserId, out var cachedValue))
+            {
+                return cachedValue;
+            }
+
+            var identityUser = await _identityUserRepository.FindAsync(identityUserId, includeDetails: true, cancellationToken: cancellationToken);
+            if (identityUser is null)
+            {
+                _ownerIdCache[identityUserId] = null;
+                return null;
+            }
+
+            var email = identityUser.Email;
+            var fullName = $"{identityUser.Name} {identityUser.Surname}".Trim();
+            var query = !string.IsNullOrWhiteSpace(email) ? email : fullName;
+
+            if (string.IsNullOrWhiteSpace(query))
+            {
+                _ownerIdCache[identityUserId] = null;
+                return null;
+            }
+
+            try
+            {
+                var response = await _ezekiaClient.SearchUsersAsync(query, 1, 25, cancellationToken);
+
+                var match = response?.Data?
+                    .FirstOrDefault(u =>
+                        !string.IsNullOrWhiteSpace(email)
+                            ? string.Equals(u.Email, email, StringComparison.OrdinalIgnoreCase)
+                            : string.Equals(u.FullName, fullName, StringComparison.OrdinalIgnoreCase));
+
+                if (match is null && !string.IsNullOrWhiteSpace(fullName))
+                {
+                    match = response?.Data?
+                        .FirstOrDefault(u => string.Equals(u.FullName, fullName, StringComparison.OrdinalIgnoreCase));
+                }
+
+                var ownerId = match?.Id;
+                _ownerIdCache[identityUserId] = ownerId;
+
+                if (ownerId.HasValue)
+                {
+                    _logger.LogInformation("Resolved Ezekia owner {OwnerId} for IdentityUserId {IdentityUserId}", ownerId.Value, identityUserId);
+                }
+                else
+                {
+                    _logger.LogWarning("Unable to resolve Ezekia owner for IdentityUserId {IdentityUserId} using query \"{Query}\"", identityUserId, query);
+                }
+
+                return ownerId;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogWarning(ex, "Failed to resolve Ezekia owner for IdentityUserId {IdentityUserId}", identityUserId);
+                _ownerIdCache[identityUserId] = null;
+                return null;
+            }
+        }
+
         private async Task UpdatePerson(
         person2 person,
         JobApplication jobApplication,
         Vacancy vacancy,
         int? ezekiaCompanyId,
+        int? ownerId,
         CancellationToken cancellationToken)
         {
             _logger.LogInformation("Starting UpdatePerson for JobApplicationId: {JobApplicationId}, PersonId: {PersonId}", jobApplication.Id, person.Id);
@@ -949,7 +1032,8 @@ namespace Steer73.RockIT.Domain.External
             {
                 Honorific = jobApplication.Title,
                 FirstName = jobApplication.FirstName,
-                LastName = jobApplication.LastName
+                LastName = jobApplication.LastName,
+                OwnerId = ownerId
             },
             cancellationToken)
     };
