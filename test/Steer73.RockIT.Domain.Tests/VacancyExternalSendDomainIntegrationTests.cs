@@ -6,6 +6,7 @@ using Shouldly;
 using Steer73.RockIT.AppFileDescriptors;
 using Steer73.RockIT.Companies;
 using Steer73.RockIT.Domain.External;
+using Steer73.RockIT.EzekiaSyncLogs;
 using Steer73.RockIT.JobApplications;
 using Steer73.RockIT.Vacancies;
 using System;
@@ -41,6 +42,7 @@ namespace Steer73.RockIT
         private readonly IBlobContainer<JobApplicantContainer> _jobApplicantContainer;
         private readonly IBlobContainer<VacancyFileContainer> _vacancyContainer;
         private readonly IIdentityUserRepository _identityUserRepository;
+        private readonly EzekiaSyncLogManager _ezekiaSyncLogManager;
 
         private readonly IClient _ezekiaClientFakeOkResult;
         private readonly IClient _ezekiaClientFakeErrorResult;
@@ -58,6 +60,7 @@ namespace Steer73.RockIT
             _jobApplicantContainer = GetRequiredService<IBlobContainer<JobApplicantContainer>>();
             _vacancyContainer = GetRequiredService<IBlobContainer<VacancyFileContainer>>();
             _identityUserRepository = GetRequiredService<IIdentityUserRepository>();
+            _ezekiaSyncLogManager = GetRequiredService<EzekiaSyncLogManager>();
             _logger = Substitute.For<ILogger<ExternalCompanyService>>();
             _ezekiaClientFakeOkResult = Substitute.For<IClient>();
             var identityUser = _identityUserRepository.GetAsync(Domain.Tests.TestData.UserId).GetAwaiter().GetResult();
@@ -112,7 +115,8 @@ namespace Steer73.RockIT
                 _appFileDescriptorRepository,
                 _jobApplicantContainer,
                 _vacancyContainer,
-                _identityUserRepository);
+                _identityUserRepository,
+                _ezekiaSyncLogManager);
             var vacancyInit = await _vacancyRepository.GetAsync(Domain.Tests.TestData.Vacancy1Id);
             ApiException? exception = null;
           
@@ -184,7 +188,8 @@ namespace Steer73.RockIT
                 _appFileDescriptorRepository,
                 _jobApplicantContainer,
                 _vacancyContainer,
-                _identityUserRepository);
+                _identityUserRepository,
+                _ezekiaSyncLogManager);
 
 
             //action

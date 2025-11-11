@@ -5,6 +5,7 @@ using Shouldly;
 using Steer73.RockIT.AppFileDescriptors;
 using Steer73.RockIT.Companies;
 using Steer73.RockIT.Domain.External;
+using Steer73.RockIT.EzekiaSyncLogs;
 using Steer73.RockIT.JobApplications;
 using Steer73.RockIT.Vacancies;
 using System;
@@ -40,6 +41,7 @@ namespace Steer73.RockIT
         private readonly IBlobContainer<JobApplicantContainer> _jobApplicantContainer;
         private readonly IBlobContainer<VacancyFileContainer> _vacancyContainer;
         private readonly IIdentityUserRepository _identityUserRepository;
+        private readonly EzekiaSyncLogManager _ezekiaSyncLogManager;
 
         private readonly IClient _ezekiaClientFakeAllResults;
         private readonly IClient _ezekiaClientFake1PerPageResult;
@@ -57,6 +59,7 @@ namespace Steer73.RockIT
             _jobApplicantContainer = GetRequiredService<IBlobContainer<JobApplicantContainer>>();
             _vacancyContainer = GetRequiredService<IBlobContainer<VacancyFileContainer>>();
             _identityUserRepository = GetRequiredService<IIdentityUserRepository>();
+            _ezekiaSyncLogManager = GetRequiredService<EzekiaSyncLogManager>();
 
             _logger = Substitute.For<ILogger<ExternalCompanyService>>();
             _ezekiaClientFakeAllResults = Substitute.For<IClient>();
@@ -509,13 +512,35 @@ namespace Steer73.RockIT
                 _appFileDescriptorRepository,
                 _jobApplicantContainer,
                 _vacancyContainer,
-                _identityUserRepository);
+                _identityUserRepository,
+                _ezekiaSyncLogManager);
+            var externalCompanyServiceUpdatedData = new ExternalCompanyService(
+                _companyRepository,
+                _ezekiaClientFakeAllResultsUpdated,
+                _auditingManager,
+                _jobApplicationRepository,
+                _vacancyRepository,
+                _unitOfWorkManager,
+                _logger,
+                _appFileDescriptorRepository,
+                _jobApplicantContainer,
+                _vacancyContainer,
+                _identityUserRepository,
+                _ezekiaSyncLogManager);
 
             //action
             await WithUnitOfWorkAsync(async () =>
             {
                 await _companyRepository.DeleteAllAsync();
+
                 await externalCompanyService.UpdateCompaniesAsync(
+                    Company2Id - Company1Id,
+                    cancellationToken: new CancellationToken());
+            });
+
+            await WithUnitOfWorkAsync(async () =>
+            {
+                await externalCompanyServiceUpdatedData.UpdateCompaniesAsync(
                     Company2Id - Company1Id,
                     cancellationToken: new CancellationToken());
             });
@@ -561,7 +586,8 @@ namespace Steer73.RockIT
                 _appFileDescriptorRepository,
                 _jobApplicantContainer,
                 _vacancyContainer,
-                _identityUserRepository);
+                _identityUserRepository,
+                _ezekiaSyncLogManager);
             var externalCompanyServiceUpdatedData = new ExternalCompanyService(
                 _companyRepository,
                 _ezekiaClientFakeAllResultsUpdated,
@@ -634,7 +660,9 @@ namespace Steer73.RockIT
                _logger,
                _appFileDescriptorRepository,
                _jobApplicantContainer,
-               _vacancyContainer);
+               _vacancyContainer,
+               _identityUserRepository,
+               _ezekiaSyncLogManager);
 
             var resultsPerPage = Company2Id - Company1Id;
 

@@ -32,6 +32,7 @@ using Volo.Saas.Tenants;
 using Steer73.RockIT.Enums;
 using System;
 using Steer73.RockIT.RoleTypes;
+using Steer73.RockIT.EzekiaSyncLogs;
 
 namespace Steer73.RockIT.EntityFrameworkCore;
 
@@ -59,6 +60,7 @@ public class RockITDbContext :
     public DbSet<VacancyMediaSource> VacancyMediaSources { get; set; } = null!;
     public DbSet<RoleType> RoleTypes { get; set; } = null!;
     public DbSet<VacancyRoleType> VacancyRoleTypes { get; set; } = null!;
+    public DbSet<EzekiaSyncLog> EzekiaSyncLogs { get; set; } = null!;
 
     #region Entities from the modules
 
@@ -155,6 +157,26 @@ public class RockITDbContext :
                 b.Property(x => x.Name).HasColumnName(nameof(PracticeArea.Name)).IsRequired().HasMaxLength(PracticeAreaConsts.NameMaxLength);
                 b.Property(x => x.IsActive).HasColumnName(nameof(PracticeArea.IsActive));
                 b.HasOne<PracticeGroup>().WithMany(x => x.PracticeAreas).HasForeignKey(x => x.PracticeGroupId).IsRequired().OnDelete(DeleteBehavior.Cascade);
+            });
+
+            builder.Entity<EzekiaSyncLog>(b =>
+            {
+                b.ToTable(RockITConsts.DbTablePrefix + "EzekiaSyncLogs", RockITConsts.DbSchema);
+                b.ConfigureByConvention();
+                b.Property(x => x.EntityType).IsRequired().HasMaxLength(EzekiaSyncLogConsts.EntityTypeMaxLength);
+                b.Property(x => x.Operation).IsRequired().HasMaxLength(EzekiaSyncLogConsts.OperationMaxLength);
+                b.Property(x => x.Status).IsRequired().HasMaxLength(EzekiaSyncLogConsts.StatusMaxLength);
+                b.Property(x => x.CorrelationId).HasMaxLength(EzekiaSyncLogConsts.CorrelationIdMaxLength);
+                b.Property(x => x.ExternalSystemId).HasMaxLength(EzekiaSyncLogConsts.ExternalSystemIdMaxLength);
+                b.Property(x => x.OwnerName).HasMaxLength(EzekiaSyncLogConsts.OwnerNameMaxLength);
+                b.Property(x => x.OwnerEmail).HasMaxLength(EzekiaSyncLogConsts.OwnerEmailMaxLength);
+                b.Property(x => x.RequestPayload).HasMaxLength(EzekiaSyncLogConsts.RequestPayloadMaxLength);
+                b.Property(x => x.ResponsePayload).HasMaxLength(EzekiaSyncLogConsts.ResponsePayloadMaxLength);
+                b.Property(x => x.ErrorMessage).HasMaxLength(EzekiaSyncLogConsts.ErrorMessageMaxLength);
+                b.Property(x => x.ErrorStackTrace).HasMaxLength(EzekiaSyncLogConsts.ErrorStackTraceMaxLength);
+                b.Property(x => x.AdditionalMetadata).HasMaxLength(EzekiaSyncLogConsts.AdditionalMetadataMaxLength);
+                b.HasIndex(x => new { x.EntityType, x.EntityId });
+                b.HasIndex(x => x.Timestamp);
             });
 
             builder.Entity<FormDefinition>(b =>
