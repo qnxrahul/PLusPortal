@@ -40,14 +40,27 @@
             overflow: auto;
         }
 
-        /* Match editor line spacing to single-line feel */
         .ql-editor {
-            line-height: 1;
+            line-height: 1.4;
         }
-        .ql-editor p,
+        .ql-editor p {
+            margin: 0 0 0.75rem;
+        }
+        .ql-editor ul,
+        .ql-editor ol {
+            margin: 0 0 0.75rem;
+            padding-left: 1.5rem;
+        }
         .ql-editor li {
-            line-height: 1;
-            margin: 0;
+            line-height: 1.4;
+            margin: 0.25rem 0;
+        }
+        .ql-editor h1,
+        .ql-editor h2,
+        .ql-editor h3 {
+            margin: 0 0 0.75rem;
+            line-height: 1.2;
+            font-weight: 600;
         }
     </style>
 }
@@ -75,19 +88,21 @@
 
             quill = new Quill('#editor', {
                 theme: 'snow',
-                placeholder: 'Write the vacancy description here. Use the Headings dropdown for Title/Header/Paragraph...',
+                placeholder: 'Write the vacancy description here. Use headings, bullet lists, and formatting as needed...',
                 modules: {
                     toolbar: [
-                        // Headers hidden; allow ordered list only
+                        [{ header: [1, 2, 3, false] }],
                         ['bold', 'italic', 'underline'],
-                        [{ list: 'ordered' }],
+                        [{ list: 'ordered' }, { list: 'bullet' }],
                         [{ indent: '-1' }, { indent: '+1' }],
                         ['link', 'clean']
                     ]
                 },
                 formats: [
+                    'header',
                     'bold', 'italic', 'underline',
-                    'list', 'indent', 'link'
+                    'list', 'indent',
+                    'link'
                 ]
             });
 

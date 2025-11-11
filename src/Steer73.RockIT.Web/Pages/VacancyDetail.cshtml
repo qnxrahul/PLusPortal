@@ -10,14 +10,31 @@
     <link href="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.core.css" rel="stylesheet" />
     <link href="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.snow.css" rel="stylesheet" />
     <style>
-        /* Match editor spacing and reset margins */
         #vacancy-viewer .ql-editor {
-            line-height: 1;
+            line-height: 1.4;
         }
-        #vacancy-viewer .ql-editor p,
+
+        #vacancy-viewer .ql-editor p {
+            margin: 0 0 0.75rem;
+        }
+
+        #vacancy-viewer .ql-editor ul,
+        #vacancy-viewer .ql-editor ol {
+            margin: 0 0 0.75rem;
+            padding-left: 1.5rem;
+        }
+
         #vacancy-viewer .ql-editor li {
-            line-height: 1;
-            margin: 0;
+            line-height: 1.4;
+            margin: 0.25rem 0;
+        }
+
+        #vacancy-viewer .ql-editor h1,
+        #vacancy-viewer .ql-editor h2,
+        #vacancy-viewer .ql-editor h3 {
+            margin: 0 0 0.75rem;
+            line-height: 1.2;
+            font-weight: 600;
         }
     </style>
 }
