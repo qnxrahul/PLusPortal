@@ -47,7 +47,7 @@ namespace Steer73.RockIT.EzekiaSyncLogs
             _logger = loggerFactory.CreateLogger("EzekiaSync");
         }
 
-        public virtual async Task LogAsync(EzekiaSyncLogEntry entry, CancellationToken cancellationToken = default)
+        public virtual async Task<Guid> LogAsync(EzekiaSyncLogEntry entry, CancellationToken cancellationToken = default)
         {
             Check.NotNull(entry, nameof(entry));
 
@@ -92,6 +92,8 @@ namespace Steer73.RockIT.EzekiaSyncLogs
             {
                 _logger.LogWarning("Ezekia sync failed {@State} Error:{Error}", logState, entry.ErrorMessage);
             }
+
+            return log.Id;
         }
     }
 }

@@ -265,6 +265,7 @@ namespace Steer73.RockIT.Domain.External
                     _auditingManager.Current.Log.ExecutionDuration = (int)stopWatch.ElapsedMilliseconds;
                     _auditingManager.Current.Log.HttpStatusCode = (int)HttpStatusCode.OK;
 
+                    await _syncLogManager.LogAsync(logEntry, cancellationToken);
                     syncResult = true;
 
                     _logger.LogInformation("Successfully sent JobApplication:{JobApplicationId} data into Ezekia", jobApplicationId);
@@ -282,18 +283,22 @@ namespace Steer73.RockIT.Domain.External
                     _auditingManager.Current.Log.ExecutionDuration = (int)stopWatch.ElapsedMilliseconds;
                     _auditingManager?.Current?.Log.Exceptions.Add(ex);
 
-                    throw;
+                    var logId = await _syncLogManager.LogAsync(logEntry, cancellationToken);
+                    throw new EzekiaSyncException("Failed to send applicant data to Ezekia.", logId, logEntry.Timestamp, ex);
                 }
                 finally
                 {
                     jobApplication.SyncStatusUpdate = DateTime.UtcNow;
                     jobApplication.SyncStatus = syncResult ? Enums.SyncStatus.Synced : Enums.SyncStatus.Error;
-                    jobApplication.ExternalRefId = ezekiaJobApplicationId;
+
+                    if (syncResult && ezekiaJobApplicationId.HasValue)
+                    {
+                        jobApplication.ExternalRefId = ezekiaJobApplicationId.Value;
+                    }
 
                     await _jobApplicationRepository.UpdateAsync(entity: jobApplication, cancellationToken: cancellationToken);
                     _logger.LogInformation("Updated JobApplication:{JobApplicationId} sync status as {SyncStatus}", jobApplicationId, jobApplication.SyncStatus);
 
-                    await _syncLogManager.LogAsync(logEntry, cancellationToken);
                     await auditingScope.SaveAsync();
                 }
             }
@@ -738,6 +743,7 @@ namespace Steer73.RockIT.Domain.External
                     _auditingManager.Current.Log.ExecutionDuration = (int)stopWatch.ElapsedMilliseconds;
                     _auditingManager.Current.Log.HttpStatusCode = (int)HttpStatusCode.OK;
 
+                    await _syncLogManager.LogAsync(logEntry, cancellationToken);
                     syncResult = true;
                     _logger.LogInformation("Successfully synced Vacancy:{VacancyId} to Ezekia", vacancyId);
                 }
@@ -754,17 +760,23 @@ namespace Steer73.RockIT.Domain.External
                     _auditingManager.Current.Log.ExecutionDuration = (int)stopWatch.ElapsedMilliseconds;
                     _auditingManager.Current.Log.Exceptions.Add(ex);
                     _logger.LogInformation("Error when sending Vacancy:{VacancyId} data into Ezekia", vacancyId);
-                    throw;
+
+                    var logId = await _syncLogManager.LogAsync(logEntry, cancellationToken);
+                    throw new EzekiaSyncException("Failed to send vacancy data to Ezekia.", logId, logEntry.Timestamp, ex);
                 }
                 finally
                 {
                     vacancy.SyncStatusUpdate = DateTime.UtcNow;
                     vacancy.SyncStatus = syncResult ? Enums.SyncStatus.Synced : Enums.SyncStatus.Error;
 
+                    if (syncResult && ezekiaVacancyId.HasValue)
+                    {
+                        vacancy.ExternalRefId = ezekiaVacancyId.Value;
+                    }
+
                     await _vacancyRepository.UpdateAsync(vacancy, cancellationToken: cancellationToken);
                     _logger.LogInformation("Updated Vacancy:{VacancyId} sync status as {SyncStatus}", vacancyId, vacancy.SyncStatus);
 
-                    await _syncLogManager.LogAsync(logEntry, cancellationToken);
                     await auditingScope.SaveAsync();
                 }
             }
@@ -882,6 +894,24 @@ namespace Steer73.RockIT.Domain.External
                 var vacancy = await _vacancyRepository.GetAsync(jobApplication.VacancyId, cancellationToken: cancellationToken);
 
                 IReadOnlyCollection<DocumentDto> documents = [];
+                var correlationId = Guid.NewGuid().ToString();
+
+                var logEntry = new EzekiaSyncLogEntry
+                {
+                    EntityType = "JobApplicationDocument",
+                    EntityId = jobApplicationId,
+                    Operation = "SendApplicantDocuments",
+                    Status = "Pending",
+                    CorrelationId = correlationId,
+                    AdditionalMetadata = SerializeForLog(new
+                    {
+                        jobApplication.CVUrl,
+                        jobApplication.CoverLetterUrl,
+                        jobApplication.AdditionalDocumentUrl
+                    })
+                };
+
+                _auditingManager.Current.Log.CorrelationId = correlationId;
 
                 try
                 {
@@ -897,6 +927,19 @@ namespace Steer73.RockIT.Domain.External
                             documents,
                             cancellationToken);
                     }
+
+                    logEntry.Status = "Success";
+                    logEntry.RequestPayload = SerializeForLog(new
+                    {
+                        Files = documents.Select(d => d.FileName).ToArray()
+                    });
+                    logEntry.ResponsePayload = SerializeForLog(new
+                    {
+                        Action = "UploadDocuments",
+                        Count = documents.Count
+                    });
+
+                    await _syncLogManager.LogAsync(logEntry, cancellationToken);
 
                     stopWatch.Stop();
 
@@ -919,7 +962,12 @@ namespace Steer73.RockIT.Domain.External
                     var fileNames = string.Join(", ", documents.Select(d => d.FileName).ToArray());
                     _logger.LogInformation("Error when sending documents:{fileNames} for job application:{jobApplicationId} to Ezekia", fileNames, jobApplicationId);
 
-                    throw;
+                    logEntry.Status = "Error";
+                    logEntry.ErrorMessage = ex.Message;
+                    logEntry.ErrorStackTrace = ex.ToString();
+                    var logId = await _syncLogManager.LogAsync(logEntry, cancellationToken);
+
+                    throw new EzekiaSyncException("Failed to send applicant documents to Ezekia.", logId, logEntry.Timestamp, ex);
                 }
                 finally
                 {
