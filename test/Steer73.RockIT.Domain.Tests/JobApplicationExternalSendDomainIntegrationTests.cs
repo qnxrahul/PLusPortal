@@ -1,4 +1,4 @@
-﻿using EzekiaCRM;
+using EzekiaCRM;
 using Microsoft.Extensions.Logging;
 using NSubstitute;
 using NSubstitute.ExceptionExtensions;
@@ -6,6 +6,7 @@ using Shouldly;
 using Steer73.RockIT.AppFileDescriptors;
 using Steer73.RockIT.Companies;
 using Steer73.RockIT.Domain.External;
+using Steer73.RockIT.EzekiaSyncLogs;
 using Steer73.RockIT.JobApplications;
 using Steer73.RockIT.Vacancies;
 using System;
@@ -19,6 +20,7 @@ using Volo.Abp.BlobStoring;
 using Volo.Abp.Domain.Repositories;
 using Volo.Abp.Modularity;
 using Volo.Abp.Uow;
+using Volo.Abp.Identity;
 using Xunit;
 using static Steer73.RockIT.Permissions.RockITSharedPermissions;
 
@@ -42,6 +44,8 @@ namespace Steer73.RockIT
         private readonly IRepository<AppFileDescriptor, Guid> _appFileDescriptorRepository;
         private readonly IBlobContainer<JobApplicantContainer> _jobApplicantContainer;
         private readonly IBlobContainer<VacancyFileContainer> _vacancyContainer;
+        private readonly IIdentityUserRepository _identityUserRepository;
+        private readonly EzekiaSyncLogManager _ezekiaSyncLogManager;
 
         private readonly IClient _ezekiaClientFakeOkResult;
         private readonly IClient _ezekiaClientFakeErrorResult;
@@ -58,6 +62,8 @@ namespace Steer73.RockIT
             _appFileDescriptorRepository = GetRequiredService<IRepository<AppFileDescriptor, Guid>>();
             _jobApplicantContainer = GetRequiredService<IBlobContainer<JobApplicantContainer>>();
             _vacancyContainer = GetRequiredService<IBlobContainer<VacancyFileContainer>>();
+            _identityUserRepository = GetRequiredService<IIdentityUserRepository>();
+            _ezekiaSyncLogManager = GetRequiredService<EzekiaSyncLogManager>();
             _logger = Substitute.For<ILogger<ExternalCompanyService>>();
             _ezekiaClientFakeOkResult = Substitute.For<IClient>();
             _ezekiaClientFakeOkResult.CompaniesGetAsync(
@@ -127,6 +133,33 @@ namespace Steer73.RockIT
                          }
                      ]
                 }));
+            var identityUser = _identityUserRepository.GetAsync(Domain.Tests.TestData.UserId).GetAwaiter().GetResult();
+            var ownerLookupResponse = new Response85
+            {
+                Data = new List<Researcher>
+                {
+                    new()
+                    {
+                        Id = 123456,
+                        Email = identityUser.Email,
+                        FirstName = identityUser.Name,
+                        LastName = identityUser.Surname,
+                        FullName = $"{identityUser.Name} {identityUser.Surname}"
+                    }
+                }
+            };
+            _ezekiaClientFakeOkResult.SearchUsersAsync(
+                Arg.Any<string>(),
+                Arg.Any<int?>(),
+                Arg.Any<int?>(),
+                Arg.Any<CancellationToken>())
+                .Returns(System.Threading.Tasks.Task.FromResult(ownerLookupResponse));
+            _ezekiaClientFakeErrorResult.SearchUsersAsync(
+                Arg.Any<string>(),
+                Arg.Any<int?>(),
+                Arg.Any<int?>(),
+                Arg.Any<CancellationToken>())
+                .Returns(System.Threading.Tasks.Task.FromResult(ownerLookupResponse));
         }
 
         [Fact]
@@ -176,7 +209,9 @@ namespace Steer73.RockIT
                 _logger,
                 _appFileDescriptorRepository,
                 _jobApplicantContainer,
-                _vacancyContainer);
+                _vacancyContainer,
+                _identityUserRepository,
+                _ezekiaSyncLogManager);
             var jobApplicationInit = await _jobApplicationRepository.GetAsync(Domain.Tests.TestData.JobApplicationId);
             ApiException? exception = null;
 
@@ -259,7 +294,9 @@ namespace Steer73.RockIT
                 _logger,
                 _appFileDescriptorRepository,
                 _jobApplicantContainer,
-                _vacancyContainer);
+                _vacancyContainer,
+                _identityUserRepository,
+                _ezekiaSyncLogManager);
             var jobApplicationInit = await _jobApplicationRepository.GetAsync(Domain.Tests.TestData.JobApplicationId);
 
             //action
@@ -364,7 +401,9 @@ namespace Steer73.RockIT
                 _logger,
                 _appFileDescriptorRepository,
                 _jobApplicantContainer,
-                _vacancyContainer);
+                _vacancyContainer,
+                _identityUserRepository,
+                _ezekiaSyncLogManager);
             var jobApplicationInit = await _jobApplicationRepository.GetAsync(Domain.Tests.TestData.JobApplicationId);
 
             //action
