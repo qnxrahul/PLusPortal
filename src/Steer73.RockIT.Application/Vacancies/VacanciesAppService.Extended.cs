@@ -4,6 +4,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Steer73.RockIT.JobApplications;
 using Steer73.RockIT.JobApplications.External;
+using Steer73.RockIT.JobAlerts;
 using Steer73.RockIT.MediaSources;
 using Steer73.RockIT.Permissions;
 using Steer73.RockIT.RoleTypes;
@@ -182,7 +183,26 @@ namespace Steer73.RockIT.Vacancies
                 await _backgroundJobManager.EnqueueAsync(
                     documentSendingArgs,
                     BackgroundJobPriority.Normal);
+
+                if (documentSendingArgs.ShouldUpateBrochure)
+                {
+                    await _backgroundJobManager.EnqueueAsync(
+                        new JobAlertNotificationJobArgs
+                        {
+                            VacancyId = result.Id,
+                            NotificationType = JobAlertNotificationType.BrochurePublished
+                        },
+                        BackgroundJobPriority.Low);
+                }
             }
+
+            await _backgroundJobManager.EnqueueAsync(
+                new JobAlertNotificationJobArgs
+                {
+                    VacancyId = result.Id,
+                    NotificationType = JobAlertNotificationType.RoleCreated
+                },
+                BackgroundJobPriority.BelowNormal);
            
             return result;
         }
@@ -206,6 +226,17 @@ namespace Steer73.RockIT.Vacancies
             var result = await base.UpdateAsync(id, input);
             await _vacancyMediaSourceRepository.AddOrUpdateVacancyMediaSources(id, input.MediaSourceIds!);
             await _vacancyRoleTypeRepository.AddOrUpdateVacancyRoleTypes(id, input.RoleTypeIds);
+
+            if (documentSendingArgs.ShouldUpateBrochure)
+            {
+                await _backgroundJobManager.EnqueueAsync(
+                    new JobAlertNotificationJobArgs
+                    {
+                        VacancyId = vacancy.Id,
+                        NotificationType = JobAlertNotificationType.BrochurePublished
+                    },
+                    BackgroundJobPriority.Low);
+            }
          
             return result;
         }
