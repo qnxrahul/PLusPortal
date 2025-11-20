@@ -10,7 +10,7 @@ using Steer73.RockIT.PracticeAreas;
 using Steer73.RockIT.PracticeGroups;
 using Steer73.RockIT.Vacancies;
 using Steer73.RockIT.Web.Controllers;
-// using Steer73.RockIT.Web.Pages.Account.Components.ProfileManagementGroup.PersonalInfo; // removed for no-auth
+using Steer73.RockIT.Web.Pages.Account.Components.ProfileManagementGroup.PersonalInfo;
 using Steer73.RockIT.Web.Pages.Companies;
 using Steer73.RockIT.Web.Pages.DiversityDatas;
 using Steer73.RockIT.Web.Pages.DiversityFormResponses;
@@ -21,7 +21,7 @@ using Steer73.RockIT.Web.Pages.PracticeAreas;
 using Steer73.RockIT.Web.Pages.PracticeGroups;
 using Steer73.RockIT.Web.Pages.Vacancies;
 using System;
-// using Volo.Abp.Account; // removed for no-auth
+using Volo.Abp.Account;
 using Volo.Abp.AutoMapper;
 using Volo.Abp.Identity;
 using static Steer73.RockIT.Web.Pages.VacancyMoreInfoModel;
@@ -88,16 +88,18 @@ public class RockITWebAutoMapperProfile : Profile
 		CreateMap<BrochureSubscription, BrochureSubscriptionDto>();
 		CreateMap<BrochureSubscriptionViewModel, BrochureSubscriptionCreateDto>();
 
-        //CreateMap<Pages.Identity.Users.CustomCreateModalModel.CustomUserInfoViewModel, IdentityUserCreateDto>()
-        //    .MapExtraProperties();
+        CreateMap<Pages.Identity.Users.CustomCreateModalModel.CustomUserInfoViewModel, IdentityUserCreateDto>()
+            .MapExtraProperties();
 
-        //CreateMap<IdentityUserDto, Pages.Identity.Users.CustomEditModalModel.CustomUserInfoViewModel>()
-        //    .MapExtraProperties();
+        CreateMap<IdentityUserDto, Pages.Identity.Users.CustomEditModalModel.CustomUserInfoViewModel>()
+            .MapExtraProperties();
 
-        //CreateMap<Pages.Identity.Users.CustomEditModalModel.CustomUserInfoViewModel, IdentityUserUpdateDto>()
-        //    .MapExtraProperties();
+        CreateMap<Pages.Identity.Users.CustomEditModalModel.CustomUserInfoViewModel, IdentityUserUpdateDto>()
+            .MapExtraProperties();
 
-        // removed account profile mappings for no-auth
+        CreateMap<ProfileDto, CustomAccountProfilePersonalInfoManagementGroupViewComponent.CustomPersonalInfoModel>()
+            .Ignore(x => x.TimeZoneItems)
+            .MapExtraProperties();
 
         CreateMap<JobApplicationModel, NewJobApplicationCompleteDto>()
             .Ignore(x => x.FileCv)

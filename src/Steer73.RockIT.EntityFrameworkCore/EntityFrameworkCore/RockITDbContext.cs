@@ -10,6 +10,7 @@ using Steer73.RockIT.PracticeGroups;
 using Steer73.RockIT.Vacancies;
 using Steer73.RockIT.BrochureSubscriptions;
 using Steer73.RockIT.MediaSources;
+using Volo.Abp.AuditLogging.EntityFrameworkCore;
 using Volo.Abp.BackgroundJobs.EntityFrameworkCore;
 using Volo.Abp.BlobStoring.Database.EntityFrameworkCore;
 using Volo.Abp.Data;
@@ -17,23 +18,31 @@ using Volo.Abp.DependencyInjection;
 using Volo.Abp.EntityFrameworkCore;
 using Volo.Abp.EntityFrameworkCore.Modeling;
 using Volo.Abp.FeatureManagement.EntityFrameworkCore;
+using Volo.Abp.Gdpr;
 using Volo.Abp.Identity;
 using Volo.Abp.Identity.EntityFrameworkCore;
-// using Volo.Abp.OpenIddict.EntityFrameworkCore; // removed for OSS/no-auth
+using Volo.Abp.LanguageManagement.EntityFrameworkCore;
+using Volo.Abp.OpenIddict.EntityFrameworkCore;
 using Volo.Abp.PermissionManagement.EntityFrameworkCore;
 using Volo.Abp.SettingManagement.EntityFrameworkCore;
-// using Volo.Saas.*; // removed for OSS
+using Volo.Abp.TextTemplateManagement.EntityFrameworkCore;
+using Volo.Saas.Editions;
+using Volo.Saas.EntityFrameworkCore;
+using Volo.Saas.Tenants;
 using Steer73.RockIT.Enums;
 using System;
 using Steer73.RockIT.RoleTypes;
+using Steer73.RockIT.EzekiaSyncLogs;
 
 namespace Steer73.RockIT.EntityFrameworkCore;
 
-[ReplaceDbContext(typeof(IIdentityDbContext))]
+[ReplaceDbContext(typeof(IIdentityProDbContext))]
+[ReplaceDbContext(typeof(ISaasDbContext))]
 [ConnectionStringName("Default")]
 public class RockITDbContext :
     AbpDbContext<RockITDbContext>,
-    IIdentityDbContext
+    IIdentityProDbContext,
+    ISaasDbContext
 {
     public DbSet<DiversityFormResponse> DiversityFormResponses { get; set; } = null!;
     public DbSet<JobFormResponse> JobFormResponses { get; set; } = null!;
@@ -51,6 +60,7 @@ public class RockITDbContext :
     public DbSet<VacancyMediaSource> VacancyMediaSources { get; set; } = null!;
     public DbSet<RoleType> RoleTypes { get; set; } = null!;
     public DbSet<VacancyRoleType> VacancyRoleTypes { get; set; } = null!;
+    public DbSet<EzekiaSyncLog> EzekiaSyncLogs { get; set; } = null!;
 
     #region Entities from the modules
 
@@ -65,7 +75,7 @@ public class RockITDbContext :
      * uses this DbContext on runtime. Otherwise, it will use its own DbContext class.
      */
 
-    // Identity (OSS)
+    // Identity
     public DbSet<IdentityUser> Users { get; set; }
     public DbSet<IdentityRole> Roles { get; set; }
     public DbSet<IdentityClaimType> ClaimTypes { get; set; }
@@ -74,6 +84,11 @@ public class RockITDbContext :
     public DbSet<IdentityLinkUser> LinkUsers { get; set; }
     public DbSet<IdentityUserDelegation> UserDelegations { get; set; }
     public DbSet<IdentitySession> Sessions { get; set; }
+
+    // SaaS
+    public DbSet<Tenant> Tenants { get; set; }
+    public DbSet<Edition> Editions { get; set; }
+    public DbSet<TenantConnectionString> TenantConnectionStrings { get; set; }
 
     #endregion
 
@@ -92,15 +107,15 @@ public class RockITDbContext :
         builder.ConfigurePermissionManagement();
         builder.ConfigureSettingManagement();
         builder.ConfigureBackgroundJobs();
-       // builder.ConfigureAuditLogging();
-        builder.ConfigureIdentity();
-        // OpenIddict removed
+        builder.ConfigureAuditLogging();
+        builder.ConfigureIdentityPro();
+        builder.ConfigureOpenIddictPro();
         builder.ConfigureFeatureManagement();
-        //builder.ConfigureLanguageManagement();
-        // SaaS removed
-       // builder.ConfigureTextTemplateManagement();
+        builder.ConfigureLanguageManagement();
+        builder.ConfigureSaas();
+        builder.ConfigureTextTemplateManagement();
         builder.ConfigureBlobStoring();
-        //builder.ConfigureGdpr();
+        builder.ConfigureGdpr();
 
         /* Configure your own tables/entities inside here */
 
@@ -142,6 +157,26 @@ public class RockITDbContext :
                 b.Property(x => x.Name).HasColumnName(nameof(PracticeArea.Name)).IsRequired().HasMaxLength(PracticeAreaConsts.NameMaxLength);
                 b.Property(x => x.IsActive).HasColumnName(nameof(PracticeArea.IsActive));
                 b.HasOne<PracticeGroup>().WithMany(x => x.PracticeAreas).HasForeignKey(x => x.PracticeGroupId).IsRequired().OnDelete(DeleteBehavior.Cascade);
+            });
+
+            builder.Entity<EzekiaSyncLog>(b =>
+            {
+                b.ToTable(RockITConsts.DbTablePrefix + "EzekiaSyncLogs", RockITConsts.DbSchema);
+                b.ConfigureByConvention();
+                b.Property(x => x.EntityType).IsRequired().HasMaxLength(EzekiaSyncLogConsts.EntityTypeMaxLength);
+                b.Property(x => x.Operation).IsRequired().HasMaxLength(EzekiaSyncLogConsts.OperationMaxLength);
+                b.Property(x => x.Status).IsRequired().HasMaxLength(EzekiaSyncLogConsts.StatusMaxLength);
+                b.Property(x => x.CorrelationId).HasMaxLength(EzekiaSyncLogConsts.CorrelationIdMaxLength);
+                b.Property(x => x.ExternalSystemId).HasMaxLength(EzekiaSyncLogConsts.ExternalSystemIdMaxLength);
+                b.Property(x => x.OwnerName).HasMaxLength(EzekiaSyncLogConsts.OwnerNameMaxLength);
+                b.Property(x => x.OwnerEmail).HasMaxLength(EzekiaSyncLogConsts.OwnerEmailMaxLength);
+                b.Property(x => x.RequestPayload).HasMaxLength(EzekiaSyncLogConsts.RequestPayloadMaxLength);
+                b.Property(x => x.ResponsePayload).HasMaxLength(EzekiaSyncLogConsts.ResponsePayloadMaxLength);
+                b.Property(x => x.ErrorMessage).HasMaxLength(EzekiaSyncLogConsts.ErrorMessageMaxLength);
+                b.Property(x => x.ErrorStackTrace).HasMaxLength(EzekiaSyncLogConsts.ErrorStackTraceMaxLength);
+                b.Property(x => x.AdditionalMetadata).HasMaxLength(EzekiaSyncLogConsts.AdditionalMetadataMaxLength);
+                b.HasIndex(x => new { x.EntityType, x.EntityId });
+                b.HasIndex(x => x.Timestamp);
             });
 
             builder.Entity<FormDefinition>(b =>

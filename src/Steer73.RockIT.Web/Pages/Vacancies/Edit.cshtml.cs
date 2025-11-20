@@ -62,9 +62,8 @@ public class EditModel : RockITPageModel
 
     protected IVacanciesAppService _vacanciesAppService;
     protected IFormDefinitionsAppService _formDefinitionsAppService;
-    private readonly IConfiguration _configuration;
-
     public string VacancyDetailUrl { get; set; } = string.Empty;
+    private readonly IConfiguration _configuration;
 
     public EditModel(
         IVacanciesAppService vacanciesAppService,
@@ -101,14 +100,13 @@ public class EditModel : RockITPageModel
         Input = ObjectMapper.Map<VacancyDto, VacancyUpdateInputModel>(vacancyWithNavigationPropertiesDto.Vacancy);
         BrochureLastUpdatedAt = vacancyWithNavigationPropertiesDto.Vacancy.BrochureLastUpdatedAt;
 
-        // Build public vacancy detail URL for display and copy
-        var baseUrl = _configuration["App1:PortalBaseUrl"]?.TrimEnd('/');
-        VacancyDetailUrl = string.IsNullOrWhiteSpace(baseUrl) 
-            ? $"/VacancyDetail/{Id}"
-            : $"{baseUrl}/VacancyDetail/{Id}";
-
 		var vacancyFormDefinitions = await _formDefinitionsAppService.GetListAsync(new GetFormDefinitionsInput { CompanyId = vacancyWithNavigationPropertiesDto.Company.Id });
         var allowedFromDefinitions = vacancyFormDefinitions.Items.Select(x => x.FormDefinition.Id).ToArray();
+        // Build public vacancy detail URL for display and copy
+        var baseUrl = _configuration["App1:PortalBaseUrl"]?.TrimEnd('/');
+        VacancyDetailUrl = string.IsNullOrWhiteSpace(baseUrl)
+            ? $"/VacancyDetail/{Id}"
+            : $"{baseUrl}/VacancyDetail/{Id}";
 
         IdentityUserLookupListRequired.AddRange((
             await _vacanciesAppService.GetIdentityUserLookupAsync(new LookupRequestDto
@@ -153,7 +151,7 @@ public class EditModel : RockITPageModel
         SelectedPracticeGroups = vacancyWithNavigationPropertiesDto.Vacancy.Groups;
         SelectedContributors = vacancyWithNavigationPropertiesDto.Vacancy.Contributors;
         SelectedCompany = vacancyWithNavigationPropertiesDto.Company;
-        ViewData["EzekiaIDDisplayName"] = vacancyWithNavigationPropertiesDto.Vacancy.ExternalRefId.ToString();
+        ViewData["EzekiaIDDisplayName"] = vacancyWithNavigationPropertiesDto.Vacancy.ProjectId ?? string.Empty;
     }
 }
 

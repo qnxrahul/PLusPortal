@@ -1,53 +1,45 @@
-using Ganss.Xss;
-using System.Collections.Generic;
+﻿
 
 namespace Steer73.RockIT.Web.Utilities
 {
+    using Ganss.Xss;
+
     public static class Helpers
     {
         public static string SanitizeDescription(string input)
         {
-            // Configure sanitizer to preserve Quill-generated markup (links, lists, indents)
             var sanitizer = new HtmlSanitizer();
 
-            // Allow tags commonly produced by our Quill configuration
-            var tagsToAllow = new[]
-            {
-                "a", "p", "br", "strong", "em", "u", "s", "code", "pre",
-                "ol", "ul", "li", "h1", "h2", "h3", "blockquote", "span"
-            };
+            var tagsToAllow = new[] { "p", "br", "strong", "em", "u", "ol", "ul", "li", "a", "span", "blockquote" };
             foreach (var tag in tagsToAllow)
-            {
                 sanitizer.AllowedTags.Add(tag);
-            }
 
-            // Allow attributes needed for links and Quill classes/metadata
-            var attributesToAllow = new[] { "href", "target", "rel", "class", "style", "title", "data-list", "data-indent", "data-checked", "dir" };
+            var attributesToAllow = new[] { "href", "target", "rel", "class" };
             foreach (var attr in attributesToAllow)
-            {
                 sanitizer.AllowedAttributes.Add(attr);
-            }
 
-            // Allow mail and telephone links
             sanitizer.AllowedSchemes.Add("mailto");
             sanitizer.AllowedSchemes.Add("tel");
 
-            // Whitelist Quill CSS classes used for indentation/alignment
-            var allowedClasses = new List<string>();
-            for (var i = 1; i <= 10; i++)
-            {
-                allowedClasses.Add($"ql-indent-{i}");
-            }
-            allowedClasses.AddRange(new[]
-            {
-                "ql-align-center", "ql-align-right", "ql-align-justify"
-            });
-            foreach (var cls in allowedClasses)
-            {
-                sanitizer.AllowedClasses.Add(cls);
-            }
+            for (int i = 1; i <= 10; i++)
+                sanitizer.AllowedClasses.Add($"ql-indent-{i}");
 
-            return sanitizer.Sanitize(input ?? string.Empty);
+            sanitizer.AllowedClasses.Add("ql-align-center");
+            sanitizer.AllowedClasses.Add("ql-align-right");
+            sanitizer.AllowedClasses.Add("ql-align-justify");
+
+            var sanitized = sanitizer.Sanitize(input ?? string.Empty);
+
+            // Remove empty <span contenteditable="false"></span>
+            sanitized = System.Text.RegularExpressions.Regex.Replace(
+                sanitized,
+                @"<span contenteditable=""false""></span>",
+                string.Empty,
+                System.Text.RegularExpressions.RegexOptions.IgnoreCase
+            );
+
+            return sanitized;
         }
+
     }
 }

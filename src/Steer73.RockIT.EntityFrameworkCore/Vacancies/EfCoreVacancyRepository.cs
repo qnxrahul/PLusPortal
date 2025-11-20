@@ -130,22 +130,18 @@ namespace Steer73.RockIT.Vacancies
             VacancyStatus? status = null,
             bool? showContributionVacancies = null)
         {
-            // Narrow global search to on-screen fields and add ProjectId/EzekiaId and Company.Name
-            {
-                var _ft = filterText;
-                int _ezIdVal = 0;
-                var _ftIsInt = !string.IsNullOrWhiteSpace(_ft) && int.TryParse(_ft, out _ezIdVal);
-                query = query.WhereIf(!string.IsNullOrWhiteSpace(_ft), e =>
-                    (e.Vacancy.ProjectId != null && e.Vacancy.ProjectId.Contains(_ft!))
-                    || (_ftIsInt && e.Vacancy.ExternalRefId.HasValue && e.Vacancy.ExternalRefId.Value == _ezIdVal)
-                    || e.Vacancy.Title!.Contains(_ft!)
-                    || e.Vacancy.Reference!.Contains(_ft!)
-                    || e.Vacancy.Role!.Contains(_ft!)
-                    || (e.Company != null && e.Company.Name!.Contains(_ft!))
-                    || e.Vacancy.Location!.Contains(_ft!)
-                );
-            }
-               
+            query //|| e.Vacancy.Region!.Contains(filterText!) || e.Vacancy.RoleType!.Contains(filterText!)
+               = query.WhereIf(
+                   !string.IsNullOrWhiteSpace(filterText),
+                   e => e.Vacancy.Title!.Contains(filterText!)
+                        || e.Vacancy.Reference!.Contains(filterText!)
+                        || e.Vacancy.Role!.Contains(filterText!)
+                        || e.Vacancy.Benefits!.Contains(filterText!)
+                        || e.Vacancy.Location!.Contains(filterText!)
+                        || e.Vacancy.Salary!.Contains(filterText!)
+                        || e.Company!.Name!.Contains(filterText!)
+                        || e.Vacancy.ProjectId!.Contains(filterText!)
+               )
                    .WhereIf(!string.IsNullOrWhiteSpace(title), e => e.Vacancy.Title.Contains(title))
                    .WhereIf(!string.IsNullOrWhiteSpace(reference), e => e.Vacancy.Reference.Contains(reference))
                    .WhereIf(region.HasValue, e => EF.Property<List<VacancyRegion>>(e.Vacancy, "VacancyRegions").Any(vr => vr.Region == region))
@@ -291,15 +287,16 @@ namespace Steer73.RockIT.Vacancies
             bool? flagHideVacancy = null,
             Guid? companyId = null)
         {
-            return query // screen-oriented search only + project/ezekia id
-                    .WhereIf(!string.IsNullOrWhiteSpace(filterText), e =>
-                        (e.ProjectId != null && e.ProjectId.Contains(filterText!))
-                        || (e.ExternalRefId.HasValue && filterText!.All(char.IsDigit) && e.ExternalRefId.Value == int.Parse(filterText))
-                        || e.Title!.Contains(filterText!)
-                        || e.Reference!.Contains(filterText!)
-                        || e.Role!.Contains(filterText!)
-                        || e.Location!.Contains(filterText!)
-                        || e.Salary!.Contains(filterText!)
+            return query //  || e.Region!.Contains(filterText!) || e.RoleType!.Contains(filterText!)
+                    .WhereIf(
+                        !string.IsNullOrWhiteSpace(filterText),
+                        e => e.Title!.Contains(filterText!)
+                             || e.Reference!.Contains(filterText!)
+                             || e.Role!.Contains(filterText!)
+                             || e.Benefits!.Contains(filterText!)
+                             || e.Location!.Contains(filterText!)
+                             || e.Salary!.Contains(filterText!)
+                             || e.ProjectId!.Contains(filterText!)
                     )
                     .WhereIf(!string.IsNullOrWhiteSpace(title), e => e.Title.Contains(title))
                     .WhereIf(!string.IsNullOrWhiteSpace(reference), e => e.Reference.Contains(reference))

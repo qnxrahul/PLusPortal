@@ -2,21 +2,23 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Steer73.RockIT.Localization;
 using Steer73.RockIT.MultiTenancy;
+using Volo.Abp.AuditLogging;
 using Volo.Abp.BackgroundJobs;
 using Volo.Abp.Emailing;
 using Volo.Abp.FeatureManagement;
 using Volo.Abp.Identity;
-//using Volo.Abp.LanguageManagement;
+using Volo.Abp.LanguageManagement;
 using Volo.Abp.Localization;
 using Volo.Abp.Modularity;
 using Volo.Abp.MultiTenancy;
 using Volo.Abp.PermissionManagement.Identity;
 using Volo.Abp.SettingManagement;
 using Volo.Abp.TextTemplateManagement;
-// using Volo.Saas; // removed for OSS
+using Volo.Saas;
 using Volo.Abp.BlobStoring.Database;
 using Volo.Abp.Caching;
-// using Volo.Abp.Commercial.SuiteTemplates; // removed for OSS
+using Volo.Abp.Commercial.SuiteTemplates;
+using Volo.Abp.Gdpr;
 using Volo.Abp.OpenIddict;
 using Volo.Abp.PermissionManagement.OpenIddict;
 
@@ -24,21 +26,21 @@ namespace Steer73.RockIT;
 
 [DependsOn(
     typeof(RockITDomainSharedModule),
-   // typeof(AbpAuditLoggingDomainModule),
+    typeof(AbpAuditLoggingDomainModule),
     typeof(AbpCachingModule),
     typeof(AbpBackgroundJobsDomainModule),
     typeof(AbpFeatureManagementDomainModule),
-    typeof(AbpIdentityDomainModule),
+    typeof(AbpIdentityProDomainModule),
     typeof(AbpPermissionManagementDomainIdentityModule),
-    // Remove Pro OpenIddict domain module for OSS
+    typeof(AbpOpenIddictProDomainModule),
     typeof(AbpPermissionManagementDomainOpenIddictModule),
     typeof(AbpSettingManagementDomainModule),
-    // Remove SaaS domain module for OSS
-   // typeof(TextTemplateManagementDomainModule),
-   // typeof(LanguageManagementDomainModule),
-    // Remove Commercial Suite Templates module for OSS
+    typeof(SaasDomainModule),
+    typeof(TextTemplateManagementDomainModule),
+    typeof(LanguageManagementDomainModule),
+    typeof(VoloAbpCommercialSuiteTemplatesModule),
     typeof(AbpEmailingModule),
-    //typeof(AbpGdprDomainModule),
+    typeof(AbpGdprDomainModule),
     typeof(BlobStoringDatabaseDomainModule)
     )]
 public class RockITDomainModule : AbpModule

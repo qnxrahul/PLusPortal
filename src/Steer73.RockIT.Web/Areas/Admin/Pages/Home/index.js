@@ -169,7 +169,7 @@ $(function () {
             data: "formDefinition1.name",
             defaultContent: ""
         },
-        { data: "vacancy.externalRefId" }
+        { data: "vacancy.projectId" }
     ];
 
 

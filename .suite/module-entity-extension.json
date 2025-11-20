@@ -1,7 +1,0 @@
-{
-  "Modules": [
-    {
-      "DomainProjectDllFileName": "MySampleModule.MyProject.Domain.dll"
-    }
-  ]
-}

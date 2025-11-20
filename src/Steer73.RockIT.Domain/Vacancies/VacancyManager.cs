@@ -32,7 +32,8 @@ namespace Steer73.RockIT.Vacancies
 
         public virtual async Task<Vacancy> CreateAsync(
         Guid companyId, Guid identityUserId, List<Guid> practiceGroupIds, Guid? vacancyFormDefinitionId, Guid? diversityFormDefinitionId, string title, string reference, IReadOnlyCollection<Region> regions, List<Guid> contributorIds, string description, DateOnly externalPostingDate, DateOnly closingDate, DateOnly expiringDate, bool showDiversity,bool flagHideVacancy, string? role = null, string? benefits = null, string? location = null, string? salary = null, string? formalInterviewDate = null, string? secondInterviewDate = null, Guid? brochureFileId = null, Guid? additionalFileId = null, string? linkedInUrl = null,
-        int? externalRefId = null)
+        int? externalRefId = null,
+        string? projectId = null)
         {
             Check.NotNull(companyId, nameof(companyId));
             Check.NotNull(identityUserId, nameof(identityUserId));
@@ -62,7 +63,8 @@ namespace Steer73.RockIT.Vacancies
              guid,
              companyId, identityUserId, practiceGroups, vacancyFormDefinitionId, diversityFormDefinitionId, title, reference, regions, vacancyContributors, description, externalPostingDate, closingDate, expiringDate, showDiversity,flagHideVacancy, role, benefits, location, salary, formalInterviewDate, secondInterviewDate, brochureFileId, additionalFileId, linkedInUrl,
              brochureLastUpdatedAt: brochureLastUpdatedAt,
-             externalRefId: externalRefId);
+             externalRefId: externalRefId,
+             projectId: projectId);
           
             return await _vacancyRepository.InsertAsync(vacancy);
         }

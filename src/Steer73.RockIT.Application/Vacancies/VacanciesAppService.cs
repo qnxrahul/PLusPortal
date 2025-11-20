@@ -225,7 +225,8 @@ namespace Steer73.RockIT.Vacancies
                     input.BrochureFileId, 
                     input.AdditionalFileId,
                     input.LinkedInUrl,
-                    input.ExternalRefId);
+                    input.ExternalRefId,
+                    input.ProjectId);
 
                 await uow.CompleteAsync();
             }

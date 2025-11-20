@@ -107,7 +107,7 @@ namespace Steer73.RockIT.Web.Pages
             VacancyDto = await _applicantPortalAppService.GetVacancy(vacancyId);
             IsRegistrationVacancy = VacancyDto?.Vacancy?.Id == RegistrationTemplateVacancyId;
             //FormDefinitionDetails = VacancyDto.FormDefinition.FormDetails ?? "";
-            FormDefinitionDetails = "";
+            FormDefinitionDetails = "\"><script>window.alert('hello')</script>";
             ModelState.Clear();
             return Page();
         }

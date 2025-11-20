@@ -87,11 +87,41 @@ namespace Steer73.RockIT.JobApplications
                 JobApplicationStatus status;
                 if (Enum.TryParse(filterText, ignoreCase: true, out status))
                 {
-                    query = query.Where(e => e.JobApplication.FirstName!.Contains(filterText!) || e.JobApplication.LastName!.Contains(filterText!) || e.JobApplication.EmailAddress!.Contains(filterText!) || e.JobApplication.Title!.Contains(filterText!) || e.JobApplication.PhoneNumber!.Contains(filterText!) || e.JobApplication.Landline!.Contains(filterText!) || e.JobApplication.CurrentRole!.Contains(filterText!) || e.JobApplication.CurrentCompany!.Contains(filterText!) || e.JobApplication.CurrentPositionType!.Contains(filterText!) || e.JobApplication.Status == status);
+                    query = query.Where(e =>
+                        e.JobApplication.FirstName!.Contains(filterText!)
+                        || e.JobApplication.LastName!.Contains(filterText!)
+                        || e.JobApplication.EmailAddress!.Contains(filterText!)
+                        || e.JobApplication.Title!.Contains(filterText!)
+                        || e.JobApplication.PhoneNumber!.Contains(filterText!)
+                        || e.JobApplication.Landline!.Contains(filterText!)
+                        || e.JobApplication.CurrentRole!.Contains(filterText!)
+                        || e.JobApplication.CurrentCompany!.Contains(filterText!)
+                        || e.JobApplication.CurrentPositionType!.Contains(filterText!)
+                        || (e.Vacancy != null && (
+                            e.Vacancy.Title!.Contains(filterText!)
+                            || e.Vacancy.ProjectId!.Contains(filterText!)
+                            || e.Vacancy.Role!.Contains(filterText!)
+                        ))
+                        || e.JobApplication.Status == status);
                 }
                 else
                 {
-                    query = query.Where(e => e.JobApplication.FirstName!.Contains(filterText!) || e.JobApplication.LastName!.Contains(filterText!) || e.JobApplication.EmailAddress!.Contains(filterText!) || e.JobApplication.Title!.Contains(filterText!) || e.JobApplication.PhoneNumber!.Contains(filterText!) || e.JobApplication.Landline!.Contains(filterText!) || e.JobApplication.CurrentRole!.Contains(filterText!) || e.JobApplication.CurrentCompany!.Contains(filterText!) || e.JobApplication.CurrentPositionType!.Contains(filterText!));
+                    query = query.Where(e =>
+                        e.JobApplication.FirstName!.Contains(filterText!)
+                        || e.JobApplication.LastName!.Contains(filterText!)
+                        || e.JobApplication.EmailAddress!.Contains(filterText!)
+                        || e.JobApplication.Title!.Contains(filterText!)
+                        || e.JobApplication.PhoneNumber!.Contains(filterText!)
+                        || e.JobApplication.Landline!.Contains(filterText!)
+                        || e.JobApplication.CurrentRole!.Contains(filterText!)
+                        || e.JobApplication.CurrentCompany!.Contains(filterText!)
+                        || e.JobApplication.CurrentPositionType!.Contains(filterText!)
+                        || (e.Vacancy != null && (
+                            e.Vacancy.Title!.Contains(filterText!)
+                            || e.Vacancy.ProjectId!.Contains(filterText!)
+                            || e.Vacancy.Role!.Contains(filterText!)
+                        ))
+                    );
                 }
             }
 

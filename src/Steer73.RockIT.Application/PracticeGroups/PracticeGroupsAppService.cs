@@ -35,7 +35,7 @@ namespace Steer73.RockIT.PracticeGroups
             };
         }
 
-        [AllowAnonymous]
+        [Authorize(RockITSharedPermissions.PracticeGroups.Default)]
         public virtual async Task<PracticeGroupDto> GetAsync(Guid id)
         {
             return ObjectMapper.Map<PracticeGroup, PracticeGroupDto>(await _practiceGroupRepository.GetAsync(id));

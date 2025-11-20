@@ -1,11 +1,14 @@
 using EzekiaCRM;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using Org.BouncyCastle.Asn1.Ocsp;
 using Steer73.RockIT.AppFileDescriptors;
 using Steer73.RockIT.Companies;
 using Steer73.RockIT.JobApplications;
 using Steer73.RockIT.Vacancies;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Data.Common;
 using System.Diagnostics;
@@ -20,6 +23,8 @@ using Volo.Abp.BlobStoring;
 using Volo.Abp.Domain.Repositories;
 using Volo.Abp.Domain.Services;
 using Volo.Abp.Uow;
+using Volo.Abp.Identity;
+using Steer73.RockIT.EzekiaSyncLogs;
 using static Steer73.RockIT.Permissions.RockITSharedPermissions;
 using Company = Steer73.RockIT.Companies.Company;
 using Task = System.Threading.Tasks.Task;
@@ -41,6 +46,9 @@ namespace Steer73.RockIT.Domain.External
         private IRepository<AppFileDescriptor, Guid> _appFileDescriptorRepository;
         private IBlobContainer<JobApplicantContainer> _jobApplicantContainer;
         private IBlobContainer<VacancyFileContainer> _vacancyContainer;
+        private readonly IIdentityUserRepository _identityUserRepository;
+        private readonly EzekiaSyncLogManager _syncLogManager;
+        private readonly ConcurrentDictionary<Guid, EzekiaOwnerInfo?> _ownerInfoCache = new();
 
         public ExternalCompanyService(
             ICompanyRepository companyRepository,
@@ -52,7 +60,9 @@ namespace Steer73.RockIT.Domain.External
             ILogger<ExternalCompanyService> logger,
             IRepository<AppFileDescriptor, Guid> appFileDescriptorRepository,
             IBlobContainer<JobApplicantContainer> jobApplicantContainer,
-            IBlobContainer<VacancyFileContainer> vacancyFileContainer)
+            IBlobContainer<VacancyFileContainer> vacancyFileContainer,
+            IIdentityUserRepository identityUserRepository,
+            EzekiaSyncLogManager syncLogManager)
         {
             _companyRepository = companyRepository;
             _ezekiaClient = ezekiaClient;
@@ -64,13 +74,13 @@ namespace Steer73.RockIT.Domain.External
             _vacancyRepository = vacancyRepository;
             _appFileDescriptorRepository = appFileDescriptorRepository;
             _vacancyContainer = vacancyFileContainer;
+            _identityUserRepository = identityUserRepository;
+            _syncLogManager = syncLogManager;
         }
 
 
 
-        public async Task SendApplicantDataAsync(
-    Guid jobApplicationId,
-    CancellationToken cancellationToken = default)
+        public async Task SendApplicantDataAsync(Guid jobApplicationId, CancellationToken cancellationToken = default)
         {
             var stopWatch = new Stopwatch();
             stopWatch.Start();
@@ -86,6 +96,27 @@ namespace Steer73.RockIT.Domain.External
             var company = await _companyRepository.GetAsync(id: vacancy.CompanyId, cancellationToken: cancellationToken);
             _logger.LogInformation("Fetched Company {CompanyId} from DB", company.Id);
 
+            var ownerInfo = await ResolveOwnerInfoAsync(vacancy.IdentityUserId, cancellationToken);
+            var correlationId = Guid.NewGuid().ToString();
+
+            var logEntry = new EzekiaSyncLogEntry
+            {
+                EntityType = "JobApplication",
+                EntityId = jobApplicationId,
+                Operation = "SendApplicantData",
+                Status = "Pending",
+                CorrelationId = correlationId,
+                OwnerId = ownerInfo?.Id,
+                OwnerName = ownerInfo?.FullName,
+                OwnerEmail = ownerInfo?.Email,
+                AdditionalMetadata = SerializeForLog(new
+                {
+                    VacancyExternalRefId = vacancy.ExternalRefId,
+                    company.ExternalRefId,
+                    jobApplication.EmailAddress
+                })
+            };
+
             var auditEntry = new AuditLogActionInfo
             {
                 ExecutionTime = DateTime.UtcNow,
@@ -98,8 +129,6 @@ namespace Steer73.RockIT.Domain.External
             auditEntry.ExtraProperties.Add(nameof(jobApplication.PhoneNumber), jobApplication.PhoneNumber ?? string.Empty);
             auditEntry.ExtraProperties.Add(nameof(jobApplication.Landline), jobApplication.Landline ?? string.Empty);
             auditEntry.ExtraProperties.Add(nameof(vacancy.Description), vacancy.Description ?? string.Empty);
-
-            // NULL GUARDS: Add after the above.
             auditEntry.ExtraProperties.Add(nameof(company.ExternalRefId), company.ExternalRefId);
             auditEntry.ExtraProperties.Add(nameof(company.Name), company.Name ?? string.Empty);
             auditEntry.ExtraProperties.Add(nameof(jobApplication.Title), jobApplication.Title ?? string.Empty);
@@ -118,12 +147,14 @@ namespace Steer73.RockIT.Domain.External
                 _auditingManager.Current.Log.ClientName = CompanyConsts.BackgroundWorkerLogUserName;
                 _auditingManager.Current.Log.ApplicationName = CompanyConsts.BackgroundWorkerLogApplicationName;
                 _auditingManager.Current.Log.UserId = Guid.NewGuid();
-                _auditingManager.Current.Log.CorrelationId = Guid.NewGuid().ToString();
+                _auditingManager.Current.Log.CorrelationId = correlationId;
                 _auditingManager.Current.Log.Comments = [CompanyConsts.BackgroundWorkerLogEntryComment];
                 _auditingManager.Current.Log.Actions.Add(auditEntry);
 
                 var syncResult = false;
                 int? ezekiaJobApplicationId = null;
+                PersonOperationSummary? createSummary = null;
+                PersonOperationSummary? updateSummary = null;
 
                 try
                 {
@@ -148,7 +179,7 @@ namespace Steer73.RockIT.Domain.External
                         fuzzy: null,
                         tags: null,
                         isCandidate: true,
-                        onCompanies: null, // Should this be true?
+                        onCompanies: null,
                         cancellationToken: cancellationToken);
 
                     var companiesTask = _ezekiaClient.CompaniesGetAsync(
@@ -186,18 +217,16 @@ namespace Steer73.RockIT.Domain.External
                         await SendVacancyDataAsync(vacancy.Id, cancellationToken);
                         vacancy = await _vacancyRepository.GetAsync(vacancy.Id, cancellationToken: cancellationToken);
                         _logger.LogInformation("Vacancy {VacancyId} ExternalRefId updated to {ExternalRefId}.", vacancy.Id, vacancy.ExternalRefId);
-
                     }
 
                     if (person is null)
                     {
                         _logger.LogInformation("Creating person in Ezekia for JobApplicationId: {JobApplicationId}", jobApplicationId);
-                        ezekiaJobApplicationId = await CreatePerson(jobApplication, vacancy, jobApplicationCompanyId, cancellationToken);
-
+                        createSummary = await CreatePerson(jobApplication, vacancy, jobApplicationCompanyId, ownerInfo, cancellationToken);
+                        ezekiaJobApplicationId = createSummary.PersonId;
 
                         if (ezekiaJobApplicationId.HasValue)
                         {
-                            // After creating, immediately fetch the person and update it.
                             _logger.LogInformation("Successfully created person in Ezekia with PersonId: {PersonId} for JobApplicationId: {JobApplicationId}", ezekiaJobApplicationId.Value, jobApplicationId);
                             _logger.LogInformation("Fetching newly created person from Ezekia for PersonId: {PersonId}", ezekiaJobApplicationId.Value);
 
@@ -205,7 +234,7 @@ namespace Steer73.RockIT.Domain.External
                             if (createdPerson?.Data != null)
                             {
                                 _logger.LogInformation("Fetched person successfully from Ezekia. Proceeding to UpdatePerson for PersonId: {PersonId}", createdPerson.Data.Id);
-                                await UpdatePerson(createdPerson.Data, jobApplication, vacancy, jobApplicationCompanyId, cancellationToken);
+                                updateSummary = await UpdatePerson(createdPerson.Data, jobApplication, vacancy, jobApplicationCompanyId, ownerInfo, cancellationToken);
                                 _logger.LogInformation("Completed UpdatePerson for newly created PersonId: {PersonId}", createdPerson.Data.Id);
                             }
                             else
@@ -213,26 +242,31 @@ namespace Steer73.RockIT.Domain.External
                                 _logger.LogWarning("Failed to retrieve newly created person from Ezekia for PersonId: {PersonId}", ezekiaJobApplicationId.Value);
                             }
                         }
-
                         else
                         {
                             _logger.LogWarning("Failed to create person in Ezekia for JobApplicationId: {JobApplicationId}", jobApplicationId);
                         }
-
                     }
                     else
                     {
                         _logger.LogInformation("Person already exists in Ezekia with PersonId: {PersonId} for JobApplicationId: {JobApplicationId}", person.Id, jobApplicationId);
                         ezekiaJobApplicationId = person.Id;
-                        await UpdatePerson(person, jobApplication, vacancy, jobApplicationCompanyId, cancellationToken);
+                        updateSummary = await UpdatePerson(person, jobApplication, vacancy, jobApplicationCompanyId, ownerInfo, cancellationToken);
                         _logger.LogInformation("Completed UpdatePerson for existing PersonId: {PersonId}", person.Id);
                     }
+
+                    logEntry.ExternalSystemId = ezekiaJobApplicationId?.ToString();
+                    logEntry.RequestPayload = CombinePayloads(createSummary?.RequestSummary, updateSummary?.RequestSummary);
+                    logEntry.ResponsePayload = CombinePayloads(createSummary?.ResponseSummary, updateSummary?.ResponseSummary);
+                    logEntry.AdditionalMetadata = CombinePayloads(logEntry.AdditionalMetadata, createSummary?.AdditionalMetadata, updateSummary?.AdditionalMetadata);
+                    logEntry.Status = "Success";
 
                     stopWatch.Stop();
                     auditEntry.ExecutionDuration = (int)stopWatch.Elapsed.TotalMilliseconds;
                     _auditingManager.Current.Log.ExecutionDuration = (int)stopWatch.ElapsedMilliseconds;
                     _auditingManager.Current.Log.HttpStatusCode = (int)HttpStatusCode.OK;
 
+                    await _syncLogManager.LogAsync(logEntry, cancellationToken);
                     syncResult = true;
 
                     _logger.LogInformation("Successfully sent JobApplication:{JobApplicationId} data into Ezekia", jobApplicationId);
@@ -242,17 +276,26 @@ namespace Steer73.RockIT.Domain.External
                     stopWatch.Stop();
                     _logger.LogError(ex, "Error occurred while sending JobApplication:{JobApplicationId} data into Ezekia", jobApplicationId);
 
+                    logEntry.Status = "Error";
+                    logEntry.ErrorMessage = ex.Message;
+                    logEntry.ErrorStackTrace = ex.ToString();
+
                     _auditingManager.Current.Log.HttpStatusCode = (int)HttpStatusCode.InternalServerError;
                     _auditingManager.Current.Log.ExecutionDuration = (int)stopWatch.ElapsedMilliseconds;
                     _auditingManager?.Current?.Log.Exceptions.Add(ex);
 
-                    throw;
+                    var logId = await _syncLogManager.LogAsync(logEntry, cancellationToken);
+                    throw new EzekiaSyncException("Failed to send applicant data to Ezekia.", logId, logEntry.Timestamp, ex);
                 }
                 finally
                 {
                     jobApplication.SyncStatusUpdate = DateTime.UtcNow;
                     jobApplication.SyncStatus = syncResult ? Enums.SyncStatus.Synced : Enums.SyncStatus.Error;
-                    jobApplication.ExternalRefId = ezekiaJobApplicationId;
+
+                    if (syncResult && ezekiaJobApplicationId.HasValue)
+                    {
+                        jobApplication.ExternalRefId = ezekiaJobApplicationId.Value;
+                    }
 
                     await _jobApplicationRepository.UpdateAsync(entity: jobApplication, cancellationToken: cancellationToken);
                     _logger.LogInformation("Updated JobApplication:{JobApplicationId} sync status as {SyncStatus}", jobApplicationId, jobApplication.SyncStatus);
@@ -561,21 +604,40 @@ namespace Steer73.RockIT.Domain.External
                 _auditingManager.Current.Log.ClientName = CompanyConsts.BackgroundWorkerLogUserName;
                 _auditingManager.Current.Log.ApplicationName = CompanyConsts.BackgroundWorkerLogApplicationName;
                 _auditingManager.Current.Log.UserId = Guid.NewGuid();
-                _auditingManager.Current.Log.CorrelationId = Guid.NewGuid().ToString();
+                var correlationId = Guid.NewGuid().ToString();
+                _auditingManager.Current.Log.CorrelationId = correlationId;
                 _auditingManager.Current.Log.Comments = [CompanyConsts.BackgroundWorkerLogEntryComment];
                 _auditingManager.Current.Log.Actions.Add(auditEntry);
 
-                var syncResult = false;
-                int? ezekiaVacancyId = null;
                 var vacancy = await _vacancyRepository.GetAsync(vacancyId, cancellationToken: cancellationToken);
                 var company = await _companyRepository.GetAsync(vacancy.CompanyId, cancellationToken: cancellationToken);
-                IEnumerable<field4>? fields = null;
+                var ownerInfo = await ResolveOwnerInfoAsync(vacancy.IdentityUserId, cancellationToken);
+
+                var logEntry = new EzekiaSyncLogEntry
+                {
+                    EntityType = "Vacancy",
+                    EntityId = vacancyId,
+                    Operation = "SendVacancyData",
+                    Status = "Pending",
+                    CorrelationId = correlationId,
+                    OwnerId = ownerInfo?.Id,
+                    OwnerName = ownerInfo?.FullName,
+                    OwnerEmail = ownerInfo?.Email,
+                    AdditionalMetadata = SerializeForLog(new
+                    {
+                        company.ExternalRefId,
+                        vacancy.ProjectId
+                    })
+                };
+
+                var syncResult = false;
+                int? ezekiaVacancyId = null;
 
                 try
                 {
-                    bool needsCreate = false;
+                    bool needsCreate = !vacancy.ExternalRefId.HasValue;
 
-                    if (vacancy.ExternalRefId.HasValue)
+                    if (!needsCreate)
                     {
                         try
                         {
@@ -590,10 +652,9 @@ namespace Steer73.RockIT.Domain.External
                             needsCreate = true;
                         }
                     }
-                    else
-                    {
-                        needsCreate = true;
-                    }
+
+                    object requestSummary;
+                    object responseSummary;
 
                     if (needsCreate)
                     {
@@ -606,12 +667,30 @@ namespace Steer73.RockIT.Domain.External
                             CompanyId = company.ExternalRefId?.ToString(),
                             Description = vacancy.Description,
                             StartDate = vacancy.ExternalPostingDate.ToString(ExternalDateFormat),
-                            EndDate = vacancy.ExpiringDate.ToString(ExternalDateFormat)
+                            EndDate = vacancy.ExpiringDate.ToString(ExternalDateFormat),
+                            OwnerId = ownerInfo?.Id
                         };
 
                         var createResponse = await _ezekiaClient.ProjectsPostAsync(null, createRequest, cancellationToken);
                         ezekiaVacancyId = createResponse.Data.Id;
                         vacancy.ExternalRefId = ezekiaVacancyId;
+
+                        requestSummary = new
+                        {
+                            Action = "Create",
+                            createRequest.Name,
+                            createRequest.CompanyId,
+                            createRequest.StartDate,
+                            createRequest.EndDate,
+                            createRequest.OwnerId
+                        };
+
+                        responseSummary = new
+                        {
+                            Action = "Create",
+                            ProjectId = createResponse.Data.Id,
+                            VacancyTitle = vacancy.Title
+                        };
                     }
                     else
                     {
@@ -624,12 +703,40 @@ namespace Steer73.RockIT.Domain.External
                             CompanyId = company.ExternalRefId?.ToString(),
                             Description = vacancy.Description,
                             StartDate = vacancy.ExternalPostingDate.ToString(ExternalDateFormat),
-                            EndDate = vacancy.ExpiringDate.ToString(ExternalDateFormat)
+                            EndDate = vacancy.ExpiringDate.ToString(ExternalDateFormat),
+                            OwnerId = ownerInfo?.Id
                         };
 
-                        var updateResponse = await _ezekiaClient.ProjectsPutAsync(fields, vacancy.ExternalRefId!.Value, updateRequest, cancellationToken);
+                        var updateResponse = await _ezekiaClient.ProjectsPutAsync(null, vacancy.ExternalRefId!.Value, updateRequest, cancellationToken);
                         ezekiaVacancyId = updateResponse.Data.Id;
+
+                        requestSummary = new
+                        {
+                            Action = "Update",
+                            updateRequest.Name,
+                            updateRequest.CompanyId,
+                            updateRequest.StartDate,
+                            updateRequest.EndDate,
+                            updateRequest.OwnerId
+                        };
+
+                        responseSummary = new
+                        {
+                            Action = "Update",
+                            ProjectId = updateResponse.Data.Id,
+                            VacancyTitle = vacancy.Title
+                        };
                     }
+
+                    logEntry.RequestPayload = SerializeForLog(requestSummary);
+                    logEntry.ResponsePayload = SerializeForLog(responseSummary);
+                    logEntry.ExternalSystemId = ezekiaVacancyId?.ToString();
+                    logEntry.AdditionalMetadata = CombinePayloads(logEntry.AdditionalMetadata, SerializeForLog(new
+                    {
+                        vacancy.ExternalRefId,
+                        needsCreate
+                    }));
+                    logEntry.Status = "Success";
 
                     stopWatch.Stop();
 
@@ -637,6 +744,7 @@ namespace Steer73.RockIT.Domain.External
                     _auditingManager.Current.Log.ExecutionDuration = (int)stopWatch.ElapsedMilliseconds;
                     _auditingManager.Current.Log.HttpStatusCode = (int)HttpStatusCode.OK;
 
+                    await _syncLogManager.LogAsync(logEntry, cancellationToken);
                     syncResult = true;
                     _logger.LogInformation("Successfully synced Vacancy:{VacancyId} to Ezekia", vacancyId);
                 }
@@ -644,19 +752,32 @@ namespace Steer73.RockIT.Domain.External
                 {
                     stopWatch.Stop();
                     _logger.LogException(ex);
+
+                    logEntry.Status = "Error";
+                    logEntry.ErrorMessage = ex.Message;
+                    logEntry.ErrorStackTrace = ex.ToString();
+
                     _auditingManager.Current.Log.HttpStatusCode = (int)HttpStatusCode.InternalServerError;
                     _auditingManager.Current.Log.ExecutionDuration = (int)stopWatch.ElapsedMilliseconds;
                     _auditingManager.Current.Log.Exceptions.Add(ex);
                     _logger.LogInformation("Error when sending Vacancy:{VacancyId} data into Ezekia", vacancyId);
-                    throw;
+
+                    var logId = await _syncLogManager.LogAsync(logEntry, cancellationToken);
+                    throw new EzekiaSyncException("Failed to send vacancy data to Ezekia.", logId, logEntry.Timestamp, ex);
                 }
                 finally
                 {
                     vacancy.SyncStatusUpdate = DateTime.UtcNow;
                     vacancy.SyncStatus = syncResult ? Enums.SyncStatus.Synced : Enums.SyncStatus.Error;
 
+                    if (syncResult && ezekiaVacancyId.HasValue)
+                    {
+                        vacancy.ExternalRefId = ezekiaVacancyId.Value;
+                    }
+
                     await _vacancyRepository.UpdateAsync(vacancy, cancellationToken: cancellationToken);
                     _logger.LogInformation("Updated Vacancy:{VacancyId} sync status as {SyncStatus}", vacancyId, vacancy.SyncStatus);
+
                     await auditingScope.SaveAsync();
                 }
             }
@@ -774,6 +895,24 @@ namespace Steer73.RockIT.Domain.External
                 var vacancy = await _vacancyRepository.GetAsync(jobApplication.VacancyId, cancellationToken: cancellationToken);
 
                 IReadOnlyCollection<DocumentDto> documents = [];
+                var correlationId = Guid.NewGuid().ToString();
+
+                var logEntry = new EzekiaSyncLogEntry
+                {
+                    EntityType = "JobApplicationDocument",
+                    EntityId = jobApplicationId,
+                    Operation = "SendApplicantDocuments",
+                    Status = "Pending",
+                    CorrelationId = correlationId,
+                    AdditionalMetadata = SerializeForLog(new
+                    {
+                        jobApplication.CVUrl,
+                        jobApplication.CoverLetterUrl,
+                        jobApplication.AdditionalDocumentUrl
+                    })
+                };
+
+                _auditingManager.Current.Log.CorrelationId = correlationId;
 
                 try
                 {
@@ -789,6 +928,19 @@ namespace Steer73.RockIT.Domain.External
                             documents,
                             cancellationToken);
                     }
+
+                    logEntry.Status = "Success";
+                    logEntry.RequestPayload = SerializeForLog(new
+                    {
+                        Files = documents.Select(d => d.FileName).ToArray()
+                    });
+                    logEntry.ResponsePayload = SerializeForLog(new
+                    {
+                        Action = "UploadDocuments",
+                        Count = documents.Count
+                    });
+
+                    await _syncLogManager.LogAsync(logEntry, cancellationToken);
 
                     stopWatch.Stop();
 
@@ -811,7 +963,12 @@ namespace Steer73.RockIT.Domain.External
                     var fileNames = string.Join(", ", documents.Select(d => d.FileName).ToArray());
                     _logger.LogInformation("Error when sending documents:{fileNames} for job application:{jobApplicationId} to Ezekia", fileNames, jobApplicationId);
 
-                    throw;
+                    logEntry.Status = "Error";
+                    logEntry.ErrorMessage = ex.Message;
+                    logEntry.ErrorStackTrace = ex.ToString();
+                    var logId = await _syncLogManager.LogAsync(logEntry, cancellationToken);
+
+                    throw new EzekiaSyncException("Failed to send applicant documents to Ezekia.", logId, logEntry.Timestamp, ex);
                 }
                 finally
                 {
@@ -820,10 +977,11 @@ namespace Steer73.RockIT.Domain.External
             }
         }
 
-        private async Task<int> CreatePerson(
+        private async Task<PersonOperationSummary> CreatePerson(
             JobApplication jobApplication, 
             Vacancy vacancy,
             int? ezekiaCompanyId, 
+            EzekiaOwnerInfo? ownerInfo,
             CancellationToken cancellationToken)
         {
             var phonesRequest = new List<phones4>();
@@ -852,20 +1010,22 @@ namespace Steer73.RockIT.Domain.External
                 FirstName = jobApplication.FirstName,
                 LastName = jobApplication.LastName,
                 Phones = phonesRequest,
-                Emails = 
+                Emails =
                 [
-                     new()       
-                     {       
-                         Address = jobApplication.EmailAddress,
-                         IsDefault = true,
-                         Label = Emails4Label.Direct       
-                     }
+                    new()
+                    {
+                        Address = jobApplication.EmailAddress,
+                        IsDefault = true,
+                        Label = Emails4Label.Work
+                    }
                 ],
                 Title = jobApplication.CurrentRole,
                 Summary = jobApplication.CurrentRole,
                 CompanyRecordId = ezekiaCompanyId is not null ? ezekiaCompanyId.Value : null,
                 CompanyRecordName = ezekiaCompanyId is null ? jobApplication.CurrentCompany : null
             };
+
+            request.OwnerId = ownerInfo?.Id;
 
             if (!string.IsNullOrWhiteSpace(jobApplication.Aka))
             {
@@ -899,8 +1059,6 @@ namespace Steer73.RockIT.Domain.External
                 null, 
                 request, 
                 cancellationToken);
-
-
             var createdPersonId = response.Data.Id;
 
 
@@ -970,51 +1128,78 @@ namespace Steer73.RockIT.Domain.External
         int? ezekiaCompanyId,
         CancellationToken cancellationToken)
         {
-            _logger.LogInformation("Starting UpdatePerson for JobApplicationId: {JobApplicationId}, PersonId: {PersonId}", jobApplication.Id, person.Id);
-
-            var updatePersonRequest = new store6Extended
+            if (identityUserId == Guid.Empty)
             {
-                Honorific = jobApplication.Title,
-                FirstName = jobApplication.FirstName,
-                LastName = jobApplication.LastName
-            };
-
-            // Ensure preferred name (aka) is updated for existing Ezekia person
-            if (!string.IsNullOrWhiteSpace(jobApplication.Aka))
-            {
-                updatePersonRequest.Aliases = new[] { jobApplication.Aka };
+                return null;
             }
 
-            var tasks = new List<Task>
+            if (_ownerInfoCache.TryGetValue(identityUserId, out var cachedValue))
             {
-                _ezekiaClient.V3PeoplePutAsync(
-                    null,
-                    person.Id,
-                    updatePersonRequest,
-                    cancellationToken)
-            };
-            _logger.LogInformation("Queued V3PeoplePutAsync for PersonId: {PersonId}", person.Id);
+                return cachedValue;
+            }
 
-            if (vacancy.ExternalRefId.HasValue)
+            var identityUser = await _identityUserRepository.FindAsync(identityUserId, includeDetails: true, cancellationToken: cancellationToken);
+            if (identityUser is null)
             {
-                try
+                _ownerInfoCache[identityUserId] = null;
+                return null;
+            }
+
+            var email = identityUser.Email;
+            var fullName = $"{identityUser.Name} {identityUser.Surname}".Trim();
+            var query = !string.IsNullOrWhiteSpace(email) ? email : fullName;
+
+            if (string.IsNullOrWhiteSpace(query))
+            {
+                _ownerInfoCache[identityUserId] = null;
+                return null;
+            }
+
+            try
+            {
+                var response = await _ezekiaClient.SearchUsersAsync(query, 1, 25, cancellationToken);
+
+                var match = response?.Data?
+                    .FirstOrDefault(u =>
+                        !string.IsNullOrWhiteSpace(email)
+                            ? string.Equals(u.Email, email, StringComparison.OrdinalIgnoreCase)
+                            : string.Equals(u.FullName, fullName, StringComparison.OrdinalIgnoreCase));
+
+                if (match is null && !string.IsNullOrWhiteSpace(fullName))
                 {
-                    _logger.LogInformation("Assigning person {PersonId} to vacancy {VacancyId} and {VacancyTitle}", person.Id, vacancy.ExternalRefId.Value, vacancy.Title);
-                    tasks.Add(_ezekiaClient.V3ProjectsCandidatesPostAsync(
-                    new candidatesUpdateRequest2
-                    {
-                        Candidates = [person.Id],
-                        ProjectId=vacancy.ExternalRefId.Value,
-                        ProjectName=vacancy.Title,
-                        Label=CandidatesUpdateRequest2Label.Assignment
-                    },
-                    cancellationToken));
+                    match = response?.Data?
+                        .FirstOrDefault(u => string.Equals(u.FullName, fullName, StringComparison.OrdinalIgnoreCase));
                 }
-                catch (Exception ex)
+
+                var ownerInfo = match != null ? new EzekiaOwnerInfo(match.Id, match.FullName, match.Email) : null;
+                _ownerInfoCache[identityUserId] = ownerInfo;
+
+                if (ownerInfo != null)
                 {
                     _logger.LogError(ex, "Failed to assign person {PersonId} to vacancy {VacancyId}", person.Id, vacancy.ExternalRefId.Value);
                 }
+
+                return ownerInfo;
             }
+            catch (Exception ex)
+            {
+                _logger.LogWarning(ex, "Failed to resolve Ezekia owner for IdentityUserId {IdentityUserId}", identityUserId);
+                _ownerInfoCache[identityUserId] = null;
+                return null;
+            }
+        }
+
+        private async Task<PersonOperationSummary> UpdatePerson(
+            person2 person,
+            JobApplication jobApplication,
+            Vacancy vacancy,
+            int? ezekiaCompanyId,
+            EzekiaOwnerInfo? ownerInfo,
+            CancellationToken cancellationToken)
+        {
+            _logger.LogInformation("Starting UpdatePerson for JobApplicationId: {JobApplicationId}, PersonId: {PersonId}", jobApplication.Id, person.Id);
+
+            var tasks = new List<Task>();
 
             var positionType = StoreRequest11PositionType.Other;
             if (!string.IsNullOrWhiteSpace(jobApplication.CurrentPositionType))
@@ -1022,14 +1207,63 @@ namespace Steer73.RockIT.Domain.External
                 Enum.TryParse(jobApplication.CurrentPositionType, true, out positionType);
             }
 
-            if (!string.IsNullOrWhiteSpace(jobApplication.CurrentRole)
+            var assignToVacancy = vacancy.ExternalRefId.HasValue;
+            var shouldAddPosition =
+                !string.IsNullOrWhiteSpace(jobApplication.CurrentRole)
                 && (person.Profile is null
-                || person.Profile.Positions is null
-                || !person.Profile.Positions.Any(
-                    p => p.Company is not null
-                         && (p.Company.Id == ezekiaCompanyId || p.Company.Name.Equals(jobApplication.CurrentCompany, StringComparison.OrdinalIgnoreCase))
-                         && p.Title.Equals(jobApplication.CurrentRole, StringComparison.InvariantCultureIgnoreCase)
-                         && p.PositionType.ToString().Equals(positionType.ToString(), StringComparison.InvariantCultureIgnoreCase))))
+                    || person.Profile.Positions is null
+                    || !person.Profile.Positions.Any(
+                        p => p.Company is not null
+                             && (p.Company.Id == ezekiaCompanyId || p.Company.Name.Equals(jobApplication.CurrentCompany, StringComparison.OrdinalIgnoreCase))
+                             && p.Title.Equals(jobApplication.CurrentRole, StringComparison.InvariantCultureIgnoreCase)
+                             && p.PositionType.ToString().Equals(positionType.ToString(), StringComparison.InvariantCultureIgnoreCase)));
+
+            var shouldAddPhone =
+                !string.IsNullOrWhiteSpace(jobApplication.PhoneNumber)
+                && (person.Phones is null
+                    || !person.Phones.Any(p => p.Number.Equals(jobApplication.PhoneNumber, StringComparison.OrdinalIgnoreCase)));
+
+            var shouldAddLandline =
+                !string.IsNullOrWhiteSpace(jobApplication.Landline)
+                && !jobApplication.Landline.Equals(jobApplication.PhoneNumber, StringComparison.OrdinalIgnoreCase)
+                && (person.Phones is null
+                    || !person.Phones.Any(p => p.Number.Equals(jobApplication.Landline, StringComparison.OrdinalIgnoreCase)));
+
+            tasks.Add(_ezekiaClient.V3PeoplePutAsync(
+                null,
+                person.Id,
+                new store6Extended
+                {
+                    Honorific = jobApplication.Title,
+                    FirstName = jobApplication.FirstName,
+                    LastName = jobApplication.LastName,
+                    OwnerId = ownerInfo?.Id
+                },
+                cancellationToken));
+            _logger.LogInformation("Queued V3PeoplePutAsync for PersonId: {PersonId}", person.Id);
+
+            if (assignToVacancy)
+            {
+                try
+                {
+                    _logger.LogInformation("Assigning person {PersonId} to vacancy {VacancyId} and {VacancyTitle}", person.Id, vacancy.ExternalRefId.Value, vacancy.Title);
+                    tasks.Add(_ezekiaClient.V3ProjectsCandidatesPostAsync(
+                        new candidatesUpdateRequest2
+                        {
+                            Candidates = [person.Id],
+                            ProjectId = vacancy.ExternalRefId.Value,
+                            ProjectName = vacancy.Title,
+                            Label = CandidatesUpdateRequest2Label.Assignment
+                        },
+                        cancellationToken));
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex, "❌ Failed to assign person {PersonId} to vacancy {VacancyId}", person.Id, vacancy.ExternalRefId.Value);
+                }
+            }
+
+            if (shouldAddPosition)
             {
                 _logger.LogInformation("Adding new position for PersonId: {PersonId}, CompanyId: {CompanyId}", person.Id, ezekiaCompanyId);
                 tasks.Add(_ezekiaClient.V2PeoplePositionsPostAsync(
@@ -1045,9 +1279,7 @@ namespace Steer73.RockIT.Domain.External
                     cancellationToken));
             }
 
-            if (!string.IsNullOrWhiteSpace(jobApplication.PhoneNumber)
-                && (person.Phones is null
-                    || !person.Phones.Any(p => p.Number.Equals(jobApplication.PhoneNumber, StringComparison.OrdinalIgnoreCase))))
+            if (shouldAddPhone)
             {
                 _logger.LogInformation("Adding phone number for PersonId: {PersonId}", person.Id);
                 tasks.Add(_ezekiaClient.PeoplePhonesPostAsync(
@@ -1061,10 +1293,7 @@ namespace Steer73.RockIT.Domain.External
                     cancellationToken));
             }
 
-            if (!string.IsNullOrWhiteSpace(jobApplication.Landline)
-                && !jobApplication.Landline.Equals(jobApplication.PhoneNumber, StringComparison.OrdinalIgnoreCase)
-                && (person.Phones is null
-                    || !person.Phones.Any(p => p.Number.Equals(jobApplication.Landline, StringComparison.OrdinalIgnoreCase))))
+            if (shouldAddLandline)
             {
                 _logger.LogInformation("Adding landline number for PersonId: {PersonId}", person.Id);
                 tasks.Add(_ezekiaClient.PeoplePhonesPostAsync(
@@ -1089,7 +1318,78 @@ namespace Steer73.RockIT.Domain.External
             }
 
             _logger.LogInformation("Completed UpdatePerson for JobApplicationId: {JobApplicationId}, PersonId: {PersonId}", jobApplication.Id, person.Id);
+
+            var requestSummary = SerializeForLog(new
+            {
+                Action = "UpdatePerson",
+                PersonId = person.Id,
+                OwnerId = ownerInfo?.Id,
+                VacancyExternalRefId = vacancy.ExternalRefId,
+                AssignToVacancy = assignToVacancy,
+                AddPosition = shouldAddPosition,
+                AddPhone = shouldAddPhone,
+                AddLandline = shouldAddLandline
+            });
+
+            var responseSummary = SerializeForLog(new
+            {
+                Action = "UpdatePerson",
+                PersonId = person.Id,
+                TasksQueued = tasks.Count,
+                VacancyExternalRefId = vacancy.ExternalRefId
+            });
+
+            var additionalMetadata = assignToVacancy
+                ? SerializeForLog(new { vacancy.ExternalRefId })
+                : null;
+
+            return new PersonOperationSummary(person.Id, requestSummary, responseSummary, additionalMetadata);
         }
+
+        private static readonly JsonSerializerSettings LogSerializerSettings = new()
+        {
+            NullValueHandling = NullValueHandling.Ignore,
+            DefaultValueHandling = DefaultValueHandling.Ignore
+        };
+
+        private static string? SerializeForLog(object? value)
+        {
+            if (value == null)
+            {
+                return null;
+            }
+
+            return JsonConvert.SerializeObject(value, Formatting.None, LogSerializerSettings);
+        }
+
+        private static string? CombinePayloads(params string?[] payloads)
+        {
+            var nonEmpty = payloads.Where(p => !string.IsNullOrWhiteSpace(p)).ToArray();
+            if (nonEmpty.Length == 0)
+            {
+                return null;
+            }
+
+            return string.Join(Environment.NewLine, nonEmpty);
+        }
+
+        private sealed class PersonOperationSummary
+        {
+            public PersonOperationSummary(int personId, string? requestSummary, string? responseSummary, string? additionalMetadata)
+            {
+                PersonId = personId;
+                RequestSummary = requestSummary;
+                ResponseSummary = responseSummary;
+                AdditionalMetadata = additionalMetadata;
+            }
+
+            public int PersonId { get; }
+            public string? RequestSummary { get; }
+            public string? ResponseSummary { get; }
+            public string? AdditionalMetadata { get; }
+        }
+
+        private sealed record EzekiaOwnerInfo(int? Id, string? FullName, string? Email);
 
         private async Task<IReadOnlyCollection<DocumentDto>> GetVacancyDocuments(
             Vacancy vacancy,
@@ -1098,6 +1398,9 @@ namespace Steer73.RockIT.Domain.External
             CancellationToken cancellationToken)
         {
             var documents = new List<DocumentDto>();
+            var projectLabel = string.IsNullOrWhiteSpace(vacancy.ProjectId)
+                ? vacancy.ExternalRefId?.ToString() ?? string.Empty
+                : vacancy.ProjectId;
 
             if (vacancy.BrochureFileId != null
                 && shouldUpdateBrochure)
@@ -1159,6 +1462,7 @@ namespace Steer73.RockIT.Domain.External
             var documents = new List<DocumentDto>();
             char initial = !string.IsNullOrWhiteSpace(jobApplication.FirstName) ? 
                 jobApplication.FirstName[0] : ' ';
+            var projectLabel = ezekiaVacancyId.ToString();
 
             if (!string.IsNullOrWhiteSpace(jobApplication.CVUrl))
             {
@@ -1169,7 +1473,7 @@ namespace Steer73.RockIT.Domain.External
                     documents.Add(new DocumentDto
                     {
                         ContentType = FileUtils.GetContentType(extension),
-                        FileName = $"{jobApplication.LastName}.{initial}.CV Original({ezekiaVacancyId}){extension}",
+                        FileName = $"{jobApplication.LastName}.{initial}.CV Original({projectLabel}){extension}",
                         Stream = stream
                     });
                 }
@@ -1184,7 +1488,7 @@ namespace Steer73.RockIT.Domain.External
                     documents.Add(new DocumentDto
                     {
                         ContentType = FileUtils.GetContentType(extension),
-                        FileName = $"{jobApplication.LastName}.{initial}.Letter({ezekiaVacancyId}){extension}",
+                        FileName = $"{jobApplication.LastName}.{initial}.Letter({projectLabel}){extension}",
                         Stream = stream
                     });
                 }
@@ -1199,7 +1503,7 @@ namespace Steer73.RockIT.Domain.External
                     documents.Add(new DocumentDto
                     {
                         ContentType = FileUtils.GetContentType(extension),
-                        FileName = $"{jobApplication.LastName}.{initial}.Supplement({ezekiaVacancyId}){extension}",
+                        FileName = $"{jobApplication.LastName}.{initial}.Supplement({projectLabel}){extension}",
                         Stream = stream
                     });
                 }

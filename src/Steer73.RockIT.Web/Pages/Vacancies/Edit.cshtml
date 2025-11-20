@@ -64,6 +64,7 @@
             font-weight: 600;
         }
 
+
     </style>
 }
 @section scripts {
@@ -105,21 +106,13 @@
             });
 
             const content = @Html.Raw(Json.Serialize(Model.Input.Description));
-            try {
-                const delta = content && content.trim().startsWith('{') ? JSON.parse(content) : null;
-                if (delta && delta.ops) {
-                    quill.setContents(delta);
-                } else {
-                    quill.clipboard.dangerouslyPasteHTML(content || '');
-                }
-            } catch { quill.clipboard.dangerouslyPasteHTML(content || ''); }
+            quill.clipboard.dangerouslyPasteHTML(content);
 
             let $form = $('#editForm');
 
             $form.on('submit', function (e) {
                 const quillContent = document.querySelector('input#Input_Description');
-                // Save HTML (sanitized server-side) for compatibility with existing DB schema
-                quillContent.value = !isQuillEmpty(quill) ? quill.root.innerHTML : '';
+                quillContent.value = !isQuillEmpty(quill) ? quill.root.innerHTML : ''; // This sends the Quill content as HTML
             });
 
             // Keyboard shortcuts for indent/outdent
@@ -143,7 +136,7 @@
 }
 
 <div class="abp-view-modal">
-    <form id="editForm" asp-page="/Vacancies/Edit"  asp-route-id="@Model.Id" autocomplete="off">
+    <form id="editForm" asp-page="/Vacancies/Edit" asp-route-id="@Model.Id" autocomplete="off">
         <abp-modal id="VacancyEditModal">
             <abp-modal-header title="@L["Update"].Value"></abp-modal-header>
 
@@ -161,7 +154,7 @@
                     </div>
                 </div>
                 <abp-input asp-for="Input.Title" />
- 
+
                 <div class="mb-3">
                     <label class="form-label" asp-for="Input.CompanyId"></label><span> *</span>
                     <select asp-for="Input.CompanyId"
@@ -185,7 +178,7 @@
                 </div>
 
                 <abp-select asp-for="Input.IdentityUserId" asp-items="Model.IdentityUserLookupListRequired" />
-                
+
                 <div class="mb-3">
                     <label class="form-label" asp-for="Input.ContributorIds"></label>
                     <select asp-for="Input.ContributorIds"
@@ -328,9 +321,9 @@
                         }
                     </select>
                 </div>
-                
+
                 <abp-select asp-for="Input.VacancyFormDefinitionId" asp-items="Model.VacancyFormDefinitionLookupList" label="@L["VacancyFormDefinition"].Value" />
-                
+
                 <abp-select asp-for="Input.DiversityFormDefinitionId" asp-items="Model.DiversityFormDefinitionLookupList" label="@L["DiversityFormDefinition"].Value" />
 
                 <abp-input asp-for="Input.LinkedInUrl" />
@@ -342,7 +335,15 @@
                 <abp-input asp-for="Input.Flag_HideVacancy" label="@L["FlagHideVacancy"].Value" />
 
                 <abp-input asp-for="Input.ConcurrencyStamp" hidden="true" suppress-label="true" />
-
+                <div class="mb-3">
+                    <label class="form-label">@L["VacancyDetailsPage"].Value</label>
+                    <div class="d-flex align-items-center gap-2">
+                        <a class="form-control-plaintext" href="@Model.VacancyDetailUrl" target="_blank">@Model.VacancyDetailUrl</a>
+                        <button type="button" class="btn btn-secondary btn-sm js-copy-vacancy-detail-url" data-url="@Model.VacancyDetailUrl">
+                            <i class="fa fa-copy"></i> @L["CopyUrl"].Value
+                        </button>
+                    </div>
+                </div>
 
             </abp-modal-body>
 

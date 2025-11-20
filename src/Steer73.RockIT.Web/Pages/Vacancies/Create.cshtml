@@ -62,6 +62,11 @@
             line-height: 1.2;
             font-weight: 600;
         }
+
+            .ql-editor p {
+                margin: 0; /* remove paragraph margins */
+            }
+
     </style>
 }
 @section scripts {
@@ -96,8 +101,22 @@
                         [{ list: 'ordered' }, { list: 'bullet' }],
                         [{ indent: '-1' }, { indent: '+1' }],
                         ['link', 'clean']
-                    ]
+                    ],
+                    keyboard: {
+                        bindings: {
+                            handleEnter: {
+                                key: 13,
+                                handler: function (range, context) {
+                                    const quill = this.quill;
+                                    quill.insertText(range.index, '\n', 'user'); // Insert newline character (renders as <br>)
+                                    quill.setSelection(range.index + 1, 0);
+                                    return false;  // Prevent default <p> behavior
+                                }
+                            }
+                        }
+                    }
                 },
+
                 formats: [
                     'header',
                     'bold', 'italic', 'underline',
@@ -107,21 +126,13 @@
             });
 
             const content = @Html.Raw(Json.Serialize(Model.Vacancy.Description));
-            try {
-                const delta = content && content.trim().startsWith('{') ? JSON.parse(content) : null;
-                if (delta && delta.ops) {
-                    quill.setContents(delta);
-                } else {
-                    quill.clipboard.dangerouslyPasteHTML(content || '');
-                }
-            } catch { quill.clipboard.dangerouslyPasteHTML(content || ''); }
+            quill.clipboard.dangerouslyPasteHTML(content);
 
             let $form = $('#createForm');
 
             $form.on('submit', function (e) {
                 const quillContent = document.querySelector('input#Vacancy_Description');
-                // Save as HTML so backend sanitization and rendering work as expected
-                quillContent.value = !isQuillEmpty(quill) ? quill.root.innerHTML : '';
+                quillContent.value = !isQuillEmpty(quill) ? quill.root.innerHTML : ''; // This sends the Quill content as HTML
             });
 
             // Add keyboard shortcuts for indent/outdent (Tab / Shift+Tab)
@@ -152,15 +163,15 @@
 
             <abp-modal-body>
                 <div class="input-group mb-3">
-                    <input type="text"  
-                        class="form-control"
-                        placeholder=" @L["EnterEzekiaId"].Value"
-                        id="projectId"/>
+                    <input type="text"
+                           class="form-control"
+                           placeholder=" @L["EnterEzekiaId"].Value"
+                           id="projectId" />
                     <button class="btn btn-outline-secondary" type="button" id="searchProjectId">
                         @L["Confirm"].Value
                     </button>
                 </div>
-               
+
                 <abp-input asp-for="Vacancy.Title" />
 
                 <div class="mb-3">
@@ -176,7 +187,8 @@
                     <span asp-validation-for="Vacancy.CompanyId" class="text-danger"></span>
                 </div>
 
-                <abp-input asp-for="Vacancy.ExternalRefId" readonly="true"/>
+                <abp-input asp-for="Vacancy.ProjectId" readonly="true" />
+                <abp-input asp-for="Vacancy.ExternalRefId" type="hidden" />
 
                 <abp-select asp-for="Vacancy.IdentityUserId" asp-items="Model.IdentityUserLookupListRequired" />
 
