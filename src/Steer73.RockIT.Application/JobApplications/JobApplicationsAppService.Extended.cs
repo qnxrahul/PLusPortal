@@ -255,10 +255,21 @@ namespace Steer73.RockIT.JobApplications
             }
             catch (EzekiaSyncException ex)
             {
-                _logger.LogWarning(ex, "Failed to synchronise job application {JobApplicationId} with Ezekia", jobApplication.Id);
-                throw new UserFriendlyException(
+                _logger.LogWarning(
+                    ex,
+                    "Failed to synchronise job application {JobApplicationId} with Ezekia. LogId: {LogId}, Timestamp: {TimestampUtc}",
+                    jobApplication.Id,
+                    ex.LogId,
+                    ex.TimestampUtc);
+
+                var friendlyException = new UserFriendlyException(
                     $"Candidate approval failed. Reference log {ex.LogId} at {ex.TimestampUtc:O} (UTC).",
                     ex.Message);
+
+                friendlyException.WithData(nameof(ex.LogId), ex.LogId);
+                friendlyException.WithData(nameof(ex.TimestampUtc), ex.TimestampUtc);
+
+                throw friendlyException;
             }
 
             jobApplication = await _jobApplicationRepository.GetAsync(jobApplication.Id, cancellationToken: cancellationToken);

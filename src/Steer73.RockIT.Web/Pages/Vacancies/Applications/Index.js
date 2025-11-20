@@ -2,6 +2,22 @@ $(function () {
 	var l = abp.localization.getResource("RockIT");
 
     var jobApplicationService = window.steer73.rockIT.jobApplications.jobApplications;
+    var abpUiResource = abp.localization.getResource("AbpUi");
+    var getApprovalErrorMessage = function (error) {
+        var fallback = abpUiResource
+            ? abpUiResource("UnhandledException")
+            : "An unexpected error has occurred.";
+
+        if (!error) {
+            return fallback;
+        }
+
+        if (error.message && error.details) {
+            return error.message + " - " + error.details;
+        }
+
+        return error.message || error.details || fallback;
+    };
 
     var viewModal = new abp.ModalManager({
         viewUrl: abp.appPath + "Vacancies/Applications/ViewModal",
@@ -157,7 +173,8 @@ $(function () {
                                     dt.ajax.reload();
                                     abp.ui.clearBusy();
                                 })
-                                .catch(function () {
+                                .catch(function (error) {
+                                    abp.notify.error(getApprovalErrorMessage(error));
                                     abp.ui.clearBusy();
                                 });
                         });
