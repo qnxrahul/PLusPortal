@@ -34,6 +34,7 @@ namespace Steer73.RockIT.Domain.External
     public class ExternalCompanyService : DomainService, IExternalCompanyService
     {
         private const string ExternalDateFormat = "yyyy-MM-dd";
+        private const int PlusPortalTagId = 25198;
 
         private readonly ICompanyRepository _companyRepository;
         private readonly IJobApplicationRepository _jobApplicationRepository;
@@ -1060,62 +1061,72 @@ namespace Steer73.RockIT.Domain.External
                 cancellationToken);
             var createdPersonId = response.Data.Id;
 
-            PipelineUpdateRequest? statusRequest = null;
+
             if (vacancy.ExternalRefId.HasValue && createdPersonId > 0)
             {
-                statusRequest = new PipelineUpdateRequest
-                {
-                    // You may need to set one or more fields here like:
-                   Candidates = [createdPersonId], // or "applied", etc. depending on Ezekia's enum
-                                                   // Optionally: Date, Comments, or other metadata
-                    Tags = [25198]
-                };
-
-                _logger.LogInformation("Updating candidate status in Ezekia for PersonId: {PersonId} on ProjectId: {ProjectId}", createdPersonId, vacancy.ExternalRefId.Value);
-
-                await _ezekiaClient.V3ProjectsCandidatesStatusesPostAsync(
-                    id: vacancy.ExternalRefId.Value,
-                    
-                    body: statusRequest,
-                    cancellationToken: cancellationToken
-                );
-
-                _logger.LogInformation("Updated candidate status in Ezekia for PersonId: {PersonId}", createdPersonId);
+                await AssignPlusPortalPipelineTagAsync(
+                    vacancy.ExternalRefId.Value,
+                    createdPersonId,
+                    cancellationToken);
             }
 
-            var requestSummary = SerializeForLog(new
-            {
-                Action = "CreatePerson",
-                request.FirstName,
-                request.LastName,
-                request.CompanyRecordId,
-                request.CompanyRecordName,
-                request.OwnerId,
-                Projects = request.Projects?.Select(p => p.ProjectId),
-                HasPhone = !string.IsNullOrWhiteSpace(jobApplication.PhoneNumber),
-                HasLandline = !string.IsNullOrWhiteSpace(jobApplication.Landline)
-            });
-
-            var responseSummary = SerializeForLog(new
-            {
-                Action = "CreatePerson",
-                PersonId = createdPersonId,
-                VacancyExternalRefId = vacancy.ExternalRefId
-            });
-
-            var additionalMetadata = statusRequest != null
-                ? SerializeForLog(new
-                {
-                    PipelineProjectId = vacancy.ExternalRefId,
-                    statusRequest.Tags
-                })
-                : null;
-
-            return new PersonOperationSummary(createdPersonId, requestSummary, responseSummary, additionalMetadata);
+            return createdPersonId;
 
         }
+        private async Task AssignPlusPortalPipelineTagAsync(
+            int ezekiaProjectId,
+            int ezekiaPersonId,
+            CancellationToken cancellationToken)
+        {
+            if (ezekiaProjectId <= 0 || ezekiaPersonId <= 0)
+            {
+                _logger.LogWarning("Skipping PlusPortal tag assignment because ProjectId ({ProjectId}) or PersonId ({PersonId}) is invalid", ezekiaProjectId, ezekiaPersonId);
+                return;
+            }
 
-        private async Task<EzekiaOwnerInfo?> ResolveOwnerInfoAsync(Guid identityUserId, CancellationToken cancellationToken)
+            var statusRequest = new PipelineUpdateRequest
+            {
+                Candidates = [ezekiaPersonId],
+                Tags = [PlusPortalTagId]
+            };
+
+            try
+            {
+                _logger.LogInformation(
+                    "Assigning PlusPortal tag {TagId} to candidate {PersonId} on project {ProjectId}",
+                    PlusPortalTagId,
+                    ezekiaPersonId,
+                    ezekiaProjectId);
+
+                await _ezekiaClient.V3ProjectsCandidatesStatusesPostAsync(
+                    id: ezekiaProjectId,
+                    body: statusRequest,
+                    cancellationToken: cancellationToken);
+
+                _logger.LogInformation(
+                    "Assigned PlusPortal tag {TagId} to candidate {PersonId} on project {ProjectId}",
+                    PlusPortalTagId,
+                    ezekiaPersonId,
+                    ezekiaProjectId);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(
+                    ex,
+                    "Failed to assign PlusPortal tag {TagId} to candidate {PersonId} on project {ProjectId}",
+                    PlusPortalTagId,
+                    ezekiaPersonId,
+                    ezekiaProjectId);
+                throw;
+            }
+        }
+
+        private async Task UpdatePerson(
+        person2 person,
+        JobApplication jobApplication,
+        Vacancy vacancy,
+        int? ezekiaCompanyId,
+        CancellationToken cancellationToken)
         {
             if (identityUserId == Guid.Empty)
             {
@@ -1165,11 +1176,7 @@ namespace Steer73.RockIT.Domain.External
 
                 if (ownerInfo != null)
                 {
-                    _logger.LogInformation("Resolved Ezekia owner {OwnerId} ({OwnerName}) for IdentityUserId {IdentityUserId}", ownerInfo.Id, ownerInfo.FullName, identityUserId);
-                }
-                else
-                {
-                    _logger.LogWarning("Unable to resolve Ezekia owner for IdentityUserId {IdentityUserId} using query \"{Query}\"", identityUserId, query);
+                    _logger.LogError(ex, "Failed to assign person {PersonId} to vacancy {VacancyId}", person.Id, vacancy.ExternalRefId.Value);
                 }
 
                 return ownerInfo;
@@ -1301,6 +1308,14 @@ namespace Steer73.RockIT.Domain.External
             }
 
             await Task.WhenAll(tasks);
+
+            if (vacancy.ExternalRefId.HasValue)
+            {
+                await AssignPlusPortalPipelineTagAsync(
+                    vacancy.ExternalRefId.Value,
+                    person.Id,
+                    cancellationToken);
+            }
 
             _logger.LogInformation("Completed UpdatePerson for JobApplicationId: {JobApplicationId}, PersonId: {PersonId}", jobApplication.Id, person.Id);
 

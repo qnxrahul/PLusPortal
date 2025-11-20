@@ -40,12 +40,28 @@
             overflow: auto;
         }
 
+        /* Provide comfortable spacing for headings and lists in the editor */
         .ql-editor {
-            white-space: pre-wrap; /* preserve newlines and wrap text */
+            line-height: 1.4;
+        }
+        .ql-editor p {
+            margin: 0 0 0.75rem;
+        }
+        .ql-editor ul,
+        .ql-editor ol {
+            margin: 0 0 0.75rem;
+            padding-left: 1.5rem;
+        }
+        .ql-editor li {
+            line-height: 1.4;
+            margin: 0.25rem 0;
+        }
+        .ql-editor h1,
+        .ql-editor h2,
+        .ql-editor h3 {
+            margin: 0 0 0.75rem;
             line-height: 1.2;
-            margin: 0;
-            padding: 0.5rem;
-            min-height: 200px;
+            font-weight: 600;
         }
 
 
@@ -76,17 +92,17 @@
 
             quill = new Quill('#editor', {
                 theme: 'snow',
-                placeholder: 'Edit the vacancy description. Use Headings, Indent, and Links as needed...',
+                placeholder: 'Edit the vacancy description. Use headings, bullet lists, and links as needed...',
                 modules: {
                     toolbar: [
-                        
+                        [{ header: [1, 2, 3, false] }],
                         ['bold', 'italic', 'underline'],
-                        [{ list: 'ordered' }],
+                        [{ list: 'ordered' }, { list: 'bullet' }],
                         [{ indent: '-1' }, { indent: '+1' }],
                         ['link', 'clean']
                     ]
                 },
-                formats: [ 'bold', 'italic', 'underline', 'list', 'indent', 'link']
+                formats: ['header','bold','italic','underline','list','indent','link']
             });
 
             const content = @Html.Raw(Json.Serialize(Model.Input.Description));
@@ -125,6 +141,18 @@
             <abp-modal-header title="@L["Update"].Value"></abp-modal-header>
 
             <abp-modal-body>
+                <div class="mb-3">
+                    <label class="form-label">@L["VacancyDetailsPage"].Value</label>
+                    <div class="d-flex align-items-center gap-2">
+                        <a class="form-control-plaintext" href="@Model.VacancyDetailUrl" target="_blank">@Model.VacancyDetailUrl</a>
+                        <abp-button size="Small"
+                                    button-type="Primary"
+                                    class="js-copy-vacancy-detail-url"
+                                    data-url="@Model.VacancyDetailUrl">
+                            <i class="fa fa-copy"></i> @L["CopyUrl"].Value
+                        </abp-button>
+                    </div>
+                </div>
                 <abp-input asp-for="Input.Title" />
 
                 <div class="mb-3">
