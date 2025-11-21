@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -89,6 +89,12 @@ namespace Steer73.RockIT.Permissions
             public const string Edit = Default + ".Edit";
             public const string Create = Default + ".Create";
             public const string Delete = Default + ".Delete";
+        }
+
+        public static class JobAlertRegistrations
+        {
+            public const string Default = GroupName + ".JobAlertRegistrations";
+            public const string Manage = Default + ".Manage";
         }
     }
 }

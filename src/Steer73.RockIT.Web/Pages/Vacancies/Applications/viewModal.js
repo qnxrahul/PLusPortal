@@ -30,35 +30,69 @@ abp.modals.viewModal = function () {
             )
         });
 
-        $('.js-confirm-approve button[type="submit"]').on('click', function (e) {
-            e.preventDefault();
-            return abp.message.confirm(l('ConfirmApproveReject').replace("{0}", $('.js-confirm-approve').data('candidateAction')))
-                .then(function (confirmed) {
-                    if (confirmed) {
-                        $('.js-confirm-approve').ajaxSubmit({
-                            success: function (responseText, statusText, xhr, form) {
-                                publicApi.close();
-                                publicApi.setResult();
-                            }
-                        });
-                    }
-                });
-        });
+        var abpUiResource = abp.localization.getResource("AbpUi");
+        var getCandidateActionError = function (xhr) {
+            var fallback = abpUiResource
+                ? abpUiResource("UnhandledException")
+                : "An unexpected error has occurred.";
 
-        $('.js-confirm-reject button[type="submit"]').on('click', function (e) {
-            e.preventDefault();
-            return abp.message.confirm(l('ConfirmApproveReject').replace("{0}", $('.js-confirm-reject').data('candidateAction')))
-                .then(function (confirmed) {
-                    if (confirmed) {
-                        $('.js-confirm-reject').ajaxSubmit({
-                            success: function (responseText, statusText, xhr, form) {
+            if (!xhr) {
+                return fallback;
+            }
+
+            var response = xhr.responseJSON;
+            if (response && response.error) {
+                if (response.error.message && response.error.details) {
+                    return response.error.message + " - " + response.error.details;
+                }
+
+                return response.error.message || response.error.details || fallback;
+            }
+
+            if (response && response.message) {
+                return response.message;
+            }
+
+            return fallback;
+        };
+
+        var bindCandidateAction = function (formSelector) {
+            var $form = $(formSelector);
+
+            $form.find('button[type="submit"]').on('click', function (e) {
+                e.preventDefault();
+
+                var $button = $(this);
+                var action = $form.data('candidateAction');
+
+                return abp.message.confirm(l('ConfirmApproveReject').replace("{0}", action))
+                    .then(function (confirmed) {
+                        if (!confirmed) {
+                            return;
+                        }
+
+                        abp.ui.setBusy($form);
+                        $button.prop('disabled', true);
+
+                        $form.ajaxSubmit({
+                            success: function () {
                                 publicApi.close();
                                 publicApi.setResult();
+                            },
+                            error: function (xhr) {
+                                abp.notify.error(getCandidateActionError(xhr));
+                            },
+                            complete: function () {
+                                abp.ui.clearBusy($form);
+                                $button.prop('disabled', false);
                             }
                         });
-                    }
+                    });
             });
-        });
+        };
+
+        bindCandidateAction('.js-confirm-approve');
+        bindCandidateAction('.js-confirm-reject');
     };
 
     //<suite-custom-code-block-2>

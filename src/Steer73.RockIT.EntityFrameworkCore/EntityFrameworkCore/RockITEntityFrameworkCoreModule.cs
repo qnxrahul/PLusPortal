@@ -25,6 +25,7 @@ using Volo.Abp.SettingManagement.EntityFrameworkCore;
 using Volo.Abp.TextTemplateManagement.EntityFrameworkCore;
 using Volo.Saas.EntityFrameworkCore;
 using Steer73.RockIT.BrochureSubscriptions;
+using Steer73.RockIT.JobAlerts;
 
 namespace Steer73.RockIT.EntityFrameworkCore;
 
@@ -72,11 +73,14 @@ public class RockITEntityFrameworkCoreModule : AbpModule
 
             options.AddRepository<DiversityData, DiversityDatas.EfCoreDiversityDataRepository>();
 
-            options.AddRepository<JobFormResponse, JobFormResponses.EfCoreJobFormResponseRepository>();
+              options.AddRepository<JobFormResponse, JobFormResponses.EfCoreJobFormResponseRepository>();
 
-            options.AddRepository<DiversityFormResponse, DiversityFormResponses.EfCoreDiversityFormResponseRepository>();
+              options.AddRepository<DiversityFormResponse, DiversityFormResponses.EfCoreDiversityFormResponseRepository>();
 
-            options.AddRepository<BrochureSubscription, BrochureSubscriptions.EfCoreBrochureSubscriptionRepository>();
+              options.AddRepository<BrochureSubscription, BrochureSubscriptions.EfCoreBrochureSubscriptionRepository>();
+
+              options.AddRepository<JobAlertRegistration, JobAlerts.EfCoreJobAlertRegistrationRepository>();
+              options.AddRepository<JobAlertNotificationLog, JobAlerts.EfCoreJobAlertNotificationLogRepository>();
 
         });
 
