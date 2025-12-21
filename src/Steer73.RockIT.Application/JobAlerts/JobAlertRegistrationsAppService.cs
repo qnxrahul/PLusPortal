@@ -34,12 +34,6 @@ public class JobAlertRegistrationsAppService : RockITAppService, IJobAlertRegist
         _configuration = configuration;
     }
 
-    [RemoteService(false)]
-    public override async Task OnApplicationInitializationAsync()
-    {
-        await base.OnApplicationInitializationAsync();
-    }
-
     [AllowAnonymous]
     public async Task<JobAlertRegistrationDto> RegisterAsync(JobAlertRegistrationCreateDto input)
     {
