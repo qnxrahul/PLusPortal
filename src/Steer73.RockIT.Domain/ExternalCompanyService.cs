@@ -918,7 +918,7 @@ namespace Steer73.RockIT.Domain.External
                 {
                     documents = await GetJobApplicationDocuments(
                         jobApplication,
-                        vacancy.ExternalRefId!.Value,
+                        vacancy,
                         cancellationToken);
                     if (documents.Count > 0)
                     {
@@ -1466,13 +1466,15 @@ namespace Steer73.RockIT.Domain.External
 
         private async Task<List<DocumentDto>> GetJobApplicationDocuments(
             JobApplication jobApplication,
-            int ezekiaVacancyId,
+            Vacancy vacancy,
             CancellationToken cancellationToken)
         {
             var documents = new List<DocumentDto>();
             char initial = !string.IsNullOrWhiteSpace(jobApplication.FirstName) ? 
                 jobApplication.FirstName[0] : ' ';
-            var projectLabel = ezekiaVacancyId.ToString();
+            var projectLabel = string.IsNullOrWhiteSpace(vacancy.ProjectId)
+                ? vacancy.ExternalRefId?.ToString() ?? "UnknownProject"
+                : vacancy.ProjectId;
 
             if (!string.IsNullOrWhiteSpace(jobApplication.CVUrl))
             {
