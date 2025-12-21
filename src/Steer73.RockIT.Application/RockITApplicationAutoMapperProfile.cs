@@ -15,6 +15,7 @@ using Steer73.RockIT.Vacancies;
 using System;
 using System.Linq;
 using Volo.Abp.Identity;
+using Steer73.RockIT.JobAlerts;
 
 namespace Steer73.RockIT;
 
@@ -77,5 +78,11 @@ public class RockITApplicationAutoMapperProfile : Profile
             .ForMember(dest => dest.DisplayName, opt => opt.MapFrom(src => $"{src.Name} {src.Surname}"));
 
         CreateMap<EzekiaCRM.default8, EzekiaProjectDto>();
+
+        CreateMap<JobAlertRegistration, JobAlertRegistrationDto>()
+            .ForMember(dest => dest.PracticeGroupIds, opt => opt.MapFrom(src => src.PracticeGroups.Select(pg => pg.PracticeGroupId)))
+            .ForMember(dest => dest.PracticeGroupNames, opt => opt.MapFrom(src => src.PracticeGroups.Select(pg => pg.PracticeGroup?.Name ?? string.Empty)))
+            .ForMember(dest => dest.RoleTypeIds, opt => opt.MapFrom(src => src.RoleTypes.Select(rt => rt.RoleTypeId)))
+            .ForMember(dest => dest.RoleTypeNames, opt => opt.MapFrom(src => src.RoleTypes.Select(rt => rt.RoleType?.Name ?? string.Empty)));
     }
 }

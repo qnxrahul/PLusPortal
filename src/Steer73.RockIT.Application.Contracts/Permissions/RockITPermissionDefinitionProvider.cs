@@ -70,6 +70,9 @@ public class RockITPermissionDefinitionProvider : PermissionDefinitionProvider
         diversityFormResponsePermission.AddChild(RockITSharedPermissions.DiversityFormResponses.Create, L("Permission:Create"));
         diversityFormResponsePermission.AddChild(RockITSharedPermissions.DiversityFormResponses.Edit, L("Permission:Edit"));
         diversityFormResponsePermission.AddChild(RockITSharedPermissions.DiversityFormResponses.Delete, L("Permission:Delete"));
+
+        var jobAlertPermission = myGroup.AddPermission(RockITSharedPermissions.JobAlertRegistrations.Default, L("Permission:JobAlertRegistrations"));
+        jobAlertPermission.AddChild(RockITSharedPermissions.JobAlertRegistrations.Manage, L("Permission:Manage"));
     }
 
     private static LocalizableString L(string name)

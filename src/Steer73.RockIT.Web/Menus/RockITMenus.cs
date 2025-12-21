@@ -32,4 +32,6 @@ public class RockITMenus
 
     public const string JobApplications = Prefix + ".JobApplications";
 
+    public const string JobAlertRegistrations = Prefix + ".JobAlertRegistrations";
+
 }

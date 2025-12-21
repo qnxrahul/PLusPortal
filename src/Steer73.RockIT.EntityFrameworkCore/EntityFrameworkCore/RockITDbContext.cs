@@ -5,6 +5,7 @@ using Steer73.RockIT.Companies;
 using Steer73.RockIT.DiversityDatas;
 using Steer73.RockIT.FormDefinitions;
 using Steer73.RockIT.JobApplications;
+using Steer73.RockIT.JobAlerts;
 using Steer73.RockIT.PracticeAreas;
 using Steer73.RockIT.PracticeGroups;
 using Steer73.RockIT.Vacancies;
@@ -61,6 +62,8 @@ public class RockITDbContext :
     public DbSet<RoleType> RoleTypes { get; set; } = null!;
     public DbSet<VacancyRoleType> VacancyRoleTypes { get; set; } = null!;
     public DbSet<EzekiaSyncLog> EzekiaSyncLogs { get; set; } = null!;
+    public DbSet<JobAlertRegistration> JobAlertRegistrations { get; set; } = null!;
+    public DbSet<JobAlertNotificationLog> JobAlertNotificationLogs { get; set; } = null!;
 
     #region Entities from the modules
 
@@ -321,11 +324,52 @@ public class RockITDbContext :
                 b.ConfigureByConvention();
             });
 
-            builder.Entity<VacancyPracticeGroup>(b =>
-            {
-                b.ToTable(RockITConsts.DbTablePrefix + "VacancyPracticeGroups", RockITConsts.DbSchema);
-                b.ConfigureByConvention();
-            });
+              builder.Entity<VacancyPracticeGroup>(b =>
+              {
+                  b.ToTable(RockITConsts.DbTablePrefix + "VacancyPracticeGroups", RockITConsts.DbSchema);
+                  b.ConfigureByConvention();
+              });
+
+              builder.Entity<JobAlertRegistration>(b =>
+              {
+                  b.ToTable(RockITConsts.DbTablePrefix + "JobAlertRegistrations", RockITConsts.DbSchema);
+                  b.ConfigureByConvention();
+                  b.Property(x => x.Email).HasColumnName(nameof(JobAlertRegistration.Email)).IsRequired().HasMaxLength(JobAlertRegistrationConsts.EmailMaxLength);
+                  b.Property(x => x.FirstName).HasColumnName(nameof(JobAlertRegistration.FirstName)).HasMaxLength(JobAlertRegistrationConsts.NameMaxLength);
+                  b.Property(x => x.LastName).HasColumnName(nameof(JobAlertRegistration.LastName)).HasMaxLength(JobAlertRegistrationConsts.NameMaxLength);
+                  b.Property(x => x.IsSubscribed).HasColumnName(nameof(JobAlertRegistration.IsSubscribed));
+                  b.Property(x => x.UnsubscribedAt).HasColumnName(nameof(JobAlertRegistration.UnsubscribedAt));
+                  b.Property(x => x.UnsubscribeToken).HasColumnName(nameof(JobAlertRegistration.UnsubscribeToken)).IsRequired();
+                  b.Property(x => x.LastNotificationUtc).HasColumnName(nameof(JobAlertRegistration.LastNotificationUtc));
+                  b.HasIndex(x => x.Email).IsUnique();
+                  b.Navigation(nameof(JobAlertRegistration.PracticeGroups)).HasField("PracticeGroupsInternal");
+                  b.Navigation(nameof(JobAlertRegistration.RoleTypes)).HasField("RoleTypesInternal");
+              });
+
+              builder.Entity<JobAlertRegistrationPracticeGroup>(b =>
+              {
+                  b.ToTable(RockITConsts.DbTablePrefix + "JobAlertRegistrationPracticeGroups", RockITConsts.DbSchema);
+                  b.ConfigureByConvention();
+                  b.HasKey(x => new { x.JobAlertRegistrationId, x.PracticeGroupId });
+                  b.HasOne<PracticeGroup>().WithMany().HasForeignKey(x => x.PracticeGroupId).OnDelete(DeleteBehavior.Cascade);
+              });
+
+              builder.Entity<JobAlertRegistrationRoleType>(b =>
+              {
+                  b.ToTable(RockITConsts.DbTablePrefix + "JobAlertRegistrationRoleTypes", RockITConsts.DbSchema);
+                  b.ConfigureByConvention();
+                  b.HasKey(x => new { x.JobAlertRegistrationId, x.RoleTypeId });
+                  b.HasOne<RoleType>().WithMany().HasForeignKey(x => x.RoleTypeId).OnDelete(DeleteBehavior.Cascade);
+              });
+
+              builder.Entity<JobAlertNotificationLog>(b =>
+              {
+                  b.ToTable(RockITConsts.DbTablePrefix + "JobAlertNotificationLogs", RockITConsts.DbSchema);
+                  b.ConfigureByConvention();
+                  b.Property(x => x.NotificationType).HasColumnName(nameof(JobAlertNotificationLog.NotificationType)).IsRequired();
+                  b.Property(x => x.SentAtUtc).HasColumnName(nameof(JobAlertNotificationLog.SentAtUtc)).IsRequired();
+                  b.HasIndex(x => new { x.JobAlertRegistrationId, x.VacancyId, x.NotificationType }).IsUnique();
+              });
         }
 
         if (builder.IsHostDatabase())

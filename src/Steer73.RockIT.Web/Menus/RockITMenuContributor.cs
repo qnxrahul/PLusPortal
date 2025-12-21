@@ -91,6 +91,15 @@ icon: "fa fa-file-alt",
                 requiredPermissionName: RockITSharedPermissions.FormDefinitions.Default)
         );
 
+        context.Menu.AddItem(
+            new ApplicationMenuItem(
+                RockITMenus.JobAlertRegistrations,
+                l["Menu:JobAlertRegistrations"],
+                url: "/JobAlerts/Registrations",
+                icon: "fa fa-bell",
+                requiredPermissionName: RockITSharedPermissions.JobAlertRegistrations.Default)
+        );
+
         return Task.CompletedTask;
     }
 }
