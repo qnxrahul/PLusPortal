@@ -238,7 +238,7 @@ namespace Steer73.RockIT.JobApplications
             if (!string.IsNullOrWhiteSpace(concurrencyStamp) &&
                 !string.Equals(jobApplication.ConcurrencyStamp, concurrencyStamp, StringComparison.Ordinal))
             {
-                throw new AbpDbConcurrencyException(typeof(JobApplication), jobApplication.Id);
+                throw new AbpDbConcurrencyException($"Concurrency conflict for job application {jobApplication.Id}.");
             }
 
             try

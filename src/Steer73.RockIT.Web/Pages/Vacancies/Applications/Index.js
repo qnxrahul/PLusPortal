@@ -193,4 +193,23 @@ $(function () {
         dataTable.ajax.reloadEx();
 
     });
+
+    $("#ExportApplicantsCsvButton").on("click", function () {
+        var vacancyId = $("#VacancyId").val();
+        var filterText = $("#FilterText").val() || "";
+
+        if (!vacancyId) {
+            abp.notify.error("VacancyId is missing.");
+            return;
+        }
+
+        var url =
+            abp.appPath +
+            "Vacancies/Applications?handler=ExportCsv&id=" +
+            encodeURIComponent(vacancyId) +
+            "&filterText=" +
+            encodeURIComponent(filterText);
+
+        window.location.href = url;
+    });
 });

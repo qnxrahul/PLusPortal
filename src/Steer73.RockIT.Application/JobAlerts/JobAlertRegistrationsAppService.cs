@@ -3,9 +3,11 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Steer73.RockIT.Permissions;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Dynamic.Core;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Volo.Abp;
 using Volo.Abp.Application.Dtos;
@@ -37,8 +39,9 @@ public class JobAlertRegistrationsAppService : RockITAppService, IJobAlertRegist
     [AllowAnonymous]
     public async Task<JobAlertRegistrationDto> RegisterAsync(JobAlertRegistrationCreateDto input)
     {
+        var cancellationToken = CancellationToken.None;
         var normalizedEmail = input.Email.Trim().ToLowerInvariant();
-        var existing = await _registrationRepository.FindByEmailAsync(normalizedEmail, CurrentCancellationToken);
+        var existing = await _registrationRepository.FindByEmailAsync(normalizedEmail, cancellationToken);
 
         var registration = await _registrationManager.RegisterAsync(
             existing,
@@ -47,15 +50,15 @@ public class JobAlertRegistrationsAppService : RockITAppService, IJobAlertRegist
             input.LastName,
             input.PracticeGroupIds ?? [],
             input.RoleTypeIds ?? [],
-            CurrentCancellationToken);
+            cancellationToken);
 
         if (existing is null)
         {
-            registration = await _registrationRepository.InsertAsync(registration, autoSave: true, cancellationToken: CurrentCancellationToken);
+            registration = await _registrationRepository.InsertAsync(registration, autoSave: true, cancellationToken: cancellationToken);
         }
         else
         {
-            registration = await _registrationRepository.UpdateAsync(registration, autoSave: true, cancellationToken: CurrentCancellationToken);
+            registration = await _registrationRepository.UpdateAsync(registration, autoSave: true, cancellationToken: cancellationToken);
         }
 
         return ObjectMapper.Map<JobAlertRegistration, JobAlertRegistrationDto>(registration);
@@ -64,6 +67,7 @@ public class JobAlertRegistrationsAppService : RockITAppService, IJobAlertRegist
     [Authorize(RockITSharedPermissions.JobAlertRegistrations.Default)]
     public async Task<PagedResultDto<JobAlertRegistrationDto>> GetListAsync(JobAlertRegistrationListInput input)
     {
+        var cancellationToken = CancellationToken.None;
         var queryable = _registrationRepository.WithDetails();
 
         if (!input.Filter.IsNullOrWhiteSpace())
@@ -96,11 +100,11 @@ public class JobAlertRegistrationsAppService : RockITAppService, IJobAlertRegist
             ? $"{nameof(JobAlertRegistration.CreationTime)} DESC"
             : input.Sorting!;
 
-        var totalCount = await AsyncExecuter.CountAsync(queryable, CurrentCancellationToken);
+        var totalCount = await AsyncExecuter.CountAsync(queryable, cancellationToken);
 
         var registrations = await AsyncExecuter.ToListAsync(
             queryable.OrderBy(sorting).Skip(input.SkipCount).Take(input.MaxResultCount),
-            CurrentCancellationToken);
+            cancellationToken);
 
         return new PagedResultDto<JobAlertRegistrationDto>(
             totalCount,
@@ -110,8 +114,9 @@ public class JobAlertRegistrationsAppService : RockITAppService, IJobAlertRegist
     [Authorize(RockITSharedPermissions.JobAlertRegistrations.Default)]
     public async Task<JobAlertRegistrationDto> GetAsync(Guid id)
     {
+        var cancellationToken = CancellationToken.None;
         var entityQuery = _registrationRepository.WithDetails().Where(x => x.Id == id);
-        var entity = await AsyncExecuter.FirstOrDefaultAsync(entityQuery, CurrentCancellationToken);
+        var entity = await AsyncExecuter.FirstOrDefaultAsync(entityQuery, cancellationToken);
 
         if (entity is null)
         {
@@ -124,8 +129,9 @@ public class JobAlertRegistrationsAppService : RockITAppService, IJobAlertRegist
     [AllowAnonymous]
     public async Task UnsubscribeByEmailAsync(JobAlertUnsubscribeDto input)
     {
+        var cancellationToken = CancellationToken.None;
         var normalizedEmail = input.Email.Trim().ToLowerInvariant();
-        var registration = await _registrationRepository.FindByEmailAsync(normalizedEmail, CurrentCancellationToken);
+        var registration = await _registrationRepository.FindByEmailAsync(normalizedEmail, cancellationToken);
         if (registration is null)
         {
             return;
@@ -137,7 +143,8 @@ public class JobAlertRegistrationsAppService : RockITAppService, IJobAlertRegist
     [AllowAnonymous]
     public async Task UnsubscribeByTokenAsync(JobAlertUnsubscribeTokenDto input)
     {
-        var registration = await _registrationRepository.FindByUnsubscribeTokenAsync(input.Token, CurrentCancellationToken);
+        var cancellationToken = CancellationToken.None;
+        var registration = await _registrationRepository.FindByUnsubscribeTokenAsync(input.Token, cancellationToken);
         if (registration is null)
         {
             return;
@@ -149,7 +156,7 @@ public class JobAlertRegistrationsAppService : RockITAppService, IJobAlertRegist
     private async Task UnsubscribeInternalAsync(JobAlertRegistration registration)
     {
         _registrationManager.Unsubscribe(registration);
-        await _registrationRepository.UpdateAsync(registration, autoSave: true, cancellationToken: CurrentCancellationToken);
+        await _registrationRepository.UpdateAsync(registration, autoSave: true, cancellationToken: CancellationToken.None);
         await SendUnsubscribeConfirmationEmailAsync(registration);
     }
 

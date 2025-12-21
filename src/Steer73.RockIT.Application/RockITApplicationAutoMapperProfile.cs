@@ -81,8 +81,8 @@ public class RockITApplicationAutoMapperProfile : Profile
 
         CreateMap<JobAlertRegistration, JobAlertRegistrationDto>()
             .ForMember(dest => dest.PracticeGroupIds, opt => opt.MapFrom(src => src.PracticeGroups.Select(pg => pg.PracticeGroupId)))
-            .ForMember(dest => dest.PracticeGroupNames, opt => opt.MapFrom(src => src.PracticeGroups.Select(pg => pg.PracticeGroup?.Name ?? string.Empty)))
+            .ForMember(dest => dest.PracticeGroupNames, opt => opt.MapFrom(src => src.PracticeGroups.Select(pg => pg.PracticeGroup == null ? string.Empty : pg.PracticeGroup.Name)))
             .ForMember(dest => dest.RoleTypeIds, opt => opt.MapFrom(src => src.RoleTypes.Select(rt => rt.RoleTypeId)))
-            .ForMember(dest => dest.RoleTypeNames, opt => opt.MapFrom(src => src.RoleTypes.Select(rt => rt.RoleType?.Name ?? string.Empty)));
+            .ForMember(dest => dest.RoleTypeNames, opt => opt.MapFrom(src => src.RoleTypes.Select(rt => rt.RoleType == null ? string.Empty : rt.RoleType.Name)));
     }
 }

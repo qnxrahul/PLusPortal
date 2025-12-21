@@ -5,6 +5,7 @@ using Microsoft.Extensions.Logging;
 using Steer73.RockIT.JobApplications;
 using Steer73.RockIT.JobApplications.External;
 using Steer73.RockIT.JobAlerts;
+using Steer73.RockIT.Enums;
 using Steer73.RockIT.MediaSources;
 using Steer73.RockIT.Permissions;
 using Steer73.RockIT.RoleTypes;
