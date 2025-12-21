@@ -44,45 +44,23 @@ $(function () {
             width: "1rem"
         },
         {
-            orderable: false,
-            render: DataTable.render.select(),
-            targets: 0
-        },
-        { data: "jobApplication.firstName" },
-        { data: "jobApplication.lastName" },
-        { data: "jobApplication.emailAddress" },
-        { data: "jobApplication.title" },
-        { data: "jobApplication.phoneNumber" },
-        { data: "jobApplication.landline" },
-        { data: "jobApplication.currentRole" },
-        { data: "jobApplication.currentCompany" },
-        { data: "jobApplication.currentPositionType" },
-        {
             data: "jobApplication.status",
             render: function (status, _type, row) {
                 return row.jobApplication.statusAsString;
             }
         },
         {
-            data: "jobApplication.cvUrl",
-            render: function (cvUrl, _type, row) {
-                if (!cvUrl || cvUrl === "") {
-                    return "-";
-                }
-
-                return "<a href='/api/app/job-applications/file-by-type?fileType=CV&jobApplicationId=" + row.jobApplication.id + "'><span class='jobApplication-c-v-file' style='cursor: pointer;'><i class='fa fa-file'></i></span></a>";
-            }
-        },
-        {
-            data: "jobApplication.coverLetterUrl",
-            render: function (coverLetterUrl, _type, row) {
-                if (!coverLetterUrl || coverLetterUrl === "") {
-                    return "-";
-                }
-
-                return "<a href='/api/app/job-applications/file-by-type?fileType=CoverLetter&jobApplicationId=" + row.jobApplication.id + "'><span class='jobApplication-cover-letter-file' style='cursor: pointer;'><i class='fa fa-file'></i></span></a>";
-            }
-        },
+            data: "jobApplication.creationTime",
+            render: DataTable.render.datetime('yyyy-MM-DD HH:mm')
+        }
+        ,
+        { data: "jobApplication.title" },
+        { data: "jobApplication.firstName" },
+        { data: "jobApplication.lastName" },
+        { data: "jobApplication.currentRole" },
+        { data: "jobApplication.currentCompany" },
+        { data: "jobApplication.emailAddress" },
+        { data: "jobApplication.phoneNumber" },
         {
             data: "jobApplication.additionalDocumentUrl",
             render: function (additionalDocumentUrl, _type, row) {
@@ -92,15 +70,6 @@ $(function () {
 
                 return "<a href='/api/app/job-applications/file-by-type?fileType=AdditionalDocument&jobApplicationId=" + row.jobApplication.id + "'><span class='jobApplication-additional-document-file' style='cursor: pointer;'><i class='fa fa-file'></i></span></a>";
             }
-        },
-        {
-            data: "vacancy.title",
-            defaultContent: ""
-        },
-        {
-            data: "jobApplication.creationTime",
-            render: DataTable.render.datetime('yyyy-MM-DD HH:mm')
-
         }
 
     ];
