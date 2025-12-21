@@ -599,7 +599,8 @@ namespace Steer73.RockIT
                 _appFileDescriptorRepository,
                 _jobApplicantContainer,
                 _vacancyContainer,
-                _identityUserRepository);
+                _identityUserRepository,
+                _ezekiaSyncLogManager);
 
             //action
             await WithUnitOfWorkAsync(async () =>
@@ -760,7 +761,8 @@ namespace Steer73.RockIT
                 _appFileDescriptorRepository,
                 _jobApplicantContainer,
                 _vacancyContainer,
-                _identityUserRepository);
+                _identityUserRepository,
+                _ezekiaSyncLogManager);
             var numberOfPages = 2;
             var resultsPerPage = (Company2Id - Company1Id)/numberOfPages;
 
