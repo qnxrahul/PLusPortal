@@ -1,8 +1,8 @@
 using System.Threading.Tasks;
 using Volo.Abp.Data;
 using Volo.Abp.DependencyInjection;
-using Volo.Abp.LanguageManagement.LanguageTexts;
 using Volo.Abp.Uow;
+using Volo.Abp.LanguageManagement;
 
 namespace Steer73.RockIT.Data;
 
@@ -15,21 +15,29 @@ public class LocalizationCleanupDataSeedContributor :
     private const string LocalizationKey = "ShowDiversity";
     private const string DesiredValue = "Tick this box to use PL UK standard Diversity Form";
 
-    private readonly LanguageTextManager _languageTextManager;
+    private readonly ILanguageTextRepository _languageTextRepository;
 
-    public LocalizationCleanupDataSeedContributor(LanguageTextManager languageTextManager)
+    public LocalizationCleanupDataSeedContributor(ILanguageTextRepository languageTextRepository)
     {
-        _languageTextManager = languageTextManager;
+        _languageTextRepository = languageTextRepository;
     }
 
     [UnitOfWork]
     public async Task SeedAsync(DataSeedContext context)
     {
-        await _languageTextManager.SetAsync(
-            ResourceName,
-            CultureName,
-            LocalizationKey,
-            DesiredValue,
-            context.TenantId);
+        // LanguageManagement's repository returns tracked entities; updating the value inside a UoW is enough.
+        var texts = await _languageTextRepository.GetListAsync(ResourceName, CultureName, cancellationToken: default);
+        var text = texts?.Find(x => x.Name == LocalizationKey);
+        if (text == null)
+        {
+            return;
+        }
+
+        if (text.Value == DesiredValue)
+        {
+            return;
+        }
+
+        text.Value = DesiredValue;
     }
 }

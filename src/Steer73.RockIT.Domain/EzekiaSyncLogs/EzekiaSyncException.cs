@@ -1,6 +1,5 @@
 using System;
 using Volo.Abp;
-using Volo.Abp.Business;
 
 namespace Steer73.RockIT.EzekiaSyncLogs
 {
@@ -10,7 +9,7 @@ namespace Steer73.RockIT.EzekiaSyncLogs
         public DateTime TimestampUtc { get; }
 
         public EzekiaSyncException(string message, Guid logId, DateTime timestampUtc, Exception? innerException = null)
-            : base(code: "EzekiaSync:Error", message, innerException)
+            : base(code: "EzekiaSync:Error", message: message, innerException: innerException)
         {
             LogId = logId;
             TimestampUtc = timestampUtc;

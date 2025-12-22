@@ -918,7 +918,7 @@ namespace Steer73.RockIT.Domain.External
                 {
                     documents = await GetJobApplicationDocuments(
                         jobApplication,
-                        vacancy.ExternalRefId!.Value,
+                        vacancy,
                         cancellationToken);
                     if (documents.Count > 0)
                     {
@@ -1053,7 +1053,10 @@ namespace Steer73.RockIT.Domain.External
                     }
                 ];
             }
-            _logger.LogInformation("Sending body to Ezekia: {0}", JsonConvert.SerializeObject(request),vacancy.ProjectId);
+            _logger.LogInformation(
+                "Sending CreatePerson request to Ezekia for ProjectId {ProjectId}: {Request}",
+                vacancy.ProjectId,
+                JsonConvert.SerializeObject(request));
 
             var response = await _ezekiaClient.V3PeoplePostAsync(
                 null, 
@@ -1070,7 +1073,25 @@ namespace Steer73.RockIT.Domain.External
                     cancellationToken);
             }
 
-            return createdPersonId;
+            var requestSummary = SerializeForLog(new
+            {
+                Action = "CreatePerson",
+                OwnerId = ownerInfo?.Id,
+                VacancyExternalRefId = vacancy.ExternalRefId,
+                AssignToVacancy = vacancy.ExternalRefId.HasValue
+            });
+
+            var responseSummary = SerializeForLog(new
+            {
+                Action = "CreatePerson",
+                PersonId = createdPersonId
+            });
+
+            var additionalMetadata = vacancy.ExternalRefId.HasValue
+                ? SerializeForLog(new { vacancy.ExternalRefId })
+                : null;
+
+            return new PersonOperationSummary(createdPersonId, requestSummary, responseSummary, additionalMetadata);
 
         }
         private async Task AssignPlusPortalPipelineTagAsync(
@@ -1121,12 +1142,7 @@ namespace Steer73.RockIT.Domain.External
             }
         }
 
-        private async Task UpdatePerson(
-        person2 person,
-        JobApplication jobApplication,
-        Vacancy vacancy,
-        int? ezekiaCompanyId,
-        CancellationToken cancellationToken)
+        private async Task<EzekiaOwnerInfo?> ResolveOwnerInfoAsync(Guid identityUserId, CancellationToken cancellationToken)
         {
             if (identityUserId == Guid.Empty)
             {
@@ -1173,12 +1189,6 @@ namespace Steer73.RockIT.Domain.External
 
                 var ownerInfo = match != null ? new EzekiaOwnerInfo(match.Id, match.FullName, match.Email) : null;
                 _ownerInfoCache[identityUserId] = ownerInfo;
-
-                if (ownerInfo != null)
-                {
-                    _logger.LogError(ex, "Failed to assign person {PersonId} to vacancy {VacancyId}", person.Id, vacancy.ExternalRefId.Value);
-                }
-
                 return ownerInfo;
             }
             catch (Exception ex)
@@ -1456,13 +1466,15 @@ namespace Steer73.RockIT.Domain.External
 
         private async Task<List<DocumentDto>> GetJobApplicationDocuments(
             JobApplication jobApplication,
-            int ezekiaVacancyId,
+            Vacancy vacancy,
             CancellationToken cancellationToken)
         {
             var documents = new List<DocumentDto>();
             char initial = !string.IsNullOrWhiteSpace(jobApplication.FirstName) ? 
                 jobApplication.FirstName[0] : ' ';
-            var projectLabel = ezekiaVacancyId.ToString();
+            var projectLabel = string.IsNullOrWhiteSpace(vacancy.ProjectId)
+                ? vacancy.ExternalRefId?.ToString() ?? "UnknownProject"
+                : vacancy.ProjectId;
 
             if (!string.IsNullOrWhiteSpace(jobApplication.CVUrl))
             {
@@ -1503,7 +1515,7 @@ namespace Steer73.RockIT.Domain.External
                     documents.Add(new DocumentDto
                     {
                         ContentType = FileUtils.GetContentType(extension),
-                        FileName = $"{jobApplication.LastName}.{initial}.Supplement({projectLabel}){extension}",
+                        FileName = $"{jobApplication.LastName}.{initial}.CV Suppliment({projectLabel}){extension}",
                         Stream = stream
                     });
                 }

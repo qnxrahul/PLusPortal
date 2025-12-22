@@ -84,7 +84,11 @@ public class JobAlertRegistration : FullAuditedAggregateRoot<Guid>
 
     public void SetPracticeGroups(IReadOnlyCollection<Guid> practiceGroupIds)
     {
-        Check.NotNullOrEmpty(practiceGroupIds, nameof(practiceGroupIds));
+        Check.NotNull(practiceGroupIds, nameof(practiceGroupIds));
+        if (practiceGroupIds.Count == 0)
+        {
+            throw new ArgumentException("practiceGroupIds cannot be empty.", nameof(practiceGroupIds));
+        }
 
         var distinctIds = practiceGroupIds.Distinct().ToList();
         PracticeGroupsInternal.RemoveAll(link => !distinctIds.Contains(link.PracticeGroupId));

@@ -48,21 +48,35 @@ $(function () {
             render: DataTable.render.select(),
             targets: 0
         },
-        { data: "jobApplication.firstName" },
-        { data: "jobApplication.lastName" },
-        { data: "jobApplication.emailAddress" },
-        { data: "jobApplication.title" },
-        { data: "jobApplication.phoneNumber" },
-        { data: "jobApplication.landline" },
-        { data: "jobApplication.currentRole" },
-        { data: "jobApplication.currentCompany" },
-        { data: "jobApplication.currentPositionType" },
         {
             data: "jobApplication.status",
             render: function (status, _type, row) {
                 return row.jobApplication.statusAsString;
             }
         },
+        {
+            data: "jobApplication.creationTime",
+            render: DataTable.render.datetime('yyyy-MM-DD HH:mm')
+        },
+        { data: "jobApplication.title" },
+        { data: "jobApplication.firstName" },
+        { data: "jobApplication.lastName" },
+        { data: "jobApplication.currentRole" },
+        { data: "jobApplication.currentCompany" },
+        { data: "jobApplication.emailAddress" },
+        { data: "jobApplication.phoneNumber" },
+        {
+            data: "jobApplication.additionalDocumentUrl",
+            render: function (additionalDocumentUrl, _type, row) {
+                if (!additionalDocumentUrl || additionalDocumentUrl === "") {
+                    return "-";
+                }
+
+                return "<a href='/api/app/job-applications/file-by-type?fileType=AdditionalDocument&jobApplicationId=" + row.jobApplication.id + "'><span class='jobApplication-additional-document-file' style='cursor: pointer;'><i class='fa fa-file'></i></span></a>";
+            }
+        },
+        { data: "jobApplication.landline" },
+        { data: "jobApplication.currentPositionType" },
         {
             data: "jobApplication.cvUrl",
             render: function (cvUrl, _type, row) {
@@ -84,23 +98,8 @@ $(function () {
             }
         },
         {
-            data: "jobApplication.additionalDocumentUrl",
-            render: function (additionalDocumentUrl, _type, row) {
-                if (!additionalDocumentUrl || additionalDocumentUrl === "") {
-                    return "-";
-                }
-
-                return "<a href='/api/app/job-applications/file-by-type?fileType=AdditionalDocument&jobApplicationId=" + row.jobApplication.id + "'><span class='jobApplication-additional-document-file' style='cursor: pointer;'><i class='fa fa-file'></i></span></a>";
-            }
-        },
-        {
             data: "vacancy.title",
             defaultContent: ""
-        },
-        {
-            data: "jobApplication.creationTime",
-            render: DataTable.render.datetime('yyyy-MM-DD HH:mm')
-
         }
 
     ];
@@ -192,5 +191,24 @@ $(function () {
         e.preventDefault();
         dataTable.ajax.reloadEx();
 
+    });
+
+    $("#ExportApplicantsCsvButton").on("click", function () {
+        var vacancyId = $("#VacancyId").val();
+        var filterText = $("#FilterText").val() || "";
+
+        if (!vacancyId) {
+            abp.notify.error("VacancyId is missing.");
+            return;
+        }
+
+        var url =
+            abp.appPath +
+            "Vacancies/Applications?handler=ExportCsv&id=" +
+            encodeURIComponent(vacancyId) +
+            "&filterText=" +
+            encodeURIComponent(filterText);
+
+        window.location.href = url;
     });
 });

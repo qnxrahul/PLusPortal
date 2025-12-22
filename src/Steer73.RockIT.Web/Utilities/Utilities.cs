@@ -1,4 +1,4 @@
-﻿
+
 
 namespace Steer73.RockIT.Web.Utilities
 {
@@ -10,11 +10,21 @@ namespace Steer73.RockIT.Web.Utilities
         {
             var sanitizer = new HtmlSanitizer();
 
-            var tagsToAllow = new[] { "p", "br", "strong", "em", "u", "ol", "ul", "li", "a", "span", "blockquote" };
+            // Quill outputs list formatting using <ol>/<li data-list="bullet|ordered|checked"> and indentation via CSS classes (ql-indent-N).
+            // We need to preserve these attributes/classes so multi-level bullets render correctly in both editor and viewer.
+            var tagsToAllow = new[]
+            {
+                "p", "br",
+                "strong", "em", "u",
+                "h1", "h2", "h3",
+                "ol", "ul", "li",
+                "a", "span",
+                "blockquote"
+            };
             foreach (var tag in tagsToAllow)
                 sanitizer.AllowedTags.Add(tag);
 
-            var attributesToAllow = new[] { "href", "target", "rel", "class" };
+            var attributesToAllow = new[] { "href", "target", "rel", "class", "data-list" };
             foreach (var attr in attributesToAllow)
                 sanitizer.AllowedAttributes.Add(attr);
 

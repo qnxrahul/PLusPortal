@@ -1,4 +1,4 @@
-﻿@page "{vacancyId}"
+@page "{vacancyId}"
 @using System.Web
 @model Steer73.RockIT.Web.Pages.VacancyFormModel
 @{
@@ -60,6 +60,10 @@
             <div class="d-flex justify-content-between px-4 pt-2">
                 <div class="d-flex flex-column">
                     <span class="vacancy__title">@Model.VacancyDto.Vacancy.Title</span>
+                    @if (!string.IsNullOrWhiteSpace(Model.VacancyDto.Company?.Name))
+                    {
+                        <span class="vacancy__subtitle text-black-50">@Model.VacancyDto.Company!.Name</span>
+                    }
                     <span class="vacancy__subtitle">@Model.VacancyDto.Vacancy.Location</span>
                 </div>
                 <span class="vacancy__pill align-self-start">@Model.VacancyDto.Vacancy.ProjectId</span>

@@ -42,7 +42,11 @@ public class JobAlertRegistrationManager : DomainService
         CancellationToken cancellationToken = default)
     {
         Check.NotNullOrWhiteSpace(email, nameof(email));
-        Check.NotNullOrEmpty(practiceGroupIds, nameof(practiceGroupIds));
+        Check.NotNull(practiceGroupIds, nameof(practiceGroupIds));
+        if (practiceGroupIds.Count == 0)
+        {
+            throw new ArgumentException("practiceGroupIds cannot be empty.", nameof(practiceGroupIds));
+        }
 
         var distinctPracticeGroupIds = practiceGroupIds.Distinct().ToList();
         await EnsurePracticeGroupsExistAsync(distinctPracticeGroupIds, cancellationToken);
